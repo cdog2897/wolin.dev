@@ -530,8 +530,8 @@ function App() {
           </div>
           <div className="hero-foot">
             <p>
-              I design and ship native apps, web platforms, and creative tools—from
-              the first sketch to the final build.
+              I design and engineer native apps, web platforms, and creative software
+              from the first sketch to the final product.
             </p>
             <a className="round-link" href="#work" aria-label="Explore selected work">
               <span>Explore</span>
