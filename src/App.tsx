@@ -169,8 +169,7 @@ function WorkCarousel() {
             <span className="project-index">02 / 05 · Web platform</span>
             <h3>ClientSight</h3>
             <p className="project-lede">
-              A focused resident management platform that helps care teams know
-              where people are, what changed, and who updated it—without the noise.
+              A resident management software used by teams of people in foster homes.
             </p>
             <dl className="project-facts">
               <div><dt>Built for</dt><dd>Kern Bridges Youth Homes</dd></div>
