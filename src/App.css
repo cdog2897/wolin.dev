@@ -272,7 +272,7 @@
   animation-delay: 480ms;
 }
 
-.portrait-five img { object-position: 50% 47%; }
+.portrait-five img { object-position: 50% 68%; }
 
 .portrait:nth-child(2n) .portrait-frame {
   animation-delay: -2.4s;
