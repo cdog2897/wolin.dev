@@ -233,8 +233,7 @@ function WorkCarousel() {
             </div>
             <p className="project-lede">
               A short-form video production tool that turns organized footage,
-              music, and text into polished social content—without a timeline full
-              of busywork.
+              music, and text into polished social content.
             </p>
             <div className="project-tags" aria-label="Sparkz Creator technologies">
               <span>FastAPI</span><span>React</span><span>FFmpeg</span><span>macOS</span>
