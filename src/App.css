@@ -260,7 +260,7 @@
   animation-delay: 380ms;
 }
 
-.portrait-four img { object-position: 50% 67%; }
+.portrait-four img { object-position: 50% 40%; }
 
 .portrait-five {
   --rotation: -5deg;

@@ -517,7 +517,7 @@ function App() {
               </figure>
               <figure className="portrait portrait-four" tabIndex={0}>
                 <span className="portrait-frame">
-                  <img src="/portraits/caleb-salt-flats.jpg" alt="Caleb standing at the salt flats" />
+                  <img src="/portraits/caleb-mountain-couple.jpg" alt="Caleb and his partner in the mountains" />
                 </span>
               </figure>
               <figure className="portrait portrait-five" tabIndex={0}>
