@@ -173,14 +173,11 @@ function WorkCarousel() {
               where people are, what changed, and who updated it—without the noise.
             </p>
             <dl className="project-facts">
-              <div><dt>Built for</dt><dd>Kern Bridges</dd></div>
+              <div><dt>Built for</dt><dd>Kern Bridges Youth Homes</dd></div>
               <div><dt>Access</dt><dd>Role-based</dd></div>
               <div><dt>Data</dt><dd>Realtime</dd></div>
             </dl>
             <div className="project-links">
-              <a className="text-link" href="https://clientsight.app/" target="_blank" rel="noreferrer">
-                Visit ClientSight <ArrowIcon />
-              </a>
               <a className="text-link" href="https://kernbridges.com/" target="_blank" rel="noreferrer">
                 Kern Bridges <ArrowIcon />
               </a>
