@@ -88,6 +88,13 @@
   color: var(--ink);
   font-size: 13px;
   font-weight: 500;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.header-name:hover,
+.header-name:focus-visible {
+  color: var(--orange);
 }
 
 .hero {

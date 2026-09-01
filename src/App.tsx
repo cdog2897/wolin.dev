@@ -488,7 +488,9 @@ function App() {
         <a className="wordmark" href="#top" aria-label="Caleb Wolin, home">
           wolin.dev
         </a>
-        <span className="header-name">Caleb Wolin</span>
+        <a className="header-name" href="#contact" aria-label="Contact Caleb Wolin">
+          Caleb Wolin
+        </a>
       </header>
 
       <main id="top">
@@ -574,7 +576,7 @@ function App() {
 
       </main>
 
-      <footer className="site-footer">
+      <footer id="contact" className="site-footer">
         <div className="footer-top">
           <span className="availability-badge">
             <span aria-hidden="true" />
