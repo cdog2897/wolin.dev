@@ -2088,9 +2088,9 @@
 }
 
 .faith-project-visual {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  column-gap: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
   align-items: center;
   padding: 34px 22px;
 }
@@ -2102,6 +2102,11 @@
 .project-slide-stories .project-copy { background: #d6e7f0; }
 
 .faith-project-visual figure {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: calc(50% - 7px);
+  height: 100%;
+  aspect-ratio: 598 / 1300;
   margin: 0;
   overflow: hidden;
   border: 0;
@@ -2109,20 +2114,11 @@
   box-shadow: 0 22px 48px rgba(17, 17, 15, 0.18);
 }
 
-.faith-project-visual figure:first-child {
-  grid-column: 1 / span 6;
-  grid-row: 1;
-}
-
-.faith-project-visual figure:last-child {
-  grid-column: 7 / span 6;
-  grid-row: 1;
-}
-
 .faith-project-visual img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 .project-slide-creator,
@@ -2406,22 +2402,13 @@
 
   .faith-project-visual {
     min-height: 0;
-    column-gap: 8px;
+    gap: 8px;
     padding: 24px 10px;
   }
 
   .faith-project-visual figure {
     border: 0;
     border-radius: 6px;
-  }
-
-  .faith-project-visual figure:first-child {
-    grid-column: 1 / span 6;
-  }
-
-  .faith-project-visual figure:last-child {
-    grid-column: 7 / span 6;
-    transform: none;
   }
 
   .creator-project-visual {
