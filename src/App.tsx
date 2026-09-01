@@ -585,7 +585,7 @@ function App() {
             <span aria-hidden="true" />
             Looking for part-time work
           </span>
-          <h2>Let’s make it <em>real.</em></h2>
+          <h2>Let’s <em>connect.</em></h2>
           <div className="footer-contact" aria-label="Contact Caleb Wolin">
             <a href="mailto:caleb.wolin@gmail.com">caleb.wolin@gmail.com</a>
             <a href="tel:+12088108089">+1 (208) 810-8089</a>
