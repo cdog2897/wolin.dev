@@ -132,13 +132,12 @@ function WorkCarousel() {
               </div>
             </div>
             <p className="project-lede">
-              A shared bucket list for couples who want to turn “someday” into
-              something they actually do together.
+              A shared bucket list for couples who want to turn “someday” into real memories.
             </p>
             <dl className="project-facts">
               <div><dt>Rating</dt><dd>4.9 ★</dd></div>
               <div><dt>Platform</dt><dd>iPhone</dd></div>
-              <div><dt>Role</dt><dd>Design + Build</dd></div>
+              <div><dt>Downloads</dt><dd>7500+</dd></div>
             </dl>
             <a className="text-link" href={appStoreUrl} target="_blank" rel="noreferrer">
               View on the App Store <ArrowIcon />
