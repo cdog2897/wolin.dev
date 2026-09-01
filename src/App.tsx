@@ -565,7 +565,7 @@ function App() {
                 <img src="/brands/cursor.svg" alt="" />
               </span>
             </div>
-            <h2 id="ai-title">AI is part of the process—<em>not the point.</em></h2>
+            <h2 id="ai-title">On the cutting edge of <em>AI</em></h2>
             <p>
               I use AI as a practical collaborator across product thinking,
               design, development, and delivery—moving faster while keeping the
