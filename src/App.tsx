@@ -7,7 +7,6 @@ const shalomUrl =
   'https://apps.apple.com/us/app/shalom-bible-reading-plan/id6661018829'
 const bibleStoriesUrl =
   'https://apps.apple.com/us/app/christian-bible-stories/id6748326460'
-const creatorUrl = 'https://github.com/cdog2897/sparkzcreator'
 
 function ArrowIcon() {
   return <span aria-hidden="true">↗</span>
@@ -276,9 +275,6 @@ function WorkCarousel() {
             <div className="project-tags" aria-label="Sparkz Creator technologies">
               <span>FastAPI</span><span>React</span><span>FFmpeg</span><span>macOS</span>
             </div>
-            <a className="text-link light" href={creatorUrl} target="_blank" rel="noreferrer">
-              Explore the code <ArrowIcon />
-            </a>
           </div>
           <div className="project-visual creator-project-visual">
             <CreatorPreview />
@@ -337,9 +333,8 @@ function WorkCarousel() {
             <span>01</span>
             <span>Selected work</span>
           </div>
-          <h2 id="work-title">Five products. One focused view.</h2>
+          <h2 id="work-title">My projects are in production with <em>real users.</em></h2>
         </div>
-        <p>Move through each project with the controls, arrow keys, or a swipe.</p>
       </div>
 
       <div className="carousel-viewport">
@@ -349,14 +344,6 @@ function WorkCarousel() {
       </div>
 
       <div className="carousel-controls">
-        <div className="carousel-buttons">
-          <button type="button" onClick={() => move(-1)} aria-label="Show previous project">
-            <span aria-hidden="true">←</span>
-          </button>
-          <button type="button" onClick={() => move(1)} aria-label="Show next project">
-            <span aria-hidden="true">→</span>
-          </button>
-        </div>
         <div className="carousel-pagination" aria-label="Choose a project">
           {slides.map((slide, index) => (
             <button
@@ -372,9 +359,119 @@ function WorkCarousel() {
             </button>
           ))}
         </div>
-        <p className="carousel-status" aria-live="polite">
-          {String(activeIndex + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')} · {slides[activeIndex].label}
-        </p>
+        <div className="carousel-buttons">
+          <button type="button" onClick={() => move(-1)} aria-label="Show previous project">
+            <span aria-hidden="true">←</span>
+          </button>
+          <button type="button" onClick={() => move(1)} aria-label="Show next project">
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const amexRoles = [
+  {
+    id: 'internship',
+    index: '01',
+    label: 'Internship',
+    period: '2023',
+    summary:
+      'Worked on an internal audit tool that helped streamline review and compliance workflows.',
+    skills: [
+      { name: 'React', logo: '/brands/tech/react.svg' },
+      { name: 'TypeScript', logo: '/brands/tech/typescript.svg' },
+      { name: 'APIs', logo: null },
+      { name: 'Node.js', logo: '/brands/tech/nodejs.svg' },
+    ],
+  },
+  {
+    id: 'full-time',
+    index: '02',
+    label: 'Full-time',
+    period: '2024-2026',
+    summary:
+      'Built scalable, resilient backend services and enterprise APIs for a security-first financial environment.',
+    skills: [
+      { name: 'Java', logo: '/brands/tech/java.svg' },
+      { name: 'Vert.x', logo: '/brands/tech/vertx.svg' },
+      { name: 'REST APIs', logo: null },
+    ],
+  },
+]
+
+function AmexExperience() {
+  const [activeRole, setActiveRole] = useState(1)
+  const role = amexRoles[activeRole]
+
+  return (
+    <section id="experience" className="amex-experience" aria-labelledby="experience-title">
+      <div className="amex-inner">
+        <div className="section-label amex-section-label">
+          <span>02</span>
+          <span>Work experience</span>
+        </div>
+
+        <div className="amex-intro">
+          <h2 id="experience-title">Experience at <em>real-world scale</em></h2>
+          <p>
+            At American Express, I grew from intern to software engineer while
+            building backend systems for a security- and reliability-first
+            enterprise environment.
+          </p>
+          <img
+            className="amex-logo"
+            src="/brands/american-express.png"
+            alt="American Express"
+          />
+        </div>
+
+        <div className="amex-timeline">
+          <div className="amex-timeline-nav" role="tablist" aria-label="American Express career timeline">
+            <span
+              className={`amex-timeline-progress ${activeRole === 1 ? 'is-complete' : ''}`}
+              aria-hidden="true"
+            />
+            {amexRoles.map((item, index) => (
+              <button
+                type="button"
+                role="tab"
+                id={`amex-tab-${item.id}`}
+                aria-controls={`amex-panel-${item.id}`}
+                aria-selected={activeRole === index}
+                className={`amex-timeline-point ${activeRole === index ? 'active' : ''}`}
+                key={item.id}
+                onClick={() => setActiveRole(index)}
+              >
+                <span className="amex-point-marker">{item.index}</span>
+                <strong>{item.label}</strong>
+                <span>{item.period}</span>
+              </button>
+            ))}
+          </div>
+
+          <div
+            className="amex-role-detail"
+            role="tabpanel"
+            id={`amex-panel-${role.id}`}
+            aria-labelledby={`amex-tab-${role.id}`}
+            key={role.id}
+          >
+            <p className="amex-role-description">{role.summary}</p>
+            <ul className="amex-skills" aria-label={`${role.label} technologies`}>
+              {role.skills.map((skill) => (
+                <li className="amex-skill" key={skill.name}>
+                  <span className={`amex-skill-mark ${skill.logo ? '' : 'is-generic'}`} aria-hidden="true">
+                    {skill.logo ? <img src={skill.logo} alt="" /> : <span>{'{ }'}</span>}
+                  </span>
+                  <span className="amex-skill-name">{skill.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -389,30 +486,17 @@ function App() {
 
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Caleb Wolin, home">
-          CW<span>®</span>
+          wolin.dev
         </a>
-        <nav aria-label="Primary navigation">
-          <a href="#work">Work</a>
-          <a href="#ai">AI</a>
-          <a href="#about">About</a>
-          <a href="https://github.com/cdog2897" target="_blank" rel="noreferrer">
-            GitHub <ArrowIcon />
-          </a>
-        </nav>
+        <span className="header-name">Caleb Wolin</span>
       </header>
 
       <main id="top">
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-kicker">
-            <span>Independent product engineer</span>
             <span>2026 portfolio</span>
           </div>
           <div className="hero-main">
-            <h1 id="hero-title">
-              <span className="hero-name">I’m Caleb Wolin,</span>
-              a product engineer building digital products with <em>clarity and care.</em>
-            </h1>
-
             <div className="portrait-cluster" aria-label="Portraits of Caleb Wolin">
               <figure className="portrait portrait-one" tabIndex={0}>
                 <span className="portrait-frame">
@@ -440,6 +524,10 @@ function App() {
                 </span>
               </figure>
             </div>
+
+            <h1 id="hero-title">
+              I'm Caleb Wolin, a software engineer and <em>designer.</em>
+            </h1>
           </div>
           <div className="hero-foot">
             <p>
@@ -453,130 +541,50 @@ function App() {
           </div>
         </section>
 
-        <div className="ticker" aria-hidden="true">
-          <div>
-            <span>Product design</span>
-            <i>✦</i>
-            <span>iOS development</span>
-            <i>✦</i>
-            <span>Web platforms</span>
-            <i>✦</i>
-            <span>Creative tooling</span>
-          </div>
-        </div>
-
         <WorkCarousel />
+
+        <AmexExperience />
 
         <section id="ai" className="ai-section" aria-labelledby="ai-title">
           <div className="section-label">
-            <span>02</span>
+            <span>03</span>
             <span>AI proficiency</span>
           </div>
 
           <div className="ai-intro">
-            <h2 id="ai-title">AI is part of the process—not the point.</h2>
+            <div className="ai-logo-cluster" role="img" aria-label="ChatGPT, Claude, and Cursor">
+              <span className="ai-cluster-logo ai-cluster-chatgpt">
+                <img src="/brands/chatgpt.svg" alt="" />
+              </span>
+              <span className="ai-cluster-logo ai-cluster-claude">
+                <img src="/brands/claude.svg" alt="" />
+              </span>
+              <span className="ai-cluster-logo ai-cluster-cursor">
+                <img src="/brands/cursor.svg" alt="" />
+              </span>
+            </div>
+            <h2 id="ai-title">AI is part of the process—<em>not the point.</em></h2>
             <p>
               I use AI as a practical collaborator across product thinking,
               design, development, and delivery—moving faster while keeping the
               judgment, taste, and final decisions human.
             </p>
           </div>
-
-          <div className="ai-tools">
-            <article className="ai-tool ai-tool-chatgpt">
-              <div className="ai-tool-top">
-                <span className="ai-logo-wrap">
-                  <img src="/brands/chatgpt.svg" alt="ChatGPT logo" />
-                </span>
-                <span className="ai-tool-index">01</span>
-              </div>
-              <div className="ai-tool-copy">
-                <span className="ai-tool-role">Think + shape</span>
-                <h3>ChatGPT</h3>
-                <p>
-                  I use ChatGPT to explore product directions, turn rough ideas
-                  into clear requirements, research unfamiliar territory, and
-                  pressure-test decisions before I build.
-                </p>
-              </div>
-            </article>
-
-            <article className="ai-tool ai-tool-claude">
-              <div className="ai-tool-top">
-                <span className="ai-logo-wrap">
-                  <img src="/brands/claude.svg" alt="Claude logo" />
-                </span>
-                <span className="ai-tool-index">02</span>
-              </div>
-              <div className="ai-tool-copy">
-                <span className="ai-tool-role">Review + refine</span>
-                <h3>Claude</h3>
-                <p>
-                  I use Claude for thoughtful second passes—reviewing code and
-                  writing, surfacing edge cases, and helping refine complex work
-                  into something clearer and more deliberate.
-                </p>
-              </div>
-            </article>
-
-            <article className="ai-tool ai-tool-cursor">
-              <div className="ai-tool-top">
-                <span className="ai-logo-wrap">
-                  <img src="/brands/cursor.svg" alt="Cursor logo" />
-                </span>
-                <span className="ai-tool-index">03</span>
-              </div>
-              <div className="ai-tool-copy">
-                <span className="ai-tool-role">Build + ship</span>
-                <h3>Cursor</h3>
-                <p>
-                  I use Cursor as a repo-aware pair programmer for implementation,
-                  refactoring, and debugging across Swift, React, TypeScript, and
-                  backend systems.
-                </p>
-              </div>
-            </article>
-          </div>
-
-          <p className="ai-principle">
-            The goal is not more output. It’s better products, built with more
-            clarity and less friction.
-          </p>
         </section>
 
-        <section id="about" className="about-section">
-          <div className="section-label">
-            <span>03</span>
-            <span>About the work</span>
-          </div>
-          <div className="about-grid">
-            <h2>I like building the whole thing.</h2>
-            <div>
-              <p>
-                From the first sketch to the shipping build, I work across product
-                strategy, interface design, native iOS, and modern web development.
-                The common thread is simple: make the product feel obvious, useful,
-                and distinctly its own.
-              </p>
-              <div className="capability-list">
-                <span>Product direction</span>
-                <span>UI / UX design</span>
-                <span>Swift + SwiftUI</span>
-                <span>React + TypeScript</span>
-                <span>Firebase + APIs</span>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
 
       <footer className="site-footer">
         <div className="footer-top">
-          <span>Have something worth building?</span>
+          <span className="availability-badge">
+            <span aria-hidden="true" />
+            Looking for part-time work
+          </span>
           <h2>Let’s make it <em>real.</em></h2>
-          <a className="round-link footer-link" href="https://github.com/cdog2897" target="_blank" rel="noreferrer">
-            <span>GitHub</span><ArrowIcon />
-          </a>
+          <div className="footer-contact" aria-label="Contact Caleb Wolin">
+            <a href="mailto:caleb.wolin@gmail.com">caleb.wolin@gmail.com</a>
+            <a href="tel:+12088108089">+1 (208) 810-8089</a>
+          </div>
         </div>
         <div className="footer-bottom">
           <span>Caleb Wolin © 2026</span>
