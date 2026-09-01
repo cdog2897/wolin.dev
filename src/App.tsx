@@ -224,6 +224,34 @@ function WorkCarousel() {
       ),
     },
     {
+      id: 'creator',
+      label: 'Sparkz Creator',
+      content: (
+        <article className="project-slide project-slide-creator">
+          <div className="project-copy">
+            <div className="project-title-row">
+              <img className="creator-project-icon" src="/projects/sparkz-creator-icon.png" alt="Sparkz Creator icon" />
+              <div>
+                <span className="project-index">04 / 05 · Creative tool</span>
+                <h3>Sparkz Creator</h3>
+              </div>
+            </div>
+            <p className="project-lede">
+              A short-form video production tool that turns organized footage,
+              music, and text into polished social content—without a timeline full
+              of busywork.
+            </p>
+            <div className="project-tags" aria-label="Sparkz Creator technologies">
+              <span>FastAPI</span><span>React</span><span>FFmpeg</span><span>macOS</span>
+            </div>
+          </div>
+          <div className="project-visual creator-project-visual">
+            <CreatorPreview />
+          </div>
+        </article>
+      ),
+    },
+    {
       id: 'stories',
       label: 'Christian Bible Stories',
       content: (
@@ -232,7 +260,7 @@ function WorkCarousel() {
             <div className="project-title-row">
               <img className="app-icon" src="/projects/bible-stories-icon.jpg" alt="Christian Bible Stories app icon" />
               <div>
-                <span className="project-index">04 / 05 · iOS app</span>
+                <span className="project-index">05 / 05 · iOS app</span>
                 <h3>Christian<br />Bible Stories</h3>
               </div>
             </div>
@@ -250,34 +278,6 @@ function WorkCarousel() {
           <div className="project-visual faith-project-visual stories-project-visual">
             <figure><img src="/projects/bible-stories-01.webp" alt="Christian Bible Stories App Store artwork featuring its listening library" /></figure>
             <figure><img src="/projects/bible-stories-02.webp" alt="Christian Bible Stories App Store artwork featuring its listener rating" /></figure>
-          </div>
-        </article>
-      ),
-    },
-    {
-      id: 'creator',
-      label: 'Sparkz Creator',
-      content: (
-        <article className="project-slide project-slide-creator">
-          <div className="project-copy">
-            <div className="project-title-row">
-              <img className="creator-project-icon" src="/projects/sparkz-creator-icon.png" alt="Sparkz Creator icon" />
-              <div>
-                <span className="project-index">05 / 05 · Creative tool</span>
-                <h3>Sparkz Creator</h3>
-              </div>
-            </div>
-            <p className="project-lede">
-              A short-form video production tool that turns organized footage,
-              music, and text into polished social content—without a timeline full
-              of busywork.
-            </p>
-            <div className="project-tags" aria-label="Sparkz Creator technologies">
-              <span>FastAPI</span><span>React</span><span>FFmpeg</span><span>macOS</span>
-            </div>
-          </div>
-          <div className="project-visual creator-project-visual">
-            <CreatorPreview />
           </div>
         </article>
       ),
