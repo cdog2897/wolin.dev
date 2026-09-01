@@ -474,6 +474,67 @@ function AmexExperience() {
   )
 }
 
+const gcuCoursework = [
+  'Database Design & Development',
+  'Cloud Computing',
+  'Application Security',
+  'JavaScript Web Development',
+  'Operating Systems',
+]
+
+function Education() {
+  return (
+    <section id="education" className="education-section" aria-labelledby="education-title">
+      <div className="education-inner">
+        <div className="section-label education-section-label">
+          <span>03</span>
+          <span>Education</span>
+        </div>
+
+        <div className="education-intro">
+          <div className="gcu-mark" aria-hidden="true">GCU</div>
+          <h2 id="education-title">Software development at <em>Grand Canyon University.</em></h2>
+          <p>
+            A Bachelor of Science program grounded in building secure, dependable
+            software across web, cloud, data, and systems.
+          </p>
+        </div>
+
+        <dl className="education-facts">
+          <div>
+            <dt>Degree</dt>
+            <dd>Bachelor of Science</dd>
+          </div>
+          <div>
+            <dt>Years</dt>
+            <dd>2021–2024</dd>
+          </div>
+          <div>
+            <dt>GPA</dt>
+            <dd>3.61 / 4.00</dd>
+          </div>
+          <div>
+            <dt>Distinction</dt>
+            <dd>Honors College</dd>
+          </div>
+        </dl>
+
+        <div className="education-coursework">
+          <p>Relevant coursework</p>
+          <ul>
+            {gcuCoursework.map((course, index) => (
+              <li key={course}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                {course}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function App() {
   return (
     <div className="site-shell">
@@ -544,9 +605,11 @@ function App() {
 
         <AmexExperience />
 
+        <Education />
+
         <section id="ai" className="ai-section" aria-labelledby="ai-title">
           <div className="section-label">
-            <span>03</span>
+            <span>04</span>
             <span>AI proficiency</span>
           </div>
 
