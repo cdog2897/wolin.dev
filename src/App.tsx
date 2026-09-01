@@ -147,13 +147,13 @@ function WorkCarousel() {
           <div className="project-visual sparkz-project-visual" aria-label="Sparkz App Store screenshots">
             <div className="sparkz-gallery">
               <figure className="shot shot-main">
-                <img src="/projects/sparkz-01.webp" alt="Sparkz bucket list map screen" />
+                <img src="/projects/sparkz-01.webp" alt="Sparkz App Store artwork featuring the bucket list map" />
               </figure>
               <figure className="shot shot-secondary">
-                <img src="/projects/sparkz-02.webp" alt="Sparkz outdoor adventure preview" />
+                <img src="/projects/sparkz-02.webp" alt="Sparkz App Store artwork featuring an outdoor adventure" />
               </figure>
               <figure className="shot shot-tertiary">
-                <img src="/projects/sparkz-03.webp" alt="Sparkz couple planning features" />
+                <img src="/projects/sparkz-03.webp" alt="Sparkz App Store artwork featuring couple planning tools" />
               </figure>
             </div>
           </div>
@@ -217,8 +217,8 @@ function WorkCarousel() {
             </a>
           </div>
           <div className="project-visual faith-project-visual shalom-project-visual">
-            <figure><img src="/projects/shalom-01.webp" alt="Shalom Bible reading plans screen" /></figure>
-            <figure><img src="/projects/shalom-02.webp" alt="Shalom reading progress screen" /></figure>
+            <figure><img src="/projects/shalom-01.webp" alt="Shalom App Store artwork featuring Bible reading plans" /></figure>
+            <figure><img src="/projects/shalom-02.webp" alt="Shalom App Store artwork featuring its Bible plan creator" /></figure>
           </div>
         </article>
       ),
@@ -248,8 +248,8 @@ function WorkCarousel() {
             </a>
           </div>
           <div className="project-visual faith-project-visual stories-project-visual">
-            <figure><img src="/projects/bible-stories-01.webp" alt="Christian Bible Stories listening library" /></figure>
-            <figure><img src="/projects/bible-stories-02.webp" alt="Christian Bible Stories audio player" /></figure>
+            <figure><img src="/projects/bible-stories-01.webp" alt="Christian Bible Stories App Store artwork featuring its listening library" /></figure>
+            <figure><img src="/projects/bible-stories-02.webp" alt="Christian Bible Stories App Store artwork featuring its listener rating" /></figure>
           </div>
         </article>
       ),

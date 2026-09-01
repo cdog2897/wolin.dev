@@ -461,8 +461,9 @@
   min-height: 720px;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
+  column-gap: 12px;
   align-items: center;
-  padding: 60px 30px;
+  padding: 48px 28px;
   overflow: hidden;
   background: #e65121;
   border-radius: 2px;
@@ -471,34 +472,37 @@
 .shot {
   margin: 0;
   overflow: hidden;
-  background: #262626;
-  border: 7px solid #111;
-  border-radius: 32px;
-  box-shadow: 0 28px 70px rgba(53, 19, 6, 0.32);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 20px 48px rgba(53, 19, 6, 0.24);
 }
 
 .shot img {
+  display: block;
   width: 100%;
+  height: auto;
 }
 
 .shot-main {
-  z-index: 3;
-  grid-column: 3 / span 6;
-  transform: rotate(-4deg);
+  z-index: 2;
+  grid-column: 5 / span 4;
+  grid-row: 1;
+  transform: translateY(-10px);
 }
 
 .shot-secondary {
   z-index: 1;
-  grid-column: 1 / span 5;
+  grid-column: 1 / span 4;
   grid-row: 1;
-  transform: translateY(58px) rotate(-10deg);
+  transform: translateY(10px);
 }
 
 .shot-tertiary {
-  z-index: 2;
-  grid-column: 8 / span 5;
+  z-index: 1;
+  grid-column: 9 / span 4;
   grid-row: 1;
-  transform: translateY(-22px) rotate(8deg);
+  transform: translateY(10px);
 }
 
 .client-feature {
@@ -1643,20 +1647,23 @@
   }
 
   .shot {
-    border-width: 4px;
-    border-radius: 22px;
+    border: 0;
+    border-radius: 5px;
   }
 
   .shot-main {
-    grid-column: 3 / span 8;
+    grid-column: 5 / span 4;
+    transform: translateY(-6px);
   }
 
   .shot-secondary {
-    grid-column: 1 / span 6;
+    grid-column: 1 / span 4;
+    transform: translateY(6px);
   }
 
   .shot-tertiary {
-    grid-column: 8 / span 6;
+    grid-column: 9 / span 4;
+    transform: translateY(6px);
   }
 
   .client-feature {
@@ -2083,8 +2090,9 @@
 .faith-project-visual {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  align-items: end;
-  padding: 32px 16px 0;
+  column-gap: 14px;
+  align-items: center;
+  padding: 34px 22px;
 }
 
 .shalom-project-visual { background: #bd745b; }
@@ -2096,27 +2104,25 @@
 .faith-project-visual figure {
   margin: 0;
   overflow: hidden;
-  border: 6px solid #151515;
-  border-bottom: 0;
-  border-radius: 30px 30px 0 0;
-  box-shadow: 0 30px 60px rgba(17, 17, 15, 0.2);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 22px 48px rgba(17, 17, 15, 0.18);
 }
 
 .faith-project-visual figure:first-child {
-  z-index: 2;
-  grid-column: 2 / span 7;
+  grid-column: 1 / span 6;
   grid-row: 1;
 }
 
 .faith-project-visual figure:last-child {
-  z-index: 1;
   grid-column: 7 / span 6;
   grid-row: 1;
-  transform: translateY(64px) rotate(5deg);
 }
 
 .faith-project-visual img {
+  display: block;
   width: 100%;
+  height: auto;
 }
 
 .project-slide-creator,
@@ -2378,7 +2384,7 @@
 
   .sparkz-project-visual .sparkz-gallery {
     min-height: 0;
-    padding: 35px 2px;
+    padding: 28px 10px;
   }
 
   .clientsight-project-visual {
@@ -2400,21 +2406,22 @@
 
   .faith-project-visual {
     min-height: 0;
-    padding-inline: 5px;
+    column-gap: 8px;
+    padding: 24px 10px;
   }
 
   .faith-project-visual figure {
-    border-width: 4px;
-    border-bottom: 0;
-    border-radius: 20px 20px 0 0;
+    border: 0;
+    border-radius: 6px;
   }
 
   .faith-project-visual figure:first-child {
-    grid-column: 2 / span 8;
+    grid-column: 1 / span 6;
   }
 
   .faith-project-visual figure:last-child {
-    grid-column: 8 / span 6;
+    grid-column: 7 / span 6;
+    transform: none;
   }
 
   .creator-project-visual {
@@ -3020,6 +3027,10 @@
 
   .project-lede {
     font-size: 18px;
+  }
+
+  .project-slide {
+    height: auto;
   }
 
   .project-copy {
