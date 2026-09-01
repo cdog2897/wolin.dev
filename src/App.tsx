@@ -398,6 +398,9 @@ const amexRoles = [
       { name: 'Java', logo: '/brands/tech/java.svg' },
       { name: 'Vert.x', logo: '/brands/tech/vertx.svg' },
       { name: 'REST APIs', logo: null },
+      { name: 'Python', logo: '/brands/tech/python.svg' },
+      { name: 'Docker', logo: '/brands/tech/docker.svg' },
+      { name: 'Google Cloud', logo: '/brands/tech/google-cloud.svg' },
     ],
   },
 ]
