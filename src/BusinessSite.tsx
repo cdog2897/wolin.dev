@@ -1,3 +1,4 @@
+import type { FormEvent } from 'react'
 import './BusinessSite.css'
 
 const packages = [
@@ -67,14 +68,28 @@ function Arrow() {
 }
 
 function BusinessSite() {
+  const submitReportRequest = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
+    const name = String(data.get('name') || '')
+    const email = String(data.get('email') || '')
+    const website = String(data.get('website') || '')
+    const phone = String(data.get('phone') || '')
+    const subject = encodeURIComponent(`Free visibility report — ${website}`)
+    const body = encodeURIComponent(
+      `Hi Caleb,\n\nI'd like a free visibility report.\n\nName: ${name}\nEmail: ${email}\nBusiness website: ${website}\nPhone: ${phone}\n`,
+    )
+    window.location.href = `mailto:caleb.wolin@gmail.com?subject=${subject}&body=${body}`
+  }
+
   return (
     <div className="business-site">
       <a className="business-skip" href="#packages">Skip to packages</a>
 
       <header className="business-header">
         <a className="business-wordmark" href="#top" aria-label="Wolin, home">wolin.dev</a>
-        <a className="business-header-link" href="mailto:caleb.wolin@gmail.com?subject=Local%20business%20project">
-          Start a project
+        <a className="business-header-link" href="#report">
+          Free visibility report
         </a>
       </header>
 
@@ -113,8 +128,8 @@ function BusinessSite() {
                 <ul>
                   {item.items.map((feature) => <li key={feature}><span>✓</span>{feature}</li>)}
                 </ul>
-                <a href={`mailto:caleb.wolin@gmail.com?subject=${encodeURIComponent(`${item.name} package`)}`}>
-                  Choose {item.name} <Arrow />
+                <a href="#report">
+                  Get a free report <Arrow />
                 </a>
               </article>
             ))}
@@ -149,12 +164,28 @@ function BusinessSite() {
         </section>
       </main>
 
-      <footer className="business-footer" id="contact">
+      <footer className="business-footer" id="report">
         <span className="business-availability"><i /> Taking on new clients</span>
-        <h2>Let’s grow<br /><em>local.</em></h2>
-        <a className="business-footer-cta" href="mailto:caleb.wolin@gmail.com?subject=Local%20business%20project">
-          Start a project <Arrow />
-        </a>
+        <h2>Get your free<br /><em>visibility report.</em></h2>
+        <form className="business-report-form" onSubmit={submitReportRequest}>
+          <label>
+            <span>Name</span>
+            <input name="name" type="text" autoComplete="name" placeholder="Your name" required />
+          </label>
+          <label>
+            <span>Email</span>
+            <input name="email" type="email" autoComplete="email" placeholder="you@business.com" required />
+          </label>
+          <label>
+            <span>Business website</span>
+            <input name="website" type="url" autoComplete="url" placeholder="https://yourbusiness.com" required />
+          </label>
+          <label>
+            <span>Phone number</span>
+            <input name="phone" type="tel" autoComplete="tel" placeholder="(555) 555-5555" required />
+          </label>
+          <button type="submit">Get my free report <Arrow /></button>
+        </form>
         <div className="business-footer-contact">
           <a href="mailto:caleb.wolin@gmail.com">caleb.wolin@gmail.com</a>
           <a href="tel:+12088108089">+1 (208) 810-8089</a>
