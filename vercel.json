@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/calebwolin", "destination": "/index.html" },
+    { "source": "/calebwolin/", "destination": "/index.html" }
+  ]
+}
