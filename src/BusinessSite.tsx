@@ -7,7 +7,7 @@ const packages = [
     name: 'Starter',
     price: '$279',
     cadence: 'monthly',
-    scope: 'Google Business Profile only',
+    scope: 'Google Business Profile',
     description: 'Hands-on care for the profile customers see in Google Search and Maps.',
     items: [
       'Complete Google Business Profile audit with prioritized findings',
@@ -15,9 +15,8 @@ const packages = [
       'Hours, service areas, address, phone, and contact details checked',
       'Logo, cover image, and existing photo placement reviewed',
       'One Google Business Profile post per month',
-      'Review-response guidance and reusable response templates',
       'Duplicate, suspended, or inaccurate listing issues flagged',
-      'Monthly report covering work completed, reviews, visibility, and next steps',
+      'Monthly report covering Google Business Profile status, ranking, and updates',
     ],
   },
   {
@@ -29,7 +28,7 @@ const packages = [
     description: 'Profile management plus practical fixes that make your website easier to find and use.',
     items: [
       'Everything in Starter',
-      'Two Google Business Profile posts per month instead of one',
+      'Two Google Business Profile posts per month',
       'Website health review for the pages that matter most',
       'Broken links, missing metadata, and heading issues fixed',
       'Basic on-page SEO for core service and location pages',
@@ -57,17 +56,86 @@ const packages = [
       'Keyword, competitor, service, and location opportunity research',
       'Service, location, FAQ, and authority content written or improved',
       'Conversion tracking, calls to action, and lead paths reviewed',
-      'Local citations and brand details checked for consistency',
       'AI visibility audit across ChatGPT, Claude, and Google AI',
       'Real customer prompts tested for mentions, accuracy, and citations',
-      'Brand-entity signals and source pages strengthened for AI answers',
       'Ongoing search and AI visibility monitoring with roadmap updates',
     ],
   },
 ]
 
+type AddOnType = 'website' | 'seo' | 'ai' | 'social' | 'media'
+
+const addOns: { name: string; icon: AddOnType }[] = [
+  { name: 'Custom website', icon: 'website' },
+  { name: 'SEO optimization', icon: 'seo' },
+  { name: 'AI visibility improvement', icon: 'ai' },
+  { name: 'Social media presence', icon: 'social' },
+  { name: 'Business photos / videos', icon: 'media' },
+]
+
 function Arrow() {
   return <span aria-hidden="true">↗</span>
+}
+
+function AddOnIcon({ type }: { type: AddOnType }) {
+  const commonProps = {
+    viewBox: '0 0 48 48',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.7,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    'aria-hidden': true,
+  }
+
+  if (type === 'website') {
+    return (
+      <svg {...commonProps}>
+        <rect x="5" y="8" width="38" height="32" rx="3" />
+        <path d="M5 16h38M11 12h.01M16 12h.01M21 12h.01" />
+        <path d="M13 23h13M13 28h22M13 33h17" />
+      </svg>
+    )
+  }
+
+  if (type === 'seo') {
+    return (
+      <svg {...commonProps}>
+        <circle cx="20" cy="20" r="11" />
+        <path d="m28 28 10 10M12 23l5-5 5 3 7-8" />
+        <path d="M25 13h4v4" />
+      </svg>
+    )
+  }
+
+  if (type === 'ai') {
+    return (
+      <svg {...commonProps}>
+        <path d="M24 5c1.8 9.2 5.8 13.2 15 15-9.2 1.8-13.2 5.8-15 15-1.8-9.2-5.8-13.2-15-15C18.2 18.2 22.2 14.2 24 5Z" />
+        <path d="M38 31c.7 3.5 2.5 5.3 6 6-3.5.7-5.3 2.5-6 6-.7-3.5-2.5-5.3-6-6 3.5-.7 5.3-2.5 6-6Z" />
+      </svg>
+    )
+  }
+
+  if (type === 'social') {
+    return (
+      <svg {...commonProps}>
+        <circle cx="14" cy="17" r="6" />
+        <circle cx="34" cy="14" r="5" />
+        <circle cx="31" cy="35" r="7" />
+        <path d="m19.5 14.5 9.5-1M17.5 22l9 8.5M35 19l-2 9" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg {...commonProps}>
+      <rect x="5" y="12" width="38" height="27" rx="4" />
+      <path d="m14 12 3-5h14l3 5" />
+      <circle cx="24" cy="25.5" r="7.5" />
+      <path d="m22 22 6 3.5-6 3.5v-7Z" />
+    </svg>
+  )
 }
 
 function RollupStat({
@@ -307,12 +375,17 @@ function BusinessSite() {
             ))}
           </div>
 
-          <div className="business-scope-note">
-            <span>Clear boundaries</span>
-            <p>
-              Original on-site photo or video capture and social media posting are not included
-              in these packages. Google Business Profile posts are included as listed above.
-            </p>
+          <div className="business-addons" id="addons">
+            <h3>Even more <em>visibility.</em></h3>
+            <p>Generate even more leads with add-on services.</p>
+            <div className="business-addon-grid">
+              {addOns.map((item) => (
+                <article key={item.name}>
+                  <span className={`business-addon-icon is-${item.icon}`}><AddOnIcon type={item.icon} /></span>
+                  <h4>{item.name}</h4>
+                </article>
+              ))}
+            </div>
           </div>
 
         </section>
