@@ -1080,10 +1080,138 @@
   text-align: center;
 }
 
+.business-social-showcase {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  display: grid;
+  gap: 12px;
+  padding: 18px 0;
+  overflow: hidden;
+  background: #0d0d0c;
+  transform: translateX(-50%);
+}
+
+.business-social-row {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+}
+
+.business-social-track {
+  width: max-content;
+  display: flex;
+  gap: 12px;
+  animation: business-social-scroll-left 46s linear infinite;
+  will-change: transform;
+}
+
+.business-social-row.is-row-2 .business-social-track {
+  animation-name: business-social-scroll-right;
+  animation-duration: 52s;
+}
+
+.business-social-preview-group {
+  display: flex;
+  flex: none;
+  gap: 12px;
+}
+
+.business-social-preview {
+  position: relative;
+  width: 286px;
+  height: 184px;
+  flex: none;
+  overflow: hidden;
+  background: #242422;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
+.business-social-preview.is-wide { width: 352px; }
+
+.business-social-preview::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7, 7, 7, 0.06) 15%, rgba(7, 7, 7, 0.82) 100%);
+  content: '';
+}
+
+.business-social-preview img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: saturate(0.86) brightness(0.8);
+  transform: scale(1.015);
+  transition: filter 300ms ease, transform 500ms ease;
+}
+
+.business-social-preview:hover img {
+  filter: saturate(1) brightness(0.92);
+  transform: scale(1.055);
+}
+
+.business-social-reel {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  right: 10px;
+  padding: 6px 9px;
+  color: var(--ink);
+  background: var(--acid);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.business-social-preview-copy {
+  position: absolute;
+  z-index: 2;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  color: white;
+}
+
+.business-social-preview-copy small {
+  display: block;
+  color: var(--acid);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.business-social-preview-copy strong {
+  max-width: 250px;
+  display: block;
+  margin-top: 6px;
+  font-size: 19px;
+  font-weight: 560;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.business-social-showcase:hover .business-social-track { animation-play-state: paused; }
+
+@keyframes business-social-scroll-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 6px)); }
+}
+
+@keyframes business-social-scroll-right {
+  from { transform: translateX(calc(-50% - 6px)); }
+  to { transform: translateX(0); }
+}
+
 .business-social-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+  margin-top: 72px;
 }
 
 .business-social-grid article {
@@ -1386,6 +1514,17 @@
   .business-social-grid article { min-height: auto; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .business-social-row {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .business-social-row::-webkit-scrollbar { display: none; }
+  .business-social-track { animation: none; }
+  .business-social-preview-group:nth-child(2) { display: none; }
+  .business-social-preview img { transition: none; }
+}
+
 @media (max-width: 620px) {
   .business-hero,
   .business-services,
@@ -1450,6 +1589,15 @@
   .business-social { margin-top: 84px; padding-top: 84px; }
   .business-social h3 { margin: 16px auto 14px; font-size: 38px; }
   .business-social-intro { margin-bottom: 46px; font-size: 14px; }
+  .business-social-showcase { gap: 8px; padding: 12px 0; }
+  .business-social-track,
+  .business-social-preview-group { gap: 8px; }
+  .business-social-preview { width: 218px; height: 142px; border-radius: 9px; }
+  .business-social-preview.is-wide { width: 268px; }
+  .business-social-preview-copy { right: 12px; bottom: 12px; left: 12px; }
+  .business-social-preview-copy strong { max-width: 200px; font-size: 15px; }
+  .business-social-reel { top: 8px; right: 8px; padding: 5px 7px; font-size: 8px; }
+  .business-social-grid { margin-top: 46px; }
   .business-social-grid article { padding-inline: 20px; }
   .business-social-description { min-height: 0; }
   .business-process li { grid-template-columns: 48px 1fr; }

@@ -119,8 +119,122 @@ const socialPackages = [
   },
 ]
 
+type SocialPreview = {
+  image: string
+  label: string
+  title: string
+  reel?: boolean
+  wide?: boolean
+}
+
+const socialPreviewRows: SocialPreview[][] = [
+  [
+    {
+      image: '/projects/sparkz-hero.jpeg',
+      label: 'Short-form video',
+      title: 'Show the story, not just the service.',
+      reel: true,
+      wide: true,
+    },
+    {
+      image: '/projects/shalom-01.webp',
+      label: 'Product spotlight',
+      title: 'Built for the moment.',
+    },
+    {
+      image: '/projects/bible-stories-01.webp',
+      label: 'Campaign launch',
+      title: 'A clear reason to tap.',
+      wide: true,
+    },
+    {
+      image: '/portraits/caleb-salt-flats-car.jpg',
+      label: 'Behind the scenes',
+      title: 'Real people. Real work.',
+      reel: true,
+    },
+    {
+      image: '/projects/sparkz-01.webp',
+      label: 'Customer education',
+      title: 'Make the next step obvious.',
+    },
+    {
+      image: '/portraits/caleb-desert-truck.jpg',
+      label: 'Local story',
+      title: 'Made here. Known here.',
+      wide: true,
+    },
+  ],
+  [
+    {
+      image: '/portraits/caleb-tropics.jpg',
+      label: 'Brand story',
+      title: 'Give the business a face.',
+      reel: true,
+    },
+    {
+      image: '/projects/shalom-02.webp',
+      label: 'Service explainer',
+      title: 'Turn questions into confidence.',
+      wide: true,
+    },
+    {
+      image: '/projects/sparkz-03.webp',
+      label: 'Reel series',
+      title: 'Small moments. Strong recall.',
+      reel: true,
+    },
+    {
+      image: '/projects/bible-stories-02.webp',
+      label: 'Community post',
+      title: 'Stay useful between visits.',
+    },
+    {
+      image: '/portraits/caleb-salt-flats.jpg',
+      label: 'Founder story',
+      title: 'Trust starts with the people.',
+      wide: true,
+    },
+    {
+      image: '/projects/sparkz-02.webp',
+      label: 'Offer campaign',
+      title: 'One message. One next step.',
+    },
+  ],
+]
+
 function Arrow() {
   return <span aria-hidden="true">↗</span>
+}
+
+function SocialShowcase() {
+  return (
+    <div className="business-social-showcase" aria-hidden="true">
+      {socialPreviewRows.map((row, rowIndex) => (
+        <div className={`business-social-row is-row-${rowIndex + 1}`} key={`social-row-${rowIndex + 1}`}>
+          <div className="business-social-track">
+            {[0, 1].map((copyIndex) => (
+              <div className="business-social-preview-group" key={`social-row-${rowIndex + 1}-${copyIndex}`}>
+                {row.map((item) => (
+                  <div
+                    className={`business-social-preview${item.wide ? ' is-wide' : ''}`}
+                    key={`${copyIndex}-${item.label}`}
+                  >
+                    <img src={item.image} alt="" draggable={false} />
+                    {item.reel && <span className="business-social-reel">▶ Reel</span>}
+                    <div className="business-social-preview-copy">
+                      <small>{item.label}</small>
+                      <strong>{item.title}</strong>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
 }
 
 function RollupStat({
@@ -366,6 +480,8 @@ function BusinessSite() {
             <p className="business-social-intro">
               Strategy, content, publishing, and community support for busy small businesses.
             </p>
+
+            <SocialShowcase />
 
             <div className="business-social-grid">
               {socialPackages.map((item) => (
