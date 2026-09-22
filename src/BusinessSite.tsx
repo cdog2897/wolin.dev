@@ -63,79 +63,64 @@ const packages = [
   },
 ]
 
-type AddOnType = 'website' | 'seo' | 'ai' | 'social' | 'media'
-
-const addOns: { name: string; icon: AddOnType }[] = [
-  { name: 'Custom website', icon: 'website' },
-  { name: 'SEO optimization', icon: 'seo' },
-  { name: 'AI visibility improvement', icon: 'ai' },
-  { name: 'Social media presence', icon: 'social' },
-  { name: 'Business photos / videos', icon: 'media' },
+const socialPackages = [
+  {
+    number: '01',
+    name: 'Social Presence',
+    price: '$479',
+    scope: 'Stay active and credible',
+    description: 'A polished, consistent presence for businesses that need social media handled every month.',
+    items: [
+      'Two connected social platforms',
+      'Eight original content pieces per month',
+      'Custom captions and branded graphics',
+      'Photo, static, and carousel content',
+      'Monthly content calendar and scheduling',
+      'Profile information and links checked',
+      'One consolidated revision round',
+      'Monthly performance summary',
+    ],
+  },
+  {
+    number: '02',
+    name: 'Social Momentum',
+    price: '$879',
+    scope: 'Build reach and engagement',
+    description: 'More content, short-form video, and thoughtful audience engagement tied to real business goals.',
+    featured: true,
+    items: [
+      'Everything in Social Presence',
+      'Twelve original content pieces per month',
+      'Up to two short-form videos from supplied footage',
+      'Eight additional story frames',
+      'One monthly campaign or promotional theme',
+      'Comment and inbox monitoring three weekdays per week',
+      'Up to 40 routine responses per month',
+      'Monthly strategy call and lead tracking',
+    ],
+  },
+  {
+    number: '03',
+    name: 'Social Partner',
+    price: '$1,479',
+    scope: 'Your outsourced social lead',
+    description: 'Hands-on content, community management, and strategy for businesses ready to make social a priority.',
+    items: [
+      'Up to three social platforms',
+      'Sixteen original content pieces per month',
+      'Up to four short-form videos',
+      'Twelve additional story frames',
+      'One local 60-minute content session per month',
+      'Weekday comment and inbox monitoring',
+      'Up to 100 routine responses per month',
+      'Monthly campaign planning and strategy meeting',
+      'Quarterly competitor and content review',
+    ],
+  },
 ]
 
 function Arrow() {
   return <span aria-hidden="true">↗</span>
-}
-
-function AddOnIcon({ type }: { type: AddOnType }) {
-  const commonProps = {
-    viewBox: '0 0 48 48',
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.7,
-    strokeLinecap: 'round' as const,
-    strokeLinejoin: 'round' as const,
-    'aria-hidden': true,
-  }
-
-  if (type === 'website') {
-    return (
-      <svg {...commonProps}>
-        <rect x="5" y="8" width="38" height="32" rx="3" />
-        <path d="M5 16h38M11 12h.01M16 12h.01M21 12h.01" />
-        <path d="M13 23h13M13 28h22M13 33h17" />
-      </svg>
-    )
-  }
-
-  if (type === 'seo') {
-    return (
-      <svg {...commonProps}>
-        <circle cx="20" cy="20" r="11" />
-        <path d="m28 28 10 10M12 23l5-5 5 3 7-8" />
-        <path d="M25 13h4v4" />
-      </svg>
-    )
-  }
-
-  if (type === 'ai') {
-    return (
-      <svg {...commonProps}>
-        <path d="M24 5c1.8 9.2 5.8 13.2 15 15-9.2 1.8-13.2 5.8-15 15-1.8-9.2-5.8-13.2-15-15C18.2 18.2 22.2 14.2 24 5Z" />
-        <path d="M38 31c.7 3.5 2.5 5.3 6 6-3.5.7-5.3 2.5-6 6-.7-3.5-2.5-5.3-6-6 3.5-.7 5.3-2.5 6-6Z" />
-      </svg>
-    )
-  }
-
-  if (type === 'social') {
-    return (
-      <svg {...commonProps}>
-        <circle cx="14" cy="17" r="6" />
-        <circle cx="34" cy="14" r="5" />
-        <circle cx="31" cy="35" r="7" />
-        <path d="m19.5 14.5 9.5-1M17.5 22l9 8.5M35 19l-2 9" />
-      </svg>
-    )
-  }
-
-  return (
-    <svg {...commonProps}>
-      <rect x="5" y="12" width="38" height="27" rx="4" />
-      <path d="m14 12 3-5h14l3 5" />
-      <circle cx="24" cy="25.5" r="7.5" />
-      <path d="m22 22 6 3.5-6 3.5v-7Z" />
-    </svg>
-  )
 }
 
 function RollupStat({
@@ -375,18 +360,46 @@ function BusinessSite() {
             ))}
           </div>
 
-          <div className="business-addons" id="addons">
-            <h3>Even more <em>visibility.</em></h3>
-            <p>Generate even more leads with add-on services.</p>
-            <div className="business-addon-grid">
-              {addOns.map((item) => (
-                <article key={item.name}>
-                  <span className={`business-addon-icon is-${item.icon}`}><AddOnIcon type={item.icon} /></span>
+          <section className="business-social" id="social-media" aria-labelledby="social-media-title">
+            <span className="business-social-eyebrow">Social media management</span>
+            <h3 id="social-media-title">Stay visible.<br /><em>Stay connected.</em></h3>
+            <p className="business-social-intro">
+              Strategy, content, publishing, and community support for busy small businesses.
+            </p>
+
+            <div className="business-social-grid">
+              {socialPackages.map((item) => (
+                <article className={item.featured ? 'is-featured' : undefined} key={item.name}>
+                  <div className="business-social-card-top">
+                    <span className="business-package-number">{item.number}</span>
+                    {item.featured && <span className="business-social-popular">Most popular</span>}
+                  </div>
                   <h4>{item.name}</h4>
+                  <div className="business-price">
+                    <strong>{item.price}</strong>
+                    <span>per month</span>
+                  </div>
+                  <p className="business-package-scope">{item.scope}</p>
+                  <p className="business-social-description">{item.description}</p>
+                  <ul>
+                    {item.items.map((feature) => (
+                      <li key={feature}>
+                        <span>✓</span>
+                        {feature.startsWith('Everything in') ? <strong>{feature}</strong> : feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="#report">
+                    Start with a conversation <Arrow />
+                  </a>
                 </article>
               ))}
             </div>
-          </div>
+
+            <p className="business-social-note">
+              Plans begin with a three-month engagement. Advertising spend is separate, and every account remains yours.
+            </p>
+          </section>
 
         </section>
 
