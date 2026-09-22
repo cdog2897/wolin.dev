@@ -4,14 +4,38 @@ import './index.css'
 import App from './App.tsx'
 import BusinessSite from './BusinessSite.tsx'
 import SampleAudit from './SampleAudit.tsx'
+import AdminPortal from './admin/AdminPortal.tsx'
+import SigningPage from './admin/SigningPage.tsx'
 
 const currentPath = window.location.pathname.replace(/\/+$/, '') || '/'
+const adminHost = window.location.hostname === 'admin.wolin.dev'
+const adminPreviewPath = currentPath === '/admin' || currentPath === '/admin-preview'
+const signingMatch = currentPath.match(/^\/sign\/([^/]+)$/)
+const legacyAdminSigningLink = adminHost && signingMatch
 const portfolioPath = currentPath === '/calebwolin'
 const sampleAuditPath = currentPath === '/sample'
 const searchServicesPath = currentPath === '/seo-websites'
 const socialMediaPath = currentPath === '/social-media'
 
-if (portfolioPath) {
+if (legacyAdminSigningLink) {
+  window.location.replace(`https://wolin.dev${window.location.pathname}${window.location.search}${window.location.hash}`)
+}
+
+if (signingMatch) {
+  document.title = 'Review & Sign — Wolin'
+  document.querySelector('meta[name="description"]')?.setAttribute(
+    'content',
+    'Securely review and electronically sign your Wolin service agreement.',
+  )
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#ffffff')
+} else if (adminHost || adminPreviewPath) {
+  document.title = 'Wolin Admin'
+  document.querySelector('meta[name="description"]')?.setAttribute(
+    'content',
+    'Private Wolin workspace for client agreements and electronic signatures.',
+  )
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#eef1ed')
+} else if (portfolioPath) {
   document.title = 'Caleb Wolin — Product Engineer'
   document.querySelector('meta[name="description"]')?.setAttribute(
     'content',
@@ -41,7 +65,11 @@ if (portfolioPath) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {portfolioPath ? (
+    {legacyAdminSigningLink ? null : signingMatch ? (
+      <SigningPage token={decodeURIComponent(signingMatch[1])} />
+    ) : adminHost || adminPreviewPath ? (
+      <AdminPortal />
+    ) : portfolioPath ? (
       <App />
     ) : sampleAuditPath ? (
       <SampleAudit />

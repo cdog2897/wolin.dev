@@ -7,6 +7,9 @@
     { "source": "/seo-websites", "destination": "/index.html" },
     { "source": "/seo-websites/", "destination": "/index.html" },
     { "source": "/social-media", "destination": "/index.html" },
-    { "source": "/social-media/", "destination": "/index.html" }
+    { "source": "/social-media/", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/index.html" },
+    { "source": "/admin/", "destination": "/index.html" },
+    { "source": "/sign/(.*)", "destination": "/index.html" }
   ]
 }
