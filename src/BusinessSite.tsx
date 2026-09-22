@@ -395,7 +395,175 @@ function PackageCardGraphic({ name }: { name: string }) {
   )
 }
 
-function BusinessSite() {
+type BusinessPage = 'home' | 'search' | 'social'
+
+function BusinessHeader({ page }: { page: BusinessPage }) {
+  return (
+    <header className="business-header">
+      <a className="business-wordmark" href="/" aria-label="Wolin, home">wolin.dev</a>
+      <nav className="business-nav" aria-label="Primary navigation">
+        <a href="/" aria-current={page === 'home' ? 'page' : undefined}>Home</a>
+        <a href="/seo-websites" aria-current={page === 'search' ? 'page' : undefined}>SEO + GBP + Websites</a>
+        <a href="/social-media" aria-current={page === 'social' ? 'page' : undefined}>Social Media</a>
+      </nav>
+      <a className="business-header-link" href="#report">
+        Free visibility report
+      </a>
+    </header>
+  )
+}
+
+function HomePage() {
+  return (
+    <>
+      <section className="business-hero" aria-labelledby="business-title">
+        <div className="business-hero-copy">
+          <span className="business-page-eyebrow">Local growth, handled</span>
+          <h1 id="business-title">Your business deserves to be <em>found.</em></h1>
+          <p>Stronger Google profiles, better websites, and social media that keeps your business top of mind.</p>
+          <a className="business-hero-cta" href="#services">
+            <span>Explore services</span>
+            <Arrow />
+          </a>
+        </div>
+        <LocalProfileGraphic />
+      </section>
+
+      <section className="business-home-services" id="services" aria-labelledby="services-title">
+        <span className="business-page-eyebrow">Choose your focus</span>
+        <h2 id="services-title">Two ways to make your<br /><em>business impossible to miss.</em></h2>
+        <div className="business-home-service-grid">
+          <a className="business-home-service-card is-search" href="/seo-websites">
+            <div className="business-home-card-copy">
+              <span>01 · Search visibility</span>
+              <h3>SEO, Google Business Profiles &amp; websites</h3>
+              <p>Show up when nearby customers search, then give them a clear reason to choose you.</p>
+              <strong>Explore search services <Arrow /></strong>
+            </div>
+            <PackageCardGraphic name="Authority" />
+          </a>
+
+          <a className="business-home-service-card is-social" href="/social-media">
+            <div className="business-home-card-copy">
+              <span>02 · Social presence</span>
+              <h3>Social media management</h3>
+              <p>Stay active, useful, and recognizable without adding another job to your week.</p>
+              <strong>Explore social media <Arrow /></strong>
+            </div>
+            <div className="business-home-social-collage" aria-hidden="true">
+              <img src="/projects/sparkz-hero.jpeg" alt="" />
+              <img src="/portraits/caleb-tropics.jpg" alt="" />
+              <img src="/projects/shalom-01.webp" alt="" />
+            </div>
+          </a>
+        </div>
+      </section>
+    </>
+  )
+}
+
+function SearchPage() {
+  return (
+    <>
+      <section className="business-hero business-service-hero" aria-labelledby="business-title">
+        <div className="business-hero-copy">
+          <span className="business-page-eyebrow">SEO · Google Business Profile · Websites</span>
+          <h1 id="business-title">Be the local answer <em>everywhere.</em></h1>
+          <p>Practical search, profile, and website improvements that help more nearby customers find you and take action.</p>
+          <a className="business-hero-cta" href="#packages">
+            <span>See service plans</span>
+            <Arrow />
+          </a>
+        </div>
+        <LocalProfileGraphic />
+      </section>
+
+      <section className="business-packages" id="packages" aria-labelledby="packages-title">
+        <span className="business-page-eyebrow">Monthly search plans</span>
+        <h2 id="packages-title">Start simple.<br /><em>Grow steadily.</em></h2>
+        <div className="business-package-grid">
+          {packages.map((item) => (
+            <article key={item.name}>
+              <span className="business-package-number">{item.number}</span>
+              <h3>{item.name}</h3>
+              <div className="business-price">
+                <strong>{item.price}</strong>
+                <span>per month</span>
+              </div>
+              <p className="business-package-scope">{item.scope}</p>
+              <p className="business-package-description">{item.description}</p>
+              <PackageCardGraphic name={item.name} />
+              <ul>
+                {item.items.map((feature) => (
+                  <li key={feature}>
+                    <span>✓</span>
+                    {feature.startsWith('Everything in') ? <strong>{feature}</strong> : feature}
+                  </li>
+                ))}
+              </ul>
+              <a href="#report">
+                Start with your free report <Arrow />
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
+  )
+}
+
+function SocialPage() {
+  return (
+    <section className="business-social business-social-page" id="packages" aria-labelledby="social-media-title">
+      <span className="business-social-eyebrow">Social media management</span>
+      <h1 id="social-media-title">Stay visible.<br /><em>Stay connected.</em></h1>
+      <p className="business-social-intro">
+        Strategy, content, publishing, and community support that keeps your business present without taking over your day.
+      </p>
+      <a className="business-hero-cta business-social-cta" href="#social-plans">
+        <span>See social plans</span>
+        <Arrow />
+      </a>
+
+      <SocialShowcase />
+
+      <div className="business-social-grid" id="social-plans">
+        {socialPackages.map((item) => (
+          <article className={item.featured ? 'is-featured' : undefined} key={item.name}>
+            <div className="business-social-card-top">
+              <span className="business-package-number">{item.number}</span>
+              {item.featured && <span className="business-social-popular">Most popular</span>}
+            </div>
+            <h4>{item.name}</h4>
+            <div className="business-price">
+              <strong>{item.price}</strong>
+              <span>per month</span>
+            </div>
+            <p className="business-package-scope">{item.scope}</p>
+            <p className="business-social-description">{item.description}</p>
+            <ul>
+              {item.items.map((feature) => (
+                <li key={feature}>
+                  <span>✓</span>
+                  {feature.startsWith('Everything in') ? <strong>{feature}</strong> : feature}
+                </li>
+              ))}
+            </ul>
+            <a href="#report">
+              Start with a conversation <Arrow />
+            </a>
+          </article>
+        ))}
+      </div>
+
+      <p className="business-social-note">
+        Plans begin with a three-month engagement. Advertising spend is separate, and every account remains yours.
+      </p>
+    </section>
+  )
+}
+
+function BusinessSite({ page = 'home' }: { page?: BusinessPage }) {
   const [reportStatus, setReportStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
 
   const submitReportRequest = async (event: FormEvent<HTMLFormElement>) => {
@@ -422,103 +590,16 @@ function BusinessSite() {
 
   return (
     <div className="business-site">
-      <a className="business-skip" href="#packages">Skip to packages</a>
+      <a className="business-skip" href={page === 'home' ? '#services' : '#packages'}>
+        Skip to {page === 'home' ? 'services' : 'packages'}
+      </a>
 
-      <header className="business-header">
-        <a className="business-wordmark" href="#top" aria-label="Wolin, home">wolin.dev</a>
-        <a className="business-header-link" href="#report">
-          Free visibility report
-        </a>
-      </header>
+      <BusinessHeader page={page} />
 
       <main id="top">
-        <section className="business-hero" aria-labelledby="business-title">
-          <div className="business-hero-copy">
-            <h1 id="business-title">Your business deserves to be <em>found.</em></h1>
-            <p>Stronger Google profiles, better websites, and more local visibility.</p>
-            <a className="business-hero-cta" href="#report">
-              <span>Get a free visibility report</span>
-              <Arrow />
-            </a>
-          </div>
-          <LocalProfileGraphic />
-        </section>
-
-        <section className="business-packages" id="packages" aria-labelledby="packages-title">
-          <h2 id="packages-title">Start simple.<br /><em>Grow steadily.</em></h2>
-
-          <div className="business-package-grid">
-            {packages.map((item) => (
-              <article key={item.name}>
-                <span className="business-package-number">{item.number}</span>
-                <h3>{item.name}</h3>
-                <div className="business-price">
-                  <strong>{item.price}</strong>
-                  <span>per month</span>
-                </div>
-                <p className="business-package-scope">{item.scope}</p>
-                <p className="business-package-description">{item.description}</p>
-                <PackageCardGraphic name={item.name} />
-                <ul>
-                  {item.items.map((feature) => (
-                    <li key={feature}>
-                      <span>✓</span>
-                      {feature.startsWith('Everything in') ? <strong>{feature}</strong> : feature}
-                    </li>
-                  ))}
-                </ul>
-                <a href="#report">
-                  Start with your free report <Arrow />
-                </a>
-              </article>
-            ))}
-          </div>
-
-          <section className="business-social" id="social-media" aria-labelledby="social-media-title">
-            <span className="business-social-eyebrow">Social media management</span>
-            <h3 id="social-media-title">Stay visible.<br /><em>Stay connected.</em></h3>
-            <p className="business-social-intro">
-              Strategy, content, publishing, and community support for busy small businesses.
-            </p>
-
-            <SocialShowcase />
-
-            <div className="business-social-grid">
-              {socialPackages.map((item) => (
-                <article className={item.featured ? 'is-featured' : undefined} key={item.name}>
-                  <div className="business-social-card-top">
-                    <span className="business-package-number">{item.number}</span>
-                    {item.featured && <span className="business-social-popular">Most popular</span>}
-                  </div>
-                  <h4>{item.name}</h4>
-                  <div className="business-price">
-                    <strong>{item.price}</strong>
-                    <span>per month</span>
-                  </div>
-                  <p className="business-package-scope">{item.scope}</p>
-                  <p className="business-social-description">{item.description}</p>
-                  <ul>
-                    {item.items.map((feature) => (
-                      <li key={feature}>
-                        <span>✓</span>
-                        {feature.startsWith('Everything in') ? <strong>{feature}</strong> : feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <a href="#report">
-                    Start with a conversation <Arrow />
-                  </a>
-                </article>
-              ))}
-            </div>
-
-            <p className="business-social-note">
-              Plans begin with a three-month engagement. Advertising spend is separate, and every account remains yours.
-            </p>
-          </section>
-
-        </section>
-
+        {page === 'home' && <HomePage />}
+        {page === 'search' && <SearchPage />}
+        {page === 'social' && <SocialPage />}
       </main>
 
       <footer className="business-footer" id="report">

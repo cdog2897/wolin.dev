@@ -3,6 +3,10 @@
     { "source": "/calebwolin", "destination": "/index.html" },
     { "source": "/calebwolin/", "destination": "/index.html" },
     { "source": "/sample", "destination": "/index.html" },
-    { "source": "/sample/", "destination": "/index.html" }
+    { "source": "/sample/", "destination": "/index.html" },
+    { "source": "/seo-websites", "destination": "/index.html" },
+    { "source": "/seo-websites/", "destination": "/index.html" },
+    { "source": "/social-media", "destination": "/index.html" },
+    { "source": "/social-media/", "destination": "/index.html" }
   ]
 }

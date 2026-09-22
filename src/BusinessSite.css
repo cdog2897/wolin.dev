@@ -32,6 +32,7 @@
 }
 
 .business-wordmark {
+  flex: 0 0 auto;
   color: var(--ink);
   font-size: 22px;
   font-weight: 600;
@@ -39,7 +40,46 @@
   text-decoration: none;
 }
 
+.business-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 2.5vw, 34px);
+}
+
+.business-nav a {
+  position: relative;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.business-nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  height: 2px;
+  content: '';
+  background: var(--orange);
+  transform: scaleX(0);
+  transition: transform 180ms ease;
+}
+
+.business-nav a:hover,
+.business-nav a:focus-visible,
+.business-nav a[aria-current='page'] {
+  color: var(--ink);
+}
+
+.business-nav a[aria-current='page']::after {
+  transform: scaleX(1);
+}
+
 .business-header-link {
+  flex: 0 0 auto;
   color: var(--ink);
   font-size: 13px;
   font-weight: 500;
@@ -60,6 +100,23 @@
   margin: 0 auto;
   padding: 56px 0;
   text-align: left;
+}
+
+.business-page-eyebrow {
+  display: block;
+  color: var(--orange);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.business-hero .business-page-eyebrow {
+  margin-bottom: 20px;
+}
+
+.business-service-hero {
+  min-height: min(680px, calc(100svh - 70px));
 }
 
 .business-section-label {
@@ -388,6 +445,135 @@
   transform: translateY(-2px);
 }
 
+.business-home-services {
+  width: 100%;
+  padding: 120px max(24px, calc((100% - 1440px) / 2));
+  background: var(--paper-deep);
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+.business-home-services h2 {
+  max-width: 920px;
+  margin: 20px auto 72px;
+  font-family: var(--serif);
+  font-size: clamp(42px, 4.7vw, 66px);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.business-home-services h2 em {
+  color: var(--orange);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.business-home-service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  text-align: left;
+}
+
+.business-home-service-card {
+  min-width: 0;
+  min-height: 620px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 3vw, 44px);
+  overflow: hidden;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  text-decoration: none;
+  transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.business-home-service-card:hover,
+.business-home-service-card:focus-visible {
+  border-color: var(--ink);
+  box-shadow: 0 24px 54px rgba(17, 17, 15, 0.12);
+  transform: translateY(-6px);
+}
+
+.business-home-service-card.is-social {
+  color: white;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.business-home-card-copy > span {
+  color: var(--orange);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.business-home-service-card.is-social .business-home-card-copy > span {
+  color: var(--acid);
+}
+
+.business-home-card-copy h3 {
+  max-width: 560px;
+  margin: 26px 0 0;
+  font-size: clamp(36px, 3.7vw, 56px);
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+.business-home-card-copy p {
+  max-width: 520px;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.business-home-service-card.is-social .business-home-card-copy p {
+  color: #aaa7a0;
+}
+
+.business-home-card-copy strong {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid currentColor;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.business-home-service-card .business-package-graphic {
+  height: 224px;
+  margin: 44px 0 0;
+}
+
+.business-home-social-collage {
+  height: 224px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin-top: 44px;
+}
+
+.business-home-social-collage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+  filter: saturate(0.88) brightness(0.86);
+}
+
+.business-home-social-collage img:nth-child(2) {
+  transform: translateY(-12px);
+}
+
 .business-services,
 .business-packages,
 .business-process {
@@ -466,6 +652,14 @@
   max-width: none;
   padding-inline: max(24px, calc((100% - 1440px) / 2));
   background: var(--paper-deep);
+}
+
+.business-packages > .business-page-eyebrow {
+  text-align: center;
+}
+
+.business-packages > .business-page-eyebrow + h2 {
+  margin-top: 20px;
 }
 
 .business-package-explorer {
@@ -1045,6 +1239,14 @@
   border-top: 1px solid var(--line);
 }
 
+.business-social-page {
+  width: 100%;
+  margin-top: 0;
+  padding: 112px max(24px, calc((100% - 1440px) / 2)) 120px;
+  background: var(--paper-deep);
+  border-top: 0;
+}
+
 .business-social-eyebrow {
   display: block;
   color: var(--orange);
@@ -1055,7 +1257,7 @@
   text-transform: uppercase;
 }
 
-.business-social h3 {
+.business-social h1 {
   margin: 20px auto 18px;
   font-family: var(--serif);
   font-size: clamp(38px, 3.7vw, 52px);
@@ -1065,7 +1267,7 @@
   text-align: center;
 }
 
-.business-social h3 em {
+.business-social h1 em {
   color: var(--orange);
   font-style: italic;
   font-weight: 400;
@@ -1078,6 +1280,19 @@
   font-size: 15px;
   line-height: 1.55;
   text-align: center;
+}
+
+.business-social-page .business-social-intro {
+  margin-bottom: 0;
+}
+
+.business-social-cta {
+  display: flex;
+  margin: 32px auto 72px;
+}
+
+#social-plans {
+  scroll-margin-top: 24px;
 }
 
 .business-social-showcase {
@@ -1487,6 +1702,7 @@
 .business-footer-bottom a { color: white; text-decoration: none; }
 
 @media (max-width: 800px) {
+  .business-header { width: min(100% - 48px, 700px); }
   .business-hero {
     min-height: auto;
     grid-template-columns: 1fr;
@@ -1512,6 +1728,8 @@
   .business-package-detail-copy { grid-template-columns: 1fr; gap: 24px; }
   .business-social-grid { grid-template-columns: 1fr; }
   .business-social-grid article { min-height: auto; }
+  .business-home-service-grid { grid-template-columns: 1fr; }
+  .business-home-service-card { min-height: 560px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1529,8 +1747,24 @@
   .business-hero,
   .business-services,
   .business-process { width: min(100% - 28px, 1440px); }
-  .business-header { width: calc(100% - 36px); }
-  .business-header { padding: 17px 0; }
+  .business-header {
+    width: calc(100% - 36px);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px 20px;
+    padding: 17px 0 14px;
+  }
+  .business-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .business-nav a { font-size: 9px; }
+  .business-nav a::after { bottom: -6px; }
+  .business-header-link { font-size: 10px; }
   .business-hero { min-height: auto; gap: 38px; padding: 64px 0; }
   .business-profile-visual { height: 275px; margin-bottom: 0; }
   .business-profile-browser { width: calc(100% - 24px); }
@@ -1587,7 +1821,8 @@
   .detail-callout { padding: 8px 10px; font-size: 7px; }
   .is-growth .callout-three { right: 105px; }
   .business-social { margin-top: 84px; padding-top: 84px; }
-  .business-social h3 { margin: 16px auto 14px; font-size: 38px; }
+  .business-social-page { margin-top: 0; padding: 76px 14px 84px; }
+  .business-social h1 { margin: 16px auto 14px; font-size: 38px; }
   .business-social-intro { margin-bottom: 46px; font-size: 14px; }
   .business-social-showcase { gap: 8px; padding: 12px 0; }
   .business-social-track,
@@ -1600,6 +1835,12 @@
   .business-social-grid { margin-top: 46px; }
   .business-social-grid article { padding-inline: 20px; }
   .business-social-description { min-height: 0; }
+  .business-home-services { padding: 84px 14px; }
+  .business-home-services h2 { margin-bottom: 52px; font-size: 38px; }
+  .business-home-service-card { min-height: 520px; padding: 24px 20px; }
+  .business-home-card-copy h3 { font-size: 36px; }
+  .business-home-service-card .business-package-graphic,
+  .business-home-social-collage { height: 190px; }
   .business-process li { grid-template-columns: 48px 1fr; }
   .business-footer { min-height: 660px; padding-inline: 14px; }
   .business-footer h2 { font-size: 48px; }
