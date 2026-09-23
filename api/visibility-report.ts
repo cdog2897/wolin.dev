@@ -6,6 +6,8 @@ type RequestBody = {
   website?: unknown
   phone?: unknown
   company?: unknown
+  service?: unknown
+  message?: unknown
 }
 
 type ApiRequest = {
@@ -94,13 +96,15 @@ export default async function handler(request: ApiRequest, response: ApiResponse
   const email = getText(body.email)
   const website = getText(body.website)
   const phone = getText(body.phone)
-  const fields = [name, email, website, phone]
+  const service = getText(body.service)
+  const message = getText(body.message)
+  const fields = [name, email, website, phone, service]
 
-  if (fields.some((field) => !field || field.length > MAX_FIELD_LENGTH)) {
-    return response.status(400).json({ error: 'Please complete every field.' })
+  if (!name || !email || fields.some((field) => field.length > MAX_FIELD_LENGTH) || message.length > 2000) {
+    return response.status(400).json({ error: 'Please enter your name and email.' })
   }
 
-  if (!isValidEmail(email) || !isValidWebsite(website)) {
+  if (!isValidEmail(email) || (website && !isValidWebsite(website))) {
     return response.status(400).json({ error: 'Please enter a valid email and website.' })
   }
 
@@ -114,6 +118,8 @@ export default async function handler(request: ApiRequest, response: ApiResponse
   const safeEmail = escapeHtml(email)
   const safeWebsite = escapeHtml(website)
   const safePhone = escapeHtml(phone)
+  const safeService = escapeHtml(service)
+  const safeMessage = escapeHtml(message)
 
   const resendResponse = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -122,25 +128,29 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Wolin Visibility Report <reports@wolin.dev>',
+      from: 'Wolin Contact <reports@wolin.dev>',
       to: ['caleb.wolin@gmail.com'],
       reply_to: email,
-      subject: `New visibility report request — ${name}`,
+      subject: `New website inquiry — ${name}`,
       text: [
-        'A new client requested a visibility report.',
+        'A new client sent a website inquiry.',
         '',
         `Name: ${name}`,
         `Email: ${email}`,
         `Business website: ${website}`,
         `Phone: ${phone}`,
+        `Service: ${service}`,
+        `Message: ${message}`,
       ].join('\n'),
       html: `
-        <h1>New visibility report request</h1>
+        <h1>New website inquiry</h1>
         <table cellpadding="8" cellspacing="0" style="border-collapse: collapse; font-family: sans-serif;">
           <tr><th align="left">Name</th><td>${safeName}</td></tr>
           <tr><th align="left">Email</th><td><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
           <tr><th align="left">Business website</th><td><a href="${safeWebsite}">${safeWebsite}</a></td></tr>
           <tr><th align="left">Phone</th><td><a href="tel:${safePhone}">${safePhone}</a></td></tr>
+          <tr><th align="left">Service</th><td>${safeService}</td></tr>
+          <tr><th align="left">Message</th><td style="white-space: pre-wrap;">${safeMessage}</td></tr>
         </table>
       `,
     }),
@@ -148,8 +158,8 @@ export default async function handler(request: ApiRequest, response: ApiResponse
 
   if (!resendResponse.ok) {
     const resendError = await resendResponse.text()
-    console.error('Resend rejected a visibility report email.', resendResponse.status, resendError)
-    return response.status(502).json({ error: 'Unable to send the report request.' })
+    console.error('Resend rejected a website inquiry email.', resendResponse.status, resendError)
+    return response.status(502).json({ error: 'Unable to send the inquiry.' })
   }
 
   return response.status(200).json({ ok: true })

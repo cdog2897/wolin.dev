@@ -14,8 +14,10 @@ const signingMatch = currentPath.match(/^\/sign\/([^/]+)$/)
 const legacyAdminSigningLink = adminHost && signingMatch
 const portfolioPath = currentPath === '/calebwolin'
 const sampleAuditPath = currentPath === '/sample'
-const searchServicesPath = currentPath === '/seo-websites'
 const socialMediaPath = currentPath === '/social-media'
+const websitesPath = currentPath === '/websites-seo' || currentPath === '/seo-websites'
+const googlePath = currentPath === '/google-business-profile'
+const aiPath = currentPath === '/ai-search'
 
 if (legacyAdminSigningLink) {
   window.location.replace(`https://wolin.dev${window.location.pathname}${window.location.search}${window.location.hash}`)
@@ -47,17 +49,29 @@ if (signingMatch) {
     'content',
     'See how Wolin evaluates Google Business Profile, website, local search, conversion, and AI visibility for a small business.',
   )
-} else if (searchServicesPath) {
-  document.title = 'SEO, Google Business Profile & Websites — Wolin'
+} else if (websitesPath) {
+  document.title = 'Websites + SEO — Wolin'
   document.querySelector('meta[name="description"]')?.setAttribute(
     'content',
-    'Practical SEO, Google Business Profile management, and website improvements for local small businesses.',
+    'Custom websites, ongoing maintenance, and practical SEO for growing local businesses.',
   )
 } else if (socialMediaPath) {
   document.title = 'Social Media Management — Wolin'
   document.querySelector('meta[name="description"]')?.setAttribute(
     'content',
     'Social media strategy, content, publishing, and community support for busy small businesses.',
+  )
+} else if (googlePath) {
+  document.title = 'Google Business Profile — Wolin'
+  document.querySelector('meta[name="description"]')?.setAttribute(
+    'content',
+    'One-time Google Business Profile optimization for local businesses.',
+  )
+} else if (aiPath) {
+  document.title = 'AI Visibility — Wolin'
+  document.querySelector('meta[name="description"]')?.setAttribute(
+    'content',
+    'Monthly AI search visibility reviews and improvements for your business.',
   )
 } else {
   document.title = 'Wolin — Local Growth for Small Businesses'
@@ -74,7 +88,7 @@ createRoot(document.getElementById('root')!).render(
     ) : sampleAuditPath ? (
       <SampleAudit />
     ) : (
-      <BusinessSite page={searchServicesPath ? 'search' : socialMediaPath ? 'social' : 'home'} />
+      <BusinessSite page={socialMediaPath ? 'social' : websitesPath ? 'websites' : googlePath ? 'google' : aiPath ? 'ai' : 'home'} />
     )}
   </StrictMode>,
 )
