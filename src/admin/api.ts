@@ -2,48 +2,34 @@ import type { AuditEvent, Envelope, SigningDocument, Stats, Template } from './t
 
 export const demoMode = import.meta.env.DEV && new URLSearchParams(window.location.search).has('demo')
 
-const demoBody = `This Monthly Services Agreement (the “Agreement”) is between Caleb Wolin, operating under the name Wolin (“Provider”), and Juniper Coffee Company, represented by Maya Chen (“Client”). It becomes effective when Client signs electronically.
+let demoTemplates: Template[] = [{
+  id: 'preview-agreement',
+  name: 'Preview Agreement',
+  package_name: 'Preview service',
+  price: 'Example price',
+  subject: 'Preview agreement',
+  body: `PREVIEW AGREEMENT
 
-1. PACKAGE AND MONTHLY FEE
+This is sample content for testing the signing interface. It is not a live offer or contract.
 
-Client selects the Growth package at $679 per monthly service period, plus any applicable tax. The package is month-to-month and does not require a fixed long-term commitment.
+1. CLIENT
 
-2. SERVICES INCLUDED
+{{business_name}} is represented by {{client_name}} ({{client_email}}).
 
-The Growth package includes Google Business Profile management, two monthly posts, a focused website health review, corrections to prioritized on-page issues, practical mobile and speed improvements, conversion-path improvements, local business structured-data checks, and Google Search Console monitoring.
+2. SERVICE
 
-3. SERVICE SCHEDULE AND DELIVERY
+The preview service is shown here only to demonstrate how a client agreement appears before signing. No actual services or fees are created by this sample.
 
-Work begins after Provider receives this signed Agreement, the first monthly payment, and the access and materials reasonably needed for the work. The monthly fee reserves recurring professional time and does not purchase unlimited labor.
+3. ELECTRONIC SIGNATURE
 
-4. CLIENT RESPONSIBILITIES
+The preview shows where electronic signature consent and signer details appear. Date prepared: {{date}}`,
+}]
+let demoEnvelopes: Envelope[] = []
 
-Client will provide timely and lawful access, accurate business information, approved materials, and reasonable responses to approval requests. Client confirms it has the right to use all materials and account access supplied to Provider.
-
-5. RESULTS AND PLATFORM LIMITATIONS
-
-Provider will perform the services with reasonable care and professional diligence but does not promise a particular ranking, traffic level, lead volume, sale, revenue, return on investment, platform approval, or AI mention.
-
-6. FEES, CANCELLATION, AND GENERAL TERMS
-
-Client will pay $679 in advance for each monthly service period. Client may cancel at any time by email, effective at the end of the current paid service period. Electronic signatures are effective, and an electronic copy may be treated as an original.
-
-7. ELECTRONIC SIGNATURE CONSENT
-
-By selecting “I agree” and applying an electronic signature, Client confirms that the signer is authorized to bind the business named above, has reviewed this entire Agreement, and consents to electronic records and signatures.`
-
-let demoTemplates: Template[] = [
-  { id: 'starter-monthly', name: 'Starter Monthly Services Agreement', package_name: 'Starter', price: '$279', subject: 'Your Wolin Starter agreement is ready to sign', body: demoBody.replaceAll('Growth', 'Starter').replaceAll('$679', '$279') },
-  { id: 'growth-monthly', name: 'Growth Monthly Services Agreement', package_name: 'Growth', price: '$679', subject: 'Your Wolin Growth agreement is ready to sign', body: demoBody },
-  { id: 'authority-monthly', name: 'Authority Monthly Services Agreement', package_name: 'Authority', price: '$1,279', subject: 'Your Wolin Authority agreement is ready to sign', body: demoBody.replaceAll('Growth', 'Authority').replaceAll('$679', '$1,279') },
-]
-
-let demoEnvelopes: Envelope[] = [
-  { id: 'env-1', template_id: 'growth-monthly', recipient_name: 'Maya Chen', recipient_email: 'maya@juniper.coffee', business_name: 'Juniper Coffee Company', document_title: 'Growth Monthly Services Agreement', status: 'viewed', expires_at: '2026-10-02T18:22:00Z', created_at: '2026-09-21T16:42:00Z', sent_at: '2026-09-21T16:43:00Z', viewed_at: '2026-09-22T14:08:00Z', signed_at: null, voided_at: null },
-  { id: 'env-2', template_id: 'starter-monthly', recipient_name: 'Eli Rivera', recipient_email: 'eli@northstarplumbing.com', business_name: 'Northstar Plumbing', document_title: 'Starter Monthly Services Agreement', status: 'signed', expires_at: '2026-09-29T18:22:00Z', created_at: '2026-09-15T16:42:00Z', sent_at: '2026-09-15T16:43:00Z', viewed_at: '2026-09-15T17:08:00Z', signed_at: '2026-09-15T17:16:00Z', voided_at: null },
-  { id: 'env-3', template_id: 'authority-monthly', recipient_name: 'Avery Morgan', recipient_email: 'avery@fieldandform.co', business_name: 'Field & Form', document_title: 'Authority Monthly Services Agreement', status: 'sent', expires_at: '2026-10-05T18:22:00Z', created_at: '2026-09-20T16:42:00Z', sent_at: '2026-09-20T16:43:00Z', viewed_at: null, signed_at: null, voided_at: null },
-  { id: 'env-4', template_id: 'growth-monthly', recipient_name: 'Noah Brooks', recipient_email: 'noah@redmesa.design', business_name: 'Red Mesa Design', document_title: 'Growth Monthly Services Agreement', status: 'draft', expires_at: '2026-10-06T18:22:00Z', created_at: '2026-09-22T13:42:00Z', sent_at: null, viewed_at: null, signed_at: null, voided_at: null },
-]
+function renderDemoBody(body: string, envelope: { recipient_name: string; recipient_email: string; business_name: string }, template: Template) {
+  const values: Record<string, string> = { client_name: envelope.recipient_name, client_email: envelope.recipient_email, business_name: envelope.business_name, package_name: template.package_name, price: template.price, date: new Date().toLocaleDateString('en-US', { dateStyle: 'long' }) }
+  return body.replace(/{{([a-z_]+)}}/g, (match, key: string) => values[key] ?? match)
+}
 
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
@@ -98,7 +84,8 @@ export const adminApi = {
     if (demoMode) {
       const envelope = demoEnvelopes.find((item) => item.id === id)
       if (!envelope) throw new Error('Document not found.')
-      const detail: Envelope = { ...envelope, document_body: demoBody, document_hash: 'db05eb4216d2fca38c2c5645ff047cb899827a8dc7ce4a9e0559e82c811b2f36', signature_name: envelope.status === 'signed' ? envelope.recipient_name : null, signature_type: envelope.status === 'signed' ? 'typed' : null, signature_data: envelope.status === 'signed' ? envelope.recipient_name : null, signature_hash: envelope.status === 'signed' ? 'a19ff06c6b422682a9ad74b95620768492b78eaefb7011e756b1290ab27bde08' : null, signer_ip: envelope.status === 'signed' ? '198.51.100.24' : null, consent_text: envelope.status === 'signed' ? 'I consent to use electronic records and signatures.' : null }
+      const template = demoTemplates.find((item) => item.id === envelope.template_id)!
+      const detail: Envelope = { ...envelope, document_body: renderDemoBody(template.body, envelope, template), document_hash: 'db05eb4216d2fca38c2c5645ff047cb899827a8dc7ce4a9e0559e82c811b2f36', signature_name: envelope.status === 'signed' ? envelope.recipient_name : null, signature_type: envelope.status === 'signed' ? 'typed' : null, signature_data: envelope.status === 'signed' ? envelope.recipient_name : null, signature_hash: envelope.status === 'signed' ? 'a19ff06c6b422682a9ad74b95620768492b78eaefb7011e756b1290ab27bde08' : null, signer_ip: envelope.status === 'signed' ? '198.51.100.24' : null, consent_text: envelope.status === 'signed' ? 'I consent to use electronic records and signatures.' : null }
       const audit: AuditEvent[] = [
         { event_type: 'document_created', detail: {}, ip: '203.0.113.12', user_agent: 'Chrome', event_hash: 'c8fae421c393690777aa0e8036a11e1f54de99e2', previous_hash: null, created_at: envelope.created_at },
         ...(envelope.sent_at ? [{ event_type: 'email_sent', detail: {}, ip: '203.0.113.12', user_agent: 'Chrome', event_hash: 'ac12e09b2d3fe1d8da9654ed4c0307067f47e2b5', previous_hash: 'c8fae421', created_at: envelope.sent_at } satisfies AuditEvent] : []),
@@ -134,12 +121,14 @@ export const adminApi = {
 export const signingApi = {
   async document(token: string) {
     if (demoMode) {
-      return { document: { id: 'env-demo', recipientName: 'Maya Chen', recipientEmail: 'maya@juniper.coffee', businessName: 'Juniper Coffee Company', title: 'Growth Monthly Services Agreement', body: demoBody, documentHash: 'db05eb4216d2fca38c2c5645ff047cb899827a8dc7ce4a9e0559e82c811b2f36', status: 'viewed', expiresAt: '2026-10-02T18:22:00Z', sentAt: '2026-09-21T16:43:00Z', viewedAt: '2026-09-22T14:08:00Z', signedAt: null, signatureName: null, signatureType: null, signatureData: null, consentText: 'I have reviewed this document, consent to use electronic records and signatures, and agree that my electronic signature is legally binding.' } satisfies SigningDocument }
+      const template = demoTemplates[0]
+      const recipient = { recipient_name: 'Maya Chen', recipient_email: 'maya@example.com', business_name: 'Example Local Business' }
+      return { document: { id: 'env-demo', recipientName: recipient.recipient_name, recipientEmail: recipient.recipient_email, businessName: recipient.business_name, title: template.name, body: renderDemoBody(template.body, recipient, template), documentHash: 'db05eb4216d2fca38c2c5645ff047cb899827a8dc7ce4a9e0559e82c811b2f36', status: 'viewed', expiresAt: '2026-10-02T18:22:00Z', sentAt: '2026-09-21T16:43:00Z', viewedAt: '2026-09-22T14:08:00Z', signedAt: null, signatureName: null, signatureType: null, signatureData: null, consentText: 'I have reviewed this document, consent to use electronic records and signatures, and agree that my electronic signature is legally binding.', paymentRequired: false, paymentUrl: null } satisfies SigningDocument }
     }
     return request<{ document: SigningDocument }>(`/api/sign?token=${encodeURIComponent(token)}`)
   },
   async sign(token: string, payload: { signerName: string; signatureType: 'typed' | 'drawn'; signatureData: string; agreed: boolean }) {
-    if (demoMode) return { ok: true, signedAt: new Date().toISOString() }
-    return request<{ ok: true; signedAt: string }>(`/api/sign?token=${encodeURIComponent(token)}`, { method: 'POST', body: JSON.stringify(payload) })
+    if (demoMode) return { ok: true, signedAt: new Date().toISOString(), paymentUrl: null }
+    return request<{ ok: true; signedAt: string; paymentUrl: string | null }>(`/api/sign?token=${encodeURIComponent(token)}`, { method: 'POST', body: JSON.stringify(payload) })
   },
 }

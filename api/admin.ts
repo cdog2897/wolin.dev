@@ -3,6 +3,7 @@ import { clearSessionCookie, createSignedToken, getAdminSession, requireAdmin, s
 import { addAuditEvent, assertDb, db, ensureSchema, sha256 } from './_lib/db.js'
 import { bodyObject, header, isSameOrigin, methodNotAllowed, noStore, queryValue, requestIp, text, type ApiRequest, type ApiResponse } from './_lib/http.js'
 import { createSignedPdf } from './_lib/pdf.js'
+import { paymentOffers } from './_lib/payment-links.js'
 
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com').toLowerCase()
 const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || 'https://admin.wolin.dev'
@@ -134,11 +135,12 @@ async function envelopes(request: ApiRequest, response: ApiResponse) {
       .order('created_at')
       .order('id')
     assertDb(auditError, 'Unable to load the audit trail')
-    return response.status(200).json({ envelope, audit: audit ?? [] })
+    const paymentOffer = paymentOffers[String(envelope.template_id)]
+    return response.status(200).json({ envelope: { ...envelope, payment_required: Boolean(paymentOffer), payment_due_amount: paymentOffer?.total ?? paymentOffer?.subtotal ?? null, payment_installments_expected: paymentOffer?.installments ?? 1 }, audit: audit ?? [] })
   }
   const { data, error } = await supabase
     .from('signing_envelopes')
-    .select('id, template_id, recipient_name, recipient_email, business_name, document_title, status, expires_at, created_at, sent_at, viewed_at, signed_at, voided_at')
+    .select('id, template_id, recipient_name, recipient_email, business_name, document_title, status, expires_at, created_at, sent_at, viewed_at, signed_at, voided_at, payment_status, paid_at, installments_paid')
     .order('created_at', { ascending: false })
     .limit(250)
   assertDb(error, 'Unable to load documents')
@@ -150,7 +152,7 @@ async function envelopes(request: ApiRequest, response: ApiResponse) {
     signed: rows.filter((item) => item.status === 'signed').length,
     draft: rows.filter((item) => item.status === 'draft').length,
   }
-  return response.status(200).json({ envelopes: rows, stats })
+  return response.status(200).json({ envelopes: rows.map((item) => ({ ...item, payment_required: Boolean(paymentOffers[String(item.template_id)]), payment_due_amount: paymentOffers[String(item.template_id)]?.total ?? paymentOffers[String(item.template_id)]?.subtotal ?? null, payment_installments_expected: paymentOffers[String(item.template_id)]?.installments ?? 1 })), stats })
 }
 
 async function sendEnvelope(request: ApiRequest, response: ApiResponse) {

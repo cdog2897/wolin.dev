@@ -10,6 +10,7 @@ export type Template = {
 }
 
 export type EnvelopeStatus = 'draft' | 'sent' | 'viewed' | 'signed' | 'voided' | 'expired'
+export type PaymentStatus = 'unpaid' | 'processing' | 'paid' | 'failed' | 'refunded'
 
 export type Envelope = {
   id: string
@@ -25,6 +26,20 @@ export type Envelope = {
   viewed_at: string | null
   signed_at: string | null
   voided_at: string | null
+  payment_required?: boolean
+  payment_due_amount?: number | null
+  payment_installments_expected?: number
+  installments_paid?: number
+  stripe_subscription_schedule_id?: string | null
+  payment_status?: PaymentStatus
+  paid_at?: string | null
+  payment_amount_total?: number | null
+  payment_currency?: string | null
+  stripe_checkout_session_id?: string | null
+  stripe_payment_intent_id?: string | null
+  stripe_subscription_id?: string | null
+  stripe_customer_id?: string | null
+  stripe_payment_link_id?: string | null
   document_body?: string
   document_hash?: string
   signature_name?: string | null
@@ -70,4 +85,6 @@ export type SigningDocument = {
   signatureType: string | null
   signatureData: string | null
   consentText: string
+  paymentRequired: boolean
+  paymentUrl: string | null
 }

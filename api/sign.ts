@@ -1,6 +1,9 @@
+import { waitUntil } from '@vercel/functions'
 import { addAuditEvent, assertDb, db, ensureSchema, sha256 } from './_lib/db.js'
 import { bodyObject, header, isSameOrigin, methodNotAllowed, noStore, queryValue, requestIp, text, type ApiRequest, type ApiResponse } from './_lib/http.js'
 import { createSignedPdf } from './_lib/pdf.js'
+import { paymentUrlForEnvelope } from './_lib/payment-links.js'
+import { INSTALLMENT_TEMPLATE_ID } from './_lib/stripe-installments.js'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com'
 const EMAIL_FROM = process.env.SIGNING_FROM_EMAIL || 'Wolin <reports@wolin.dev>'
@@ -89,6 +92,9 @@ async function getDocument(request: ApiRequest, response: ApiResponse, token: st
       signatureType: envelope.signature_type,
       signatureData: envelope.status === 'signed' ? envelope.signature_data : null,
       consentText: CONSENT_TEXT,
+      paymentRequired: paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) !== null,
+      paymentUrl: envelope.status === 'signed' && envelope.payment_status !== 'paid' && !(envelope.template_id === INSTALLMENT_TEMPLATE_ID && Number(envelope.installments_paid) > 0)
+        ? paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) : null,
     },
   })
 }
@@ -142,25 +148,32 @@ async function signDocument(request: ApiRequest, response: ApiResponse, token: s
   const safeSigner = escapeHtml(signerName)
   const safeBusiness = escapeHtml(String(envelope.business_name))
   const safeTitle = escapeHtml(String(envelope.document_title))
+  const emailTask = (async () => {
+    try {
+      await sendEmail({
+        to: [String(envelope.recipient_email)],
+        subject: `Completed: ${String(envelope.document_title)}`,
+        text: `Your signature is complete.\n\nDocument: ${String(envelope.document_title)}\nSigner: ${signerName}\nBusiness: ${String(envelope.business_name)}\n\nReturn to your secure signing link to download a copy.`,
+        html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Your signature is complete.</h1><p style="line-height:1.6;margin:0 0 16px"><strong>${safeTitle}</strong> was signed by ${safeSigner} for ${safeBusiness}.</p><p style="line-height:1.6;margin:0">Return to your secure signing link at any time to download the completed document.</p>`),
+      })
+      await sendEmail({
+        to: [ADMIN_EMAIL],
+        subject: `Signed: ${String(envelope.document_title)} — ${String(envelope.business_name)}`,
+        text: `${signerName} signed ${String(envelope.document_title)} for ${String(envelope.business_name)}. Open Wolin Admin to view the signed document and audit trail.`,
+        html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Document signed.</h1><p style="line-height:1.6;margin:0">${safeSigner} signed <strong>${safeTitle}</strong> for ${safeBusiness}. Open Wolin Admin to view the document and audit trail.</p>`, 'admin.wolin.dev'),
+      })
+      await addAuditEvent(String(envelope.id), 'completion_emails_sent', {}, ip, userAgent)
+    } catch (error) {
+      console.error('Signature saved, but completion email failed.', error)
+      await addAuditEvent(String(envelope.id), 'completion_email_failed', {}, ip, userAgent)
+    }
+  })()
   try {
-    await sendEmail({
-      to: [String(envelope.recipient_email)],
-      subject: `Completed: ${String(envelope.document_title)}`,
-      text: `Your signature is complete.\n\nDocument: ${String(envelope.document_title)}\nSigner: ${signerName}\nBusiness: ${String(envelope.business_name)}\n\nReturn to your secure signing link to download a copy.`,
-      html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Your signature is complete.</h1><p style="line-height:1.6;margin:0 0 16px"><strong>${safeTitle}</strong> was signed by ${safeSigner} for ${safeBusiness}.</p><p style="line-height:1.6;margin:0">Return to your secure signing link at any time to download the completed document.</p>`),
-    })
-    await sendEmail({
-      to: [ADMIN_EMAIL],
-      subject: `Signed: ${String(envelope.document_title)} — ${String(envelope.business_name)}`,
-      text: `${signerName} signed ${String(envelope.document_title)} for ${String(envelope.business_name)}. Open Wolin Admin to view the signed document and audit trail.`,
-      html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Document signed.</h1><p style="line-height:1.6;margin:0">${safeSigner} signed <strong>${safeTitle}</strong> for ${safeBusiness}. Open Wolin Admin to view the document and audit trail.</p>`, 'admin.wolin.dev'),
-    })
-    await addAuditEvent(String(envelope.id), 'completion_emails_sent', {}, ip, userAgent)
-  } catch (error) {
-    console.error('Signature saved, but completion email failed.', error)
-    await addAuditEvent(String(envelope.id), 'completion_email_failed', {}, ip, userAgent)
+    waitUntil(emailTask)
+  } catch {
+    await emailTask
   }
-  return response.status(200).json({ ok: true, signedAt: signedRows[0].signed_at })
+  return response.status(200).json({ ok: true, signedAt: signedRows[0].signed_at, paymentUrl: paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) })
 }
 
 export default async function handler(request: ApiRequest, response: ApiResponse) {

@@ -293,6 +293,21 @@
 .wa-signature-card strong { font-size: 14px; }
 .wa-signature-card strong.wa-script { font-family: var(--serif); font-size: 25px; font-style: italic; font-weight: 400; }
 .wa-signature-card span { color: #78857f; font-size: 8px; }
+.wa-payment-pill { display: inline-flex; width: fit-content; padding: 5px 8px; border-radius: 99px; color: #725214; background: #fff2d7; font-size: 9px; font-weight: 750; white-space: nowrap; }
+.wa-payment-paid { color: #1d6543; background: #e4f5ea; }
+.wa-payment-processing { color: #315b8a; background: #e6f0fb; }
+.wa-payment-failed, .wa-payment-refunded { color: #a43d3d; background: #fce9e9; }
+.wa-payment-empty { color: #9ba5a0; }
+.wa-payment-card { padding: 18px; border: 1px solid var(--wa-line); border-radius: 10px; background: #fff; }
+.wa-payment-card .wa-section-title { margin-bottom: 8px; }
+.wa-payment-card p { margin: 0; color: #61716a; font-size: 10px; line-height: 1.5; }
+.wa-payment-card dl { display: grid; margin: 14px 0 0; gap: 10px; }
+.wa-payment-card dl div { display: grid; grid-template-columns: 75px minmax(0, 1fr); gap: 8px; }
+.wa-payment-card dt { color: #87948d; font-size: 8px; font-weight: 700; text-transform: uppercase; }
+.wa-payment-card dd { margin: 0; overflow-wrap: anywhere; font-size: 9px; }
+.wa-payment-card a { color: var(--wa-green); font-weight: 700; }
+.wa-payment-refresh { display: inline-flex; align-items: center; gap: 5px; margin: 0 0 9px; padding: 0; border: 0; background: transparent; color: var(--wa-green); font: inherit; font-size: 9px; font-weight: 700; cursor: pointer; }
+.wa-payment-refresh:disabled { opacity: .55; cursor: wait; }
 .wa-section-title { display: flex; margin-bottom: 10px; align-items: center; justify-content: space-between; }
 .wa-section-title h3 { margin: 0; font-size: 11px; }
 .wa-section-title > span { color: #8c9691; font-size: 8px; }
@@ -390,6 +405,7 @@
 .ws-consent input:checked + span i { border-color: var(--wa-green); background: var(--wa-green); color: white; }
 .ws-sign-button { display: flex; width: 100%; height: 44px; margin-top: 16px; border: 0; border-radius: 8px; background: var(--wa-green); color: #fff; cursor: pointer; align-items: center; justify-content: center; gap: 8px; font-size: 10px; font-weight: 700; }
 .ws-sign-button:disabled { cursor: wait; opacity: .65; }
+.ws-checkout-note { margin: 12px 0 0; color: var(--wa-green); font-size: 8.5px; font-weight: 650; line-height: 1.45; }
 .ws-fine-print { margin: 12px 0 0; color: #909995; font-size: 7.5px; line-height: 1.5; }
 .ws-error { margin: 11px 0 -4px; color: var(--wa-red); font-size: 8.5px; line-height: 1.4; }
 .ws-signed-summary { padding-top: 14px; text-align: center; }
@@ -398,6 +414,7 @@
 .ws-signed-summary .ws-typed-signature { min-height: 72px; margin-bottom: 15px; }
 .ws-drawn-saved { display: grid; min-height: 72px; margin-bottom: 15px; padding: 8px; place-items: center; border: 1px solid #d8e0dc; border-radius: 7px; }
 .ws-drawn-saved img { max-height: 55px; }
+.ws-payment-link { display: flex; height: 40px; margin-bottom: 9px; padding: 0 13px; border-radius: 7px; background: var(--wa-green); color: #fff; align-items: center; justify-content: space-between; font-size: 9px; font-weight: 700; text-decoration: none; }
 .ws-download { display: flex; height: 40px; padding: 0 13px; border: 1px solid #d7dfdb; border-radius: 7px; color: var(--wa-ink); align-items: center; justify-content: space-between; font-size: 9px; font-weight: 650; text-decoration: none; }
 .ws-site-footer { display: flex; max-width: 1130px; margin: -34px auto 0; padding: 25px 0 38px; border-top: 1px solid #d6ded9; color: #7d8983; align-items: center; gap: 14px; font-size: 8px; }
 .ws-site-footer span { color: var(--wa-green); font-weight: 750; }

@@ -7,114 +7,182 @@ export type DefaultTemplate = {
   body: string
 }
 
-const agreementBody = `This Monthly Services Agreement (the “Agreement”) is between Caleb Wolin, operating under the name Wolin (“Provider”), and {{business_name}}, represented by {{client_name}} (“Client”). It becomes effective when Client signs electronically.
+const sensationAgreement = `90-DAY HANDS-FREE LOCAL SENSATION AGREEMENT
 
-1. PACKAGE AND MONTHLY FEE
+This Agreement is between Caleb Wolin, operating as Wolin ("Provider"), and {{business_name}}, represented by {{client_name}} ("Client"). It becomes effective when Client signs electronically.
 
-Client selects the {{package_name}} package at {{price}} per monthly service period, plus any applicable tax. The package is month-to-month and does not require a fixed long-term commitment. Each service period begins on the first payment date and renews monthly on the corresponding calendar date. If a month does not contain that date, renewal occurs on the month’s final day.
+1. PROGRAM, TERM, AND FEE
 
-2. SERVICES INCLUDED
+Client engages Provider for the 90-day Hands-Free Local Sensation. The one-time fee is {{price}}, due before work begins. The 90-day service period begins when Provider has this signed Agreement, payment, and the access and information reasonably needed to start. This Agreement does not automatically renew.
 
-{{package_scope}}
+2. INCLUDED SERVICES
 
-Provider will use reasonable professional judgment to prioritize the included services. The exact order and timing depend on account access, platform availability, Client approvals, current conditions, and the work with the greatest expected value.
+Provider will complete and connect Client's internet profile across Instagram, Facebook, Google Business Profile, a custom website, and AI search; create a practical SEO improvement plan; perform AI search optimization; produce professional video content; handle scripting, filming, editing, and scheduling content across the connected platforms; manage DMs, routine customer questions, and leads on those platforms; track leads from social platforms; and provide a complete monthly report of metrics across the platforms.
 
-3. SERVICE SCHEDULE AND DELIVERY
+The SEO improvement plan and AI search optimization are promised deliverables. They are not promises of a particular search ranking, AI citation, lead count, sale, or revenue outcome.
 
-Work begins after Provider receives this signed Agreement, the first monthly payment, and the access and materials reasonably needed for the work. Provider may communicate findings, completed changes, and next steps by email, shared document, report, or another format agreed with Client.
+3. INCLUDED BONUSES
 
-The monthly fee reserves recurring professional time and covers the included services Provider can reasonably complete during that service period. It does not purchase unlimited labor or require every possible recommendation to be completed in one month.
+At no additional charge, Provider will build a custom website, optimize Client's Google Business Profile, optimize Client's Apple Maps presence, and provide a Google review strategic adviser report. "Free" means these items have no separate fee under this paid program. If Provider registers a domain for the website during the program, Provider covers its registration cost and remains its registered owner. Other third-party charges during the program, such as paid advertising or premium software, require Client's separate approval. Domain registration and renewal are included in the separate $99/month website hosting and maintenance service if Client selects it.
+
+4. 10,000 LOCAL VIEWS GUARANTEE
+
+Provider guarantees at least 10,000 combined views and impressions of Client's business content across the platforms used in the program during the first 90 days. The measure is the sum of views and impressions reported by those platforms; it is not a guarantee of 10,000 unique people or of a particular number of leads or sales. Provider will share the relevant platform metrics in the monthly reports. If the combined total is below 10,000 at the end of the first 90 days, Provider will continue managing Client's marketing at no charge until the combined total reaches 10,000. The guarantee extension does not create another program fee.
+
+5. CLIENT COOPERATION AND APPROVALS
+
+Client will provide accurate business information; appropriate access to accounts, website, domain, and analytics; reasonable access for filming; and timely feedback or approvals. Client authorizes Provider to publish approved content and respond to routine customer inquiries on Client's behalf. Client remains responsible for final decisions on pricing, offers, customer commitments, and regulated or specialized advice. Provider may pause affected work while required access or approval is unavailable, and the parties will agree in writing on any resulting schedule change.
+
+6. ACCOUNTS, WEBSITE, AND THIRD-PARTY PLATFORMS
+
+Client retains ownership of its brand, accounts, materials supplied to Provider, and any domain Client already owns. Provider owns any domain Provider registers for the custom website. If Client later cancels the separate website hosting and maintenance service, Client may request transfer of that Provider-owned domain into Client's name for a one-time $99 fee. Provider will cooperate with the transfer after payment, subject to registrar requirements. Once the program fee is paid, Client owns the final custom website content and design created specifically for Client under this Agreement. Platform policies, availability, and algorithms are outside Provider's control. Ongoing website hosting and maintenance after the program require a separate agreement; they are not included in this one-time fee.
+
+7. CHANGES AND END OF PROGRAM
+
+Work outside the listed services requires written agreement before an additional charge applies. At the end of the 90-day period, Provider will deliver the final monthly report and any outstanding guarantee extension will continue under Section 4. Neither party is obligated to purchase or provide another paid service without a separate agreement.
+
+8. ELECTRONIC SIGNATURE
+
+By signing, Client confirms that the signer is authorized to bind {{business_name}}, has reviewed this Agreement, and consents to electronic records and signatures. Electronic copies may be treated as originals.
+
+Client: {{business_name}}
+Authorized signer: {{client_name}} ({{client_email}})
+Date prepared: {{date}}`
+
+const websiteCareAgreement = `WEBSITE HOSTING AND MAINTENANCE AGREEMENT
+
+This Agreement is between Caleb Wolin, operating as Wolin ("Provider"), and {{business_name}}, represented by {{client_name}} ("Client"). It becomes effective when Client signs electronically.
+
+1. SERVICE AND MONTHLY FEE
+
+Provider will keep the custom website built for Client under the 90-day Hands-Free Local Sensation hosted and maintained for {{price}}. The first monthly payment is due before this service begins; subsequent payments are due monthly on the same calendar date. This service is month-to-month.
+
+2. INCLUDED MAINTENANCE
+
+Provider will keep the website hosted, monitor basic site availability, maintain its operating components, and address routine maintenance issues needed to keep the existing website functioning. The monthly fee includes registration and renewal costs for any domain Provider registers for the website, and all third-party tools used to operate and maintain the website.
+
+3. EDITS
+
+Minor edits cost $25 per edit. Minor edits include any text changes and other simple edits to existing content that do not substantially change the website's design or functionality. Major work is priced by individual quote and requires Client's approval before Provider begins work or charges for it. Major work includes UI redesign, adding pages, adding features, and other substantial changes to the website. Edit fees are not included in the monthly maintenance charge.
 
 4. CLIENT RESPONSIBILITIES
 
-Client will provide timely and lawful access to relevant profiles, website systems, analytics, hosting, domains, and third-party accounts; provide accurate business information and approved materials; respond to approval requests within a reasonable time; maintain necessary subscriptions, backups, and security controls; and confirm it has the right to use all materials and account access supplied to Provider.
+Provider will remain the registered owner of any domain Provider registers for the website while this service is active. Client retains ownership of any domain Client already owns and will provide access reasonably needed for hosting and maintenance. Client will supply accurate replacement content and confirm it has the right to use any materials it asks Provider to publish.
 
-Provider may pause affected work when access, information, approval, payment, or a safe backup is unavailable. A Client delay does not extend the paid service period unless Provider agrees in writing.
+5. CANCELLATION AND HANDOFF
 
-5. SERVICES NOT INCLUDED
+Client may cancel future monthly service by emailing caleb.wolin@gmail.com before the next payment date. Service continues through the paid period. If Client cancels, Client may request transfer of a domain Provider registered for the website into Client's name for a one-time $99 fee. After payment, Provider will cooperate promptly with the transfer, subject to registrar requirements. Provider will reasonably cooperate in transferring the website to Client or a new host after cancellation; third-party hosting charges after the handoff are Client's responsibility. The website may stop being hosted by Provider after the paid period ends.
 
-Unless the parties approve a separate written add-on, this package excludes paid advertising and ad spend; premium software, licenses, domains, hosting, stock media, and other third-party fees; professional photography or video production; legal, tax, accessibility, or cybersecurity certification; and work outside the package scope described above. Provider will request approval before purchasing a third-party product or service for Client.
+6. ELECTRONIC SIGNATURE
 
-6. RESULTS AND PLATFORM LIMITATIONS
+By signing, Client confirms that the signer is authorized to bind {{business_name}}, has reviewed this Agreement, and consents to electronic records and signatures. Electronic copies may be treated as originals.
 
-Provider promises to perform the included services with reasonable care and professional diligence but does not promise a particular business result. No specific ranking, map position, indexing outcome, traffic level, lead volume, sale, revenue, return on investment, review outcome, platform approval, AI mention, or continued account access is guaranteed. Results may change because of competition, location, seasonality, demand, prior account history, Client decisions, algorithm changes, platform policies, outages, and third-party conduct.
+Client: {{business_name}}
+Authorized signer: {{client_name}} ({{client_email}})
+Date prepared: {{date}}`
 
-Provider will not use deceptive practices, fake reviews, false business information, hidden text, link schemes, impersonation, or other tactics Provider reasonably believes violate law or platform rules.
+const standaloneWebsiteAgreement = `STANDALONE WEBSITE BUILD AND CARE AGREEMENT
 
-7. FEES AND PAYMENT
+This Agreement is between Caleb Wolin, operating as Wolin ("Provider"), and {{business_name}}, represented by {{client_name}} ("Client"). It becomes effective when Client signs electronically.
 
-Client will pay {{price}} in advance for each monthly service period through Provider’s payment link or another approved invoicing method. The first payment is due after signature and before work begins. Provider may pause work while an amount is overdue. Provider will not increase the package fee without advance written notice, and Client may cancel before a new price takes effect.
+1. WEBSITE BUILD AND PAYMENT SCHEDULE
 
-8. CANCELLATION AND ENDING SERVICE
+Provider will build a custom website for Client. The package price is {{price}}. The $299 website build fee is charged at Stripe checkout after signing. The same checkout starts a $99/month hosting and maintenance subscription with its first 30 calendar days free. The first $99 monthly charge is scheduled 30 days after checkout, and monthly charges continue until Client cancels. The 30-day free period begins at checkout, even if the website launches later. Provider begins the build after the initial payment and the information and materials reasonably needed to start.
 
-Client may cancel at any time by emailing caleb.wolin@gmail.com. Cancellation stops future renewals and becomes effective at the end of the current paid service period. Monthly fees are not prorated or refunded after a service period begins except when required by law or agreed in writing.
+2. INCLUDED WEBSITE CARE AND DOMAIN
 
-Provider may end this Agreement on seven days’ written notice, or immediately for nonpayment, unlawful instructions, abusive conduct, material breach, security risk, or loss of necessary access. If Provider ends service without cause before a paid period ends, Provider will refund the unused portion on a reasonable prorated basis.
+The $299 build fee includes the custom website and an available domain agreed with Client and registered by Provider at no separate charge. Hosting, basic availability checks, routine maintenance, and third-party tools used to operate and maintain the website are included during the first 30 days and in the $99 monthly service afterward. Domain registration and renewal costs are included; Client will not be charged separately for them while this service is active.
 
-9. CHANGES AND ADDITIONAL WORK
+3. UNLIMITED MINOR EDITS AND MAJOR WORK
 
-Work outside the included services requires Client’s written approval of added scope, timing, and price. Email approval is sufficient. Provider is not required to begin added work before receiving any requested deposit or payment.
+Unlimited minor edits are included at no charge during the first 30 days and while the monthly service is active. Minor edits include text changes and other simple edits to existing content that do not substantially change the website's design or functionality. Provider will complete each minor edit within 48 hours after receiving a complete request and any needed replacement content. Major work is priced by individual quote and requires Client's approval before Provider begins work or charges for it. Major work includes UI redesign, adding pages, adding features, and other substantial changes to the website.
 
-10. OWNERSHIP AND USE OF MATERIALS
+4. OWNERSHIP AND CLIENT RESPONSIBILITIES
 
-Client keeps ownership of its pre-existing names, logos, photos, content, accounts, data, and other materials. After full payment, Client owns final written content, configuration changes, and deliverables created specifically for Client to the extent they can be owned and transferred. Provider retains pre-existing methods, templates, checklists, tools, code, processes, know-how, and general skills, and grants Client a perpetual, nonexclusive license to any Provider-owned element embedded in a paid deliverable. Third-party materials remain subject to their own terms.
+Once the $299 build fee is paid, Client owns the final website content and design created specifically for Client. Provider remains the registered owner of any domain Provider registers for the website while the service is active. Client retains ownership of any domain Client already owns. Client will provide accurate business information, timely feedback, and appropriate access, and will confirm it has the right to use materials it asks Provider to publish.
 
-11. CONFIDENTIALITY AND ACCOUNT ACCESS
+5. CANCELLATION AND HANDOFF
 
-Each party will use reasonable care to protect the other party’s nonpublic business information and use it only to perform or receive the services. Provider may use employees, contractors, and service providers who reasonably need access and are expected to protect confidential information. Client authorizes Provider to access and make changes in accounts and systems supplied for the included services.
+Client may cancel future monthly charges by emailing caleb.wolin@gmail.com before the next payment date, including during the 30-day free period. Service continues through the free or paid period then in effect. If Client cancels, Client may request transfer of a domain Provider registered for the website into Client's name for a one-time $99 fee. After payment, Provider will cooperate promptly with the transfer, subject to registrar requirements. Provider will reasonably cooperate in transferring the website to Client or a new host after cancellation; third-party hosting charges after the handoff are Client's responsibility. The website may stop being hosted by Provider after the service period ends.
 
-12. INDEPENDENT CONTRACTOR
+6. ELECTRONIC SIGNATURE
 
-Provider is an independent contractor, not Client’s employee, partner, joint venturer, agent, or legal representative. Provider controls the manner and means of performing the services, subject to this Agreement, applicable law, and platform rules.
+By signing, Client confirms that the signer is authorized to bind {{business_name}}, has reviewed this Agreement, and consents to electronic records and signatures. Electronic copies may be treated as originals.
 
-13. WARRANTIES AND DISCLAIMERS
+Client: {{business_name}}
+Authorized signer: {{client_name}} ({{client_email}})
+Date prepared: {{date}}`
 
-Each party represents that it has authority to enter this Agreement. Client represents that information and instructions it supplies are accurate and lawful. Provider represents that the services will be performed professionally and consistently with ordinary industry practice. Except for these express promises, services and deliverables are provided as is and as available. To the extent permitted by law, Provider disclaims implied warranties, including merchantability, fitness for a particular purpose, and noninfringement.
+const sensationInstallmentsAgreement = sensationAgreement.replace(
+  'The one-time fee is {{price}}, due before work begins. The 90-day service period begins when Provider has this signed Agreement, payment, and the access and information reasonably needed to start. This Agreement does not automatically renew.',
+  'The program fee is {{price}}. Client agrees to pay three installments of $1,500 each, plus applicable tax on each installment. The first installment is due at Stripe checkout after signing. Stripe will email a separate payment request for the second installment approximately one month after the first payment and another for the third installment approximately one month later. Client must pay each request separately; the card used for the first payment will not be charged automatically for the later installments. Each later invoice is due seven days after issue. No fourth installment or ongoing program fee is authorized. The 90-day service period begins when Provider has this signed Agreement, the first payment, and the access and information reasonably needed to start. The service period is 90 days even if an invoice date falls outside that period. This Agreement does not renew.',
+).replace(
+  'Once the program fee is paid, Client owns the final custom website content and design created specifically for Client under this Agreement.',
+  'Once all three installments of the program fee are paid, Client owns the final custom website content and design created specifically for Client under this Agreement.',
+).replace(
+  'they are not included in this one-time fee.',
+  'they are not included in this program fee.',
+)
 
-14. LIMITATION OF LIABILITY
+const checkoutTestAgreement = `TEST — $1 CHECKOUT AGREEMENT
 
-To the extent permitted by law, neither party is liable for indirect, incidental, special, exemplary, punitive, or consequential damages, or for lost profits, revenue, opportunities, goodwill, or data arising from this Agreement. Provider’s total liability will not exceed the fees Client paid under this Agreement during the three months immediately before the event giving rise to the claim. This limit does not apply where prohibited by law or to fraud, willful misconduct, or gross negligence.
+This test agreement is between Caleb Wolin, operating as Wolin ("Provider"), and {{business_name}}, represented by {{client_name}} ("Test signer"). It is solely for testing Wolin's document signing, Stripe checkout, and payment status in the admin portal.
 
-15. GENERAL TERMS
+1. ONE-TIME TEST PAYMENT
 
-The parties will first try in good faith to resolve a dispute through direct discussion. The laws of the state where Provider principally resides on the Effective Date govern this Agreement unless the parties agree otherwise in writing. This Agreement and written add-ons are the entire agreement about these services and replace prior discussions on the same subject. Changes must be in writing and accepted by both parties. If one provision is unenforceable, the rest remains effective. Notices may be sent by email. Signatures in counterparts and electronic signatures are effective, and an electronic copy may be treated as an original.
+After signing, Test signer may complete a real, one-time Stripe payment of {{price}}. Signing alone does not charge a payment method. There is no subscription or recurring charge under this agreement.
 
-16. ELECTRONIC SIGNATURE CONSENT
+2. TEST SCOPE
 
-By selecting “I agree” and applying an electronic signature, Client confirms that the signer is authorized to bind the business named above, has reviewed this entire Agreement, consents to use electronic records and signatures, and agrees to the {{package_name}} package at {{price}} per month.`
+The $1 payment is for this checkout test only. It does not purchase, amend, or activate the 90-day Hands-Free Local Sensation, website maintenance, or any marketing service, deliverable, or guarantee. The test is complete when Stripe confirms the payment and the admin portal records it as paid.
 
-const packages = [
+3. ELECTRONIC SIGNATURE
+
+By signing, Test signer confirms that they are authorized to conduct this test for {{business_name}}, have reviewed this agreement, and consent to electronic records and signatures. Test signer may stop before making the payment.
+
+Client: {{business_name}}
+Authorized signer: {{client_name}} ({{client_email}})
+Date prepared: {{date}}`
+
+export const defaultTemplates: DefaultTemplate[] = [
   {
-    id: 'starter-monthly',
-    name: 'Starter Monthly Services Agreement',
-    packageName: 'Starter',
-    price: '$279',
-    subject: 'Your Wolin Starter agreement is ready to sign',
-    scope: `The Starter package covers hands-on Google Business Profile care: a complete profile audit; updates to categories, services, description, attributes, and links where access and platform rules permit; checks of hours, service areas, address, phone, and contact details; review of logo, cover image, and existing photo placement; one profile post per service period; identification of duplicate, suspended, or inaccurate listing issues; and a monthly report with status, local ranking observations, completed work, and recommended next steps.`,
+    id: 'local-sensation-90-day',
+    name: '90-day Hands-Free Local Sensation Agreement',
+    packageName: '90-day Hands-Free Local Sensation',
+    price: '$4,500 one-time, plus applicable tax',
+    subject: 'Your Wolin 90-day offer agreement is ready to sign',
+    body: sensationAgreement,
   },
   {
-    id: 'growth-monthly',
-    name: 'Growth Monthly Services Agreement',
-    packageName: 'Growth',
-    price: '$679',
-    subject: 'Your Wolin Growth agreement is ready to sign',
-    scope: `The Growth package includes everything in Starter, two Google Business Profile posts per service period, a focused website health review, corrections to prioritized broken links and on-page issues, practical mobile and speed improvements, improvements to calls to action and contact paths, local business structured-data and business-information checks, and Google Search Console setup and issue monitoring. Website work is prioritized by likely impact and monthly capacity; not every identified issue or page will necessarily be completed in one service period.`,
+    id: 'local-sensation-90-day-installments',
+    name: '90-day Hands-Free Local Sensation Agreement — 3 payments',
+    packageName: '90-day Hands-Free Local Sensation — 3 payments',
+    price: '$1,500/month × 3 ($4,500 total) + applicable tax',
+    subject: 'Your Wolin 90-day offer agreement with monthly payments is ready to sign',
+    body: sensationInstallmentsAgreement,
   },
   {
-    id: 'authority-monthly',
-    name: 'Authority Monthly Services Agreement',
-    packageName: 'Authority',
-    price: '$1,279',
-    subject: 'Your Wolin Authority agreement is ready to sign',
-    scope: `The Authority package includes everything in Growth plus a full website and technical SEO audit with a prioritized roadmap; work on crawl, indexing, sitemap, robots, canonical, redirect, structure, internal linking, structured data, and performance issues; keyword, competitor, service, and location research; writing or improvement of prioritized service, location, FAQ, and authority content; conversion-path review; AI visibility auditing across available ChatGPT, Claude, and Google AI experiences; representative customer-prompt testing; and ongoing search and AI visibility monitoring. Search and AI results are snapshots and vary by user, location, device, model, prompt, and date.`,
+    id: 'website-care-monthly',
+    name: 'Website Hosting and Maintenance Agreement',
+    packageName: 'Website hosting and maintenance',
+    price: '$99/month, plus applicable tax',
+    subject: 'Your Wolin website maintenance agreement is ready to sign',
+    body: websiteCareAgreement,
+  },
+  {
+    id: 'standalone-website',
+    name: 'Standalone Website Build and Care Agreement',
+    packageName: 'Standalone website build and care',
+    price: '$299 upfront; $99/month after 30 free days + tax',
+    subject: 'Your Wolin website build and care agreement is ready to sign',
+    body: standaloneWebsiteAgreement,
+  },
+  {
+    id: 'checkout-flow-test-1-dollar',
+    name: 'TEST — $1 Checkout Agreement',
+    packageName: 'TEST — $1 checkout',
+    price: '$1 one-time, plus applicable tax',
+    subject: 'TEST: Your $1 Wolin checkout agreement is ready to sign',
+    body: checkoutTestAgreement,
   },
 ]
-
-export const defaultTemplates: DefaultTemplate[] = packages.map((item) => ({
-  id: item.id,
-  name: item.name,
-  packageName: item.packageName,
-  price: item.price,
-  subject: item.subject,
-  body: agreementBody.replace('{{package_scope}}', item.scope),
-}))

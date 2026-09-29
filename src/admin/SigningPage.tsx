@@ -70,6 +70,7 @@ export default function SigningPage({ token }: { token: string }) {
   const [agreed, setAgreed] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [redirectingToPayment, setRedirectingToPayment] = useState(false)
 
   useEffect(() => {
     signingApi.document(token).then((result) => {
@@ -88,8 +89,18 @@ export default function SigningPage({ token }: { token: string }) {
     setSubmitting(true)
     try {
       const result = await signingApi.sign(token, { signerName, signatureType, signatureData: signatureType === 'typed' ? signerName : signatureData, agreed })
-      setDocument({ ...document, status: 'signed', signedAt: result.signedAt, signatureName: signerName, signatureType, signatureData: signatureType === 'typed' ? signerName : signatureData })
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      setDocument({ ...document, status: 'signed', signedAt: result.signedAt, signatureName: signerName, signatureType, signatureData: signatureType === 'typed' ? signerName : signatureData, paymentUrl: result.paymentUrl })
+      if (result.paymentUrl) {
+        setRedirectingToPayment(true)
+        try {
+          window.location.assign(result.paymentUrl)
+        } catch {
+          setRedirectingToPayment(false)
+          setSubmitError('Your signature was saved. Use Continue to payment to finish.')
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Unable to save your signature.')
     } finally { setSubmitting(false) }
@@ -104,7 +115,7 @@ export default function SigningPage({ token }: { token: string }) {
 
   return <div className="ws-shell">
     <header className="ws-header"><div className="ws-brand"><span>W</span><strong>wolin</strong><em>sign</em></div><div className="ws-secure"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Secure document</div></header>
-    {completed && <div className="ws-complete-banner"><span><CheckIcon size={21} /></span><div><strong>All done — your signature is complete.</strong><p>A confirmation has been emailed to {document.recipientEmail}.</p></div><a href={pdfUrl} onClick={(event) => { if (demoMode) event.preventDefault() }}>Download signed PDF</a></div>}
+    {completed && <div className="ws-complete-banner"><span><CheckIcon size={21} /></span><div><strong>Your signature is complete.</strong><p>{redirectingToPayment ? 'Opening secure payment…' : document.paymentUrl ? 'If payment is still due, continue to secure checkout.' : `A confirmation will be emailed to ${document.recipientEmail}.`}</p></div>{document.paymentUrl ? <a href={document.paymentUrl}>Continue to payment</a> : <a href={pdfUrl} onClick={(event) => { if (demoMode) event.preventDefault() }}>Download signed PDF</a>}</div>}
     {unavailable && <div className="ws-unavailable"><strong>This document is {document.status}.</strong><span>It can no longer be signed. Contact the sender if you need a new link.</span></div>}
     <main className="ws-main">
       <article className="ws-document">
@@ -115,7 +126,7 @@ export default function SigningPage({ token }: { token: string }) {
       <aside className="ws-sign-panel">
         <div className="ws-sign-sticky">
           <span className="ws-step">{completed ? 'Completed document' : 'Your signature'}</span>
-          {completed ? <div className="ws-signed-summary"><span className="ws-big-check"><CheckIcon size={28} /></span><h2>Signed by {document.signatureName}</h2><p>{document.signedAt ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'short' }).format(new Date(document.signedAt)) : ''}</p><div className={document.signatureType === 'typed' ? 'ws-typed-signature' : 'ws-drawn-saved'}>{document.signatureType === 'drawn' && document.signatureData ? <img src={document.signatureData} alt={`Signature of ${document.signatureName}`} /> : document.signatureName}</div><a className="ws-download" href={pdfUrl} onClick={(event) => { if (demoMode) event.preventDefault() }}>Download signed PDF <span>↓</span></a></div> : unavailable ? <div className="ws-closed-summary"><h2>Signature unavailable</h2><p>This link is no longer active.</p></div> : <>
+          {completed ? <div className="ws-signed-summary"><span className="ws-big-check"><CheckIcon size={28} /></span><h2>Signed by {document.signatureName}</h2><p>{document.signedAt ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'short' }).format(new Date(document.signedAt)) : ''}</p><div className={document.signatureType === 'typed' ? 'ws-typed-signature' : 'ws-drawn-saved'}>{document.signatureType === 'drawn' && document.signatureData ? <img src={document.signatureData} alt={`Signature of ${document.signatureName}`} /> : document.signatureName}</div>{document.paymentUrl && <a className="ws-payment-link" href={document.paymentUrl}>Continue to secure payment <span>↗</span></a>}<a className="ws-download" href={pdfUrl} onClick={(event) => { if (demoMode) event.preventDefault() }}>Download signed PDF <span>↓</span></a></div> : unavailable ? <div className="ws-closed-summary"><h2>Signature unavailable</h2><p>This link is no longer active.</p></div> : <>
             <h2>Review and sign</h2><p className="ws-sign-intro">Please confirm your identity and apply your electronic signature.</p>
             <label className="ws-label">Full legal name<input value={signerName} onChange={(event) => setSignerName(event.target.value)} autoComplete="name" /></label>
             <div className="ws-signature-tabs"><button className={signatureType === 'typed' ? 'active' : ''} onClick={() => setSignatureType('typed')}>Type</button><button className={signatureType === 'drawn' ? 'active' : ''} onClick={() => setSignatureType('drawn')}>Draw</button></div>
@@ -123,6 +134,7 @@ export default function SigningPage({ token }: { token: string }) {
             <label className="ws-consent"><input type="checkbox" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} /><span><i><CheckIcon size={13} /></i>{document.consentText}</span></label>
             {submitError && <p className="ws-error">{submitError}</p>}
             <button className="ws-sign-button" onClick={sign} disabled={submitting}>{submitting ? 'Applying signature…' : 'Agree & sign'}<CheckIcon /></button>
+            {document.paymentRequired && <p className="ws-checkout-note">After signing, you’ll continue to secure Stripe checkout for the payment described in this agreement.</p>}
             <p className="ws-fine-print">By signing, you confirm you are authorized to enter this agreement for {document.businessName}. Your time, IP address, device information, and document hash will be recorded in the audit trail.</p>
           </>}
         </div>

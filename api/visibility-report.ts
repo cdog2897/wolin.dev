@@ -6,6 +6,7 @@ type RequestBody = {
   website?: unknown
   phone?: unknown
   company?: unknown
+  business_name?: unknown
   service?: unknown
   message?: unknown
 }
@@ -96,9 +97,10 @@ export default async function handler(request: ApiRequest, response: ApiResponse
   const email = getText(body.email)
   const website = getText(body.website)
   const phone = getText(body.phone)
+  const businessName = getText(body.business_name)
   const service = getText(body.service)
   const message = getText(body.message)
-  const fields = [name, email, website, phone, service]
+  const fields = [name, email, website, phone, service, businessName]
 
   if (!name || !email || fields.some((field) => field.length > MAX_FIELD_LENGTH) || message.length > 2000) {
     return response.status(400).json({ error: 'Please enter your name and email.' })
@@ -118,6 +120,7 @@ export default async function handler(request: ApiRequest, response: ApiResponse
   const safeEmail = escapeHtml(email)
   const safeWebsite = escapeHtml(website)
   const safePhone = escapeHtml(phone)
+  const safeBusinessName = escapeHtml(businessName)
   const safeService = escapeHtml(service)
   const safeMessage = escapeHtml(message)
 
@@ -131,11 +134,12 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       from: 'Wolin Contact <reports@wolin.dev>',
       to: ['caleb.wolin@gmail.com'],
       reply_to: email,
-      subject: `New website inquiry — ${name}`,
+      subject: `New 90-day offer qualification request — ${name}`,
       text: [
-        'A new client sent a website inquiry.',
+        'A local business asked to qualify for the 90-day Hands-Free Local Sensation.',
         '',
         `Name: ${name}`,
+        `Business: ${businessName}`,
         `Email: ${email}`,
         `Business website: ${website}`,
         `Phone: ${phone}`,
@@ -143,9 +147,10 @@ export default async function handler(request: ApiRequest, response: ApiResponse
         `Message: ${message}`,
       ].join('\n'),
       html: `
-        <h1>New website inquiry</h1>
+        <h1>New 90-day offer qualification request</h1>
         <table cellpadding="8" cellspacing="0" style="border-collapse: collapse; font-family: sans-serif;">
           <tr><th align="left">Name</th><td>${safeName}</td></tr>
+          <tr><th align="left">Business</th><td>${safeBusinessName}</td></tr>
           <tr><th align="left">Email</th><td><a href="mailto:${safeEmail}">${safeEmail}</a></td></tr>
           <tr><th align="left">Business website</th><td><a href="${safeWebsite}">${safeWebsite}</a></td></tr>
           <tr><th align="left">Phone</th><td><a href="tel:${safePhone}">${safePhone}</a></td></tr>
