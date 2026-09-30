@@ -123,6 +123,8 @@ export default async function handler(request: ApiRequest, response: ApiResponse
   const safeBusinessName = escapeHtml(businessName)
   const safeService = escapeHtml(service)
   const safeMessage = escapeHtml(message)
+  const qualification = service === '90-day Hands-Free Local Sensation qualification'
+  const inquiryTitle = qualification ? 'New 90-day offer qualification request' : 'New Wolin offer inquiry'
 
   const resendResponse = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -134,9 +136,9 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       from: 'Wolin Contact <reports@wolin.dev>',
       to: ['caleb.wolin@gmail.com'],
       reply_to: email,
-      subject: `New 90-day offer qualification request — ${name}`,
+      subject: `${inquiryTitle} — ${name}`,
       text: [
-        'A local business asked to qualify for the 90-day Hands-Free Local Sensation.',
+        qualification ? 'A local business asked to qualify for the 90-day Hands-Free Local Sensation.' : 'A local business asked about a Wolin offer or custom quote.',
         '',
         `Name: ${name}`,
         `Business: ${businessName}`,
@@ -147,7 +149,7 @@ export default async function handler(request: ApiRequest, response: ApiResponse
         `Message: ${message}`,
       ].join('\n'),
       html: `
-        <h1>New 90-day offer qualification request</h1>
+        <h1>${inquiryTitle}</h1>
         <table cellpadding="8" cellspacing="0" style="border-collapse: collapse; font-family: sans-serif;">
           <tr><th align="left">Name</th><td>${safeName}</td></tr>
           <tr><th align="left">Business</th><td>${safeBusinessName}</td></tr>

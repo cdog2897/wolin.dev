@@ -1,3 +1,5 @@
+import { socialTemplates } from './social-templates.js'
+
 export type DefaultTemplate = {
   id: string
   name: string
@@ -5,6 +7,7 @@ export type DefaultTemplate = {
   price: string
   subject: string
   body: string
+  active?: boolean
 }
 
 const sensationAgreement = `90-DAY HANDS-FREE LOCAL SENSATION AGREEMENT
@@ -145,6 +148,7 @@ Authorized signer: {{client_name}} ({{client_email}})
 Date prepared: {{date}}`
 
 export const defaultTemplates: DefaultTemplate[] = [
+  ...socialTemplates,
   {
     id: 'local-sensation-90-day',
     name: '90-day Hands-Free Local Sensation Agreement',
@@ -152,6 +156,7 @@ export const defaultTemplates: DefaultTemplate[] = [
     price: '$4,500 one-time, plus applicable tax',
     subject: 'Your Wolin 90-day offer agreement is ready to sign',
     body: sensationAgreement,
+    active: false,
   },
   {
     id: 'local-sensation-90-day-installments',
@@ -160,6 +165,7 @@ export const defaultTemplates: DefaultTemplate[] = [
     price: '$1,500/month × 3 ($4,500 total) + applicable tax',
     subject: 'Your Wolin 90-day offer agreement with monthly payments is ready to sign',
     body: sensationInstallmentsAgreement,
+    active: false,
   },
   {
     id: 'website-care-monthly',
@@ -184,5 +190,6 @@ export const defaultTemplates: DefaultTemplate[] = [
     price: '$1 one-time, plus applicable tax',
     subject: 'TEST: Your $1 Wolin checkout agreement is ready to sign',
     body: checkoutTestAgreement,
+    active: false,
   },
 ]

@@ -41,6 +41,7 @@ export async function ensureSchema() {
       price: template.price,
       subject: template.subject,
       body: template.body,
+      active: template.active ?? true,
     }))
     const { error: seedError } = await supabase.from('signing_templates').upsert(rows, { onConflict: 'id', ignoreDuplicates: true })
     assertDb(seedError, 'Unable to seed signing templates')

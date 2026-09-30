@@ -14,10 +14,15 @@ const signingMatch = currentPath.match(/^\/sign\/([^/]+)$/)
 const legacyAdminSigningLink = adminHost && signingMatch
 const portfolioPath = currentPath === '/calebwolin'
 const sampleAuditPath = currentPath === '/sample'
-const offerPath = currentPath === '/90-day-hands-free-local-sensation'
+const retiredOfferPath = currentPath === '/90-day-hands-free-local-sensation'
+const offersPath = currentPath === '/offers'
 
 if (legacyAdminSigningLink) {
   window.location.replace(`https://wolin.dev${window.location.pathname}${window.location.search}${window.location.hash}`)
+}
+
+if (retiredOfferPath && !adminHost) {
+  window.location.replace(`/offers${window.location.search}`)
 }
 
 if (signingMatch) {
@@ -46,19 +51,22 @@ if (signingMatch) {
     'content',
     'See how Wolin evaluates Google Business Profile, website, local search, conversion, and AI visibility for a small business.',
   )
-} else if (offerPath) {
-  document.title = '90-day Hands-Free Local Sensation — Wolin'
-  document.querySelector('meta[name="description"]')?.setAttribute(
-    'content',
-    'A hands-free 90-day local marketing program with a free custom website and a 10,000 views and impressions guarantee.',
-  )
+} else if (offersPath) {
+  document.title = 'Offers — Wolin'
+  const description = 'Explore Wolin’s 90-day social media program, monthly social media plans, custom websites, and services by custom quote for local businesses.'
+  document.querySelector('meta[name="description"]')?.setAttribute('content', description)
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', document.title)
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', description)
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', 'https://wolin.dev/offers')
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', document.title)
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', description)
 } else {
   document.title = 'Wolin — Local Growth for Small Businesses'
 }
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {legacyAdminSigningLink ? null : signingMatch ? (
+    {legacyAdminSigningLink || (retiredOfferPath && !adminHost) ? null : signingMatch ? (
       <SigningPage token={decodeURIComponent(signingMatch[1])} />
     ) : adminHost || adminPreviewPath ? (
       <AdminPortal />
@@ -67,7 +75,7 @@ createRoot(document.getElementById('root')!).render(
     ) : sampleAuditPath ? (
       <SampleAudit />
     ) : (
-      <BusinessSite page={offerPath ? 'offer' : 'home'} />
+      <BusinessSite page={offersPath ? 'offers' : 'home'} />
     )}
   </StrictMode>,
 )

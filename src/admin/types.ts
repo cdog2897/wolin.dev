@@ -38,6 +38,13 @@ export type Envelope = {
   stripe_checkout_session_id?: string | null
   stripe_payment_intent_id?: string | null
   stripe_subscription_id?: string | null
+  stripe_subscription_status?: string | null
+  subscription_current_period_end?: string | null
+  subscription_cancel_at_period_end?: boolean
+  stripe_last_invoice_id?: string | null
+  stripe_last_invoice_status?: string | null
+  last_invoice_amount_total?: number | null
+  last_invoice_paid_at?: string | null
   stripe_customer_id?: string | null
   stripe_payment_link_id?: string | null
   document_body?: string
@@ -87,4 +94,5 @@ export type SigningDocument = {
   consentText: string
   paymentRequired: boolean
   paymentUrl: string | null
+  billingPortalUrl?: string | null
 }

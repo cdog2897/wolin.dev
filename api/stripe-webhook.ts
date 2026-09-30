@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import { assertDb, db } from './_lib/db.js'
 import { matchesPaymentReference, paymentOffers } from './_lib/payment-links.js'
 import { customerForFirstPayment, ensureInvoiceSchedule, INSTALLMENT_COUNT, INSTALLMENT_TEMPLATE_ID, paidLaterInvoices, scheduleForSubscription, scheduleMatchesEnvelope } from './_lib/stripe-installments.js'
+import { isMonthlySocialTemplate, recordSocialSubscription } from './_lib/stripe-social.js'
 
 type CheckoutSession = {
   object?: string
@@ -9,6 +10,7 @@ type CheckoutSession = {
   client_reference_id?: string | null
   payment_link?: string | { id?: string } | null
   payment_status?: string
+  mode?: string
   amount_subtotal?: number | null
   amount_total?: number | null
   currency?: string | null
@@ -52,16 +54,20 @@ async function recordCheckout(event: StripeEvent) {
 
   const supabase = db()
   const { data: envelope, error: readError } = await supabase.from('signing_envelopes')
-    .select('id, template_id, token_hash, status, payment_status, stripe_checkout_session_id, stripe_subscription_id, stripe_customer_id, stripe_last_event_created')
+    .select('id, template_id, token_hash, status, payment_status, stripe_checkout_session_id, stripe_subscription_id, stripe_customer_id, stripe_last_event_created, invoice_last_event_created')
     .eq('id', envelopeId).maybeSingle()
   assertDb(readError, 'Unable to match the Stripe payment')
   if (!envelope || envelope.status !== 'signed' || !matchesPaymentReference(reference, envelope.id, envelope.token_hash)) return
 
   const offer = paymentOffers[String(envelope.template_id)]
   if (!offer || stripeId(session.payment_link) !== offer.linkId || session.currency?.toLowerCase() !== 'usd' || session.amount_subtotal !== offer.subtotal) return
+  if (isMonthlySocialTemplate(envelope.template_id) && (session.mode !== 'subscription' || !stripeId(session.subscription))) return
+  if (envelope.template_id === 'local-virality-90-day' && (session.mode !== 'payment' || stripeId(session.subscription))) return
+  if (envelope.stripe_subscription_id && envelope.stripe_subscription_id !== stripeId(session.subscription)) return
 
   const eventCreated = Number(event.created) || 0
   if (!eventCreated || !event.id) return
+  if (isMonthlySocialTemplate(envelope.template_id) && Number(envelope.invoice_last_event_created) >= eventCreated) return
   const paid = event.type === 'checkout.session.async_payment_succeeded' || (event.type === 'checkout.session.completed' && session.payment_status === 'paid')
   const failed = event.type === 'checkout.session.async_payment_failed'
   if (envelope.template_id === INSTALLMENT_TEMPLATE_ID) {
@@ -123,6 +129,7 @@ async function recordCheckout(event: StripeEvent) {
     paid_at: paid ? new Date(eventCreated * 1000).toISOString() : null,
     stripe_last_event_id: event.id,
     stripe_last_event_created: eventCreated,
+    ...(isMonthlySocialTemplate(envelope.template_id) && paid ? { stripe_subscription_status: 'active' } : {}),
   }
   let query = supabase.from('signing_envelopes').update(update).eq('id', envelopeId).eq('status', 'signed')
   if (!paid) query = query.neq('payment_status', 'paid').lte('stripe_last_event_created', eventCreated)
@@ -137,9 +144,15 @@ async function recordInstallmentInvoice(event: StripeEvent) {
   if (invoice?.object !== 'invoice' || !invoice.id) return
   const subscriptionId = stripeId(invoice.parent?.subscription_details?.subscription ?? invoice.subscription)
   if (!subscriptionId) return
+  const supabase = db()
+  const customerId = stripeId(invoice.customer)
+  if (!customerId) return
+  const { data: installmentAgreements, error: matchError } = await supabase.from('signing_envelopes')
+    .select('id').eq('template_id', INSTALLMENT_TEMPLATE_ID).eq('stripe_customer_id', customerId).eq('status', 'signed').limit(1)
+  assertDb(matchError, 'Unable to match the installment customer')
+  if (!installmentAgreements?.length) return
   const schedule = await scheduleForSubscription(subscriptionId)
   if (!schedule) return
-  const supabase = db()
   const { data: envelope, error: readError } = await supabase.from('signing_envelopes')
     .select('id, template_id, status, stripe_subscription_id, stripe_subscription_schedule_id, stripe_customer_id, first_payment_amount_total')
     .eq('stripe_subscription_schedule_id', schedule.id).maybeSingle()
@@ -177,6 +190,7 @@ export default {
       const event = JSON.parse(body.toString('utf8')) as StripeEvent
       await recordCheckout(event)
       await recordInstallmentInvoice(event)
+      await recordSocialSubscription(event)
       return Response.json({ received: true })
     } catch (error) {
       console.error('Unable to process Stripe payment notification.', error)

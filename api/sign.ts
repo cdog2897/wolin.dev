@@ -4,6 +4,8 @@ import { bodyObject, header, isSameOrigin, methodNotAllowed, noStore, queryValue
 import { createSignedPdf } from './_lib/pdf.js'
 import { paymentUrlForEnvelope } from './_lib/payment-links.js'
 import { INSTALLMENT_TEMPLATE_ID } from './_lib/stripe-installments.js'
+import { isMonthlySocialTemplate } from './_lib/stripe-social.js'
+import { customerBillingUrl } from '../shared/customer-billing.js'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com'
 const EMAIL_FROM = process.env.SIGNING_FROM_EMAIL || 'Wolin <reports@wolin.dev>'
@@ -93,7 +95,8 @@ async function getDocument(request: ApiRequest, response: ApiResponse, token: st
       signatureData: envelope.status === 'signed' ? envelope.signature_data : null,
       consentText: CONSENT_TEXT,
       paymentRequired: paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) !== null,
-      paymentUrl: envelope.status === 'signed' && envelope.payment_status !== 'paid' && !(envelope.template_id === INSTALLMENT_TEMPLATE_ID && Number(envelope.installments_paid) > 0)
+      billingPortalUrl: isMonthlySocialTemplate(envelope.template_id) && envelope.stripe_subscription_id ? customerBillingUrl : null,
+      paymentUrl: envelope.status === 'signed' && envelope.payment_status !== 'paid' && !(isMonthlySocialTemplate(envelope.template_id) && envelope.stripe_subscription_id) && !(envelope.template_id === INSTALLMENT_TEMPLATE_ID && Number(envelope.installments_paid) > 0)
         ? paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) : null,
     },
   })

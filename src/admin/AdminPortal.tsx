@@ -45,6 +45,12 @@ function formatDate(value: string | null | undefined, includeTime = false) {
 
 function paymentLabel(envelope: Envelope) {
   if (!envelope.payment_required || envelope.status !== 'signed') return '—'
+  if (envelope.stripe_subscription_status) {
+    if (envelope.stripe_subscription_status === 'canceled') return 'Canceled'
+    if (envelope.payment_status === 'failed') return 'Payment failed'
+    if (envelope.subscription_cancel_at_period_end) return 'Ends this period'
+    return envelope.stripe_subscription_status === 'active' ? 'Active subscription' : envelope.stripe_subscription_status.replaceAll('_', ' ')
+  }
   if ((envelope.payment_installments_expected ?? 1) > 1) {
     if (envelope.payment_status === 'paid') return 'Paid in full'
     if (envelope.payment_status === 'failed') return 'Payment failed'
@@ -69,11 +75,15 @@ function PaymentSummary({ envelope, onRefresh, refreshing }: { envelope: Envelop
   const dueAmount = envelope.payment_due_amount != null
     ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(envelope.payment_due_amount / 100)
     : null
+  const invoiceAmount = envelope.last_invoice_amount_total != null
+    ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(envelope.last_invoice_amount_total / 100)
+    : null
   return <section className="wa-payment-card">
     <div className="wa-section-title"><h3>Stripe payment</h3><PaymentPill envelope={envelope} /></div>
     <button className="wa-payment-refresh" onClick={onRefresh} disabled={refreshing}><Icon name="refresh" size={14} />{refreshing ? 'Refreshing…' : 'Refresh status'}</button>
     <p>{installments > 1 ? envelope.payment_status === 'paid' ? 'Stripe confirmed all three installments.' : envelope.payment_status === 'failed' ? 'Stripe reported that an installment did not complete.' : `${envelope.installments_paid ?? 0} of ${installments} monthly installments confirmed by Stripe.` : envelope.payment_status === 'paid' ? 'Stripe confirmed this payment.' : envelope.payment_status === 'processing' ? 'Checkout finished, but Stripe is still processing the payment.' : envelope.payment_status === 'failed' ? 'Stripe reported that the payment did not complete.' : envelope.payment_status === 'refunded' ? 'Stripe reported a refund.' : 'The agreement is signed. No payment has been confirmed by Stripe.'}</p>
     {installments > 1 && (envelope.installments_paid ?? 0) > 0 && !envelope.stripe_subscription_schedule_id && <p>The later invoice requests have not yet been scheduled. Check the Stripe webhook before treating this plan as active.</p>}
+    {envelope.stripe_subscription_status && <p>Subscription: {envelope.stripe_subscription_status.replaceAll('_', ' ')}.{envelope.subscription_cancel_at_period_end ? ' Cancellation is scheduled at the end of the current billing period.' : ' Future billing follows the subscription in Stripe.'}</p>}
     {(amount || dueAmount || envelope.paid_at || envelope.stripe_checkout_session_id) && <dl>
       {amount && <div><dt>{installments > 1 ? 'Collected to date' : 'Checkout total'}</dt><dd>{amount}</dd></div>}
       {dueAmount && (installments > 1 || !amount) && <div><dt>{installments > 1 ? 'Plan total before tax' : 'Due before tax'}</dt><dd>{dueAmount}</dd></div>}
@@ -81,6 +91,9 @@ function PaymentSummary({ envelope, onRefresh, refreshing }: { envelope: Envelop
       {envelope.stripe_checkout_session_id && <div><dt>Checkout</dt><dd>{envelope.stripe_checkout_session_id}</dd></div>}
       {envelope.stripe_payment_intent_id && <div><dt>Payment</dt><dd><a href={`https://dashboard.stripe.com/payments/${encodeURIComponent(envelope.stripe_payment_intent_id)}`} target="_blank" rel="noreferrer">View in Stripe ↗</a></dd></div>}
       {envelope.stripe_subscription_id && <div><dt>Subscription</dt><dd><a href={`https://dashboard.stripe.com/subscriptions/${encodeURIComponent(envelope.stripe_subscription_id)}`} target="_blank" rel="noreferrer">View in Stripe ↗</a></dd></div>}
+      {envelope.subscription_current_period_end && <div><dt>{envelope.subscription_cancel_at_period_end ? 'Service ends' : 'Current period ends'}</dt><dd>{formatDate(envelope.subscription_current_period_end, true)}</dd></div>}
+      {envelope.stripe_last_invoice_id && <div><dt>Latest invoice</dt><dd><a href={`https://dashboard.stripe.com/invoices/${encodeURIComponent(envelope.stripe_last_invoice_id)}`} target="_blank" rel="noreferrer">{envelope.stripe_last_invoice_status?.replaceAll('_', ' ')}{invoiceAmount ? ` · ${invoiceAmount}` : ''} ↗</a></dd></div>}
+      {envelope.last_invoice_paid_at && <div><dt>Latest invoice paid</dt><dd>{formatDate(envelope.last_invoice_paid_at, true)}</dd></div>}
       {envelope.stripe_subscription_schedule_id && <div><dt>Payment schedule</dt><dd>{envelope.stripe_subscription_schedule_id}</dd></div>}
       {envelope.stripe_customer_id && <div><dt>Customer</dt><dd><a href={`https://dashboard.stripe.com/customers/${encodeURIComponent(envelope.stripe_customer_id)}`} target="_blank" rel="noreferrer">View in Stripe ↗</a></dd></div>}
     </dl>}
@@ -273,7 +286,7 @@ export default function AdminPortal() {
 
   const title: Record<View, string> = { overview: 'Good morning, Caleb.', documents: 'Documents', templates: 'Templates', settings: 'Settings' }
   const subtitle: Record<View, string> = { overview: 'Here’s what’s happening with your agreements.', documents: 'Track every agreement from draft to signature.', templates: 'Reusable agreements for your current offers.', settings: 'Security and workspace preferences.' }
-  const quickSendTemplates = ['local-sensation-90-day', 'local-sensation-90-day-installments', 'standalone-website', 'website-care-monthly']
+  const quickSendTemplates = ['local-virality-90-day', 'social-momentum-monthly', 'social-growth-monthly', 'social-presence-monthly', 'standalone-website', 'website-care-monthly']
     .map((id) => templates.find((template) => template.id === id))
     .filter((template): template is Template => Boolean(template))
 

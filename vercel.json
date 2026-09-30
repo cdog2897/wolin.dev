@@ -1,13 +1,52 @@
 {
   "rewrites": [
-    { "source": "/calebwolin", "destination": "/index.html" },
-    { "source": "/calebwolin/", "destination": "/index.html" },
-    { "source": "/sample", "destination": "/index.html" },
-    { "source": "/sample/", "destination": "/index.html" },
-    { "source": "/90-day-hands-free-local-sensation", "destination": "/index.html" },
-    { "source": "/90-day-hands-free-local-sensation/", "destination": "/index.html" },
-    { "source": "/admin", "destination": "/index.html" },
-    { "source": "/admin/", "destination": "/index.html" },
-    { "source": "/sign/(.*)", "destination": "/index.html" }
+    {
+      "source": "/offers",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/offers/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/calebwolin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/calebwolin/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sample",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sample/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sign/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/90-day-hands-free-local-sensation",
+      "destination": "/offers",
+      "permanent": true
+    },
+    {
+      "source": "/90-day-hands-free-local-sensation/",
+      "destination": "/offers",
+      "permanent": true
+    }
   ]
 }

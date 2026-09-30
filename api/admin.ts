@@ -140,7 +140,7 @@ async function envelopes(request: ApiRequest, response: ApiResponse) {
   }
   const { data, error } = await supabase
     .from('signing_envelopes')
-    .select('id, template_id, recipient_name, recipient_email, business_name, document_title, status, expires_at, created_at, sent_at, viewed_at, signed_at, voided_at, payment_status, paid_at, installments_paid')
+    .select('id, template_id, recipient_name, recipient_email, business_name, document_title, status, expires_at, created_at, sent_at, viewed_at, signed_at, voided_at, payment_status, paid_at, installments_paid, stripe_subscription_id, stripe_subscription_status, subscription_cancel_at_period_end')
     .order('created_at', { ascending: false })
     .limit(250)
   assertDb(error, 'Unable to load documents')

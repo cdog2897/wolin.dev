@@ -1,8 +1,37 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
+import { socialOffers } from '../../shared/social-offers.js'
 
-export type PaymentOffer = { url: string; linkId: string; subtotal: number; total?: number; installments?: number }
+export type PaymentOffer = { url: string; linkId: string; subtotal: number; total?: number; installments?: number; cadence?: 'one_time' | 'monthly'; priceId?: string; productId?: string }
+
+const socialPaymentLinks: Record<string, Omit<PaymentOffer, 'subtotal'>> = {
+  'local-virality-90-day': {
+    url: 'https://buy.stripe.com/6oUbJ0fxi3Pj0QR3Ls0ZW06',
+    linkId: 'plink_1ULBttAUfC4vfcET4Ck87uvI',
+    productId: 'prod_VLtd77VFuium2O',
+    priceId: 'price_1ULBpyAUfC4vfcETZGOAOWZB',
+  },
+  'social-momentum-monthly': {
+    url: 'https://buy.stripe.com/bJebJ084Q85zgPP5TA0ZW07',
+    linkId: 'plink_1ULBxXAUfC4vfcETTVqdXiM0',
+    productId: 'prod_VLteGlY3qrjsQ2',
+    priceId: 'price_1ULBr8AUfC4vfcETeeMdFpRE',
+  },
+  'social-growth-monthly': {
+    url: 'https://buy.stripe.com/6oUfZg2KwetX4331Dk0ZW08',
+    linkId: 'plink_1ULC2YAUfC4vfcETchR6NU2b',
+    productId: 'prod_VLtfwkuYg9cgXf',
+    priceId: 'price_1ULBs4AUfC4vfcETyU3hylCI',
+  },
+  'social-presence-monthly': {
+    url: 'https://buy.stripe.com/3cI9AS1GsbhL1UVbdU0ZW09',
+    linkId: 'plink_1ULC5wAUfC4vfcETza3Hracy',
+    productId: 'prod_VLtgUYBDWaobJ6',
+    priceId: 'price_1ULBshAUfC4vfcETIziLqF7t',
+  },
+}
 
 export const paymentOffers: Record<string, PaymentOffer> = {
+  ...Object.fromEntries(socialOffers.map(offer => [offer.templateId, { ...socialPaymentLinks[offer.templateId], subtotal: offer.amount, cadence: offer.cadence }])),
   'local-sensation-90-day': {
     url: 'https://buy.stripe.com/dRm3cucl60D7fLLa9Q0ZW01',
     linkId: 'plink_1UJKEtAUfC4vfcETORJfDVOB',
