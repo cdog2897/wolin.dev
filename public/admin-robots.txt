@@ -1,2 +1,8 @@
+# Search engines must be able to fetch the empty shell to observe noindex.
+User-agent: Googlebot
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+
 User-agent: *
 Disallow: /
