@@ -1,5 +1,5 @@
 import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import BusinessSite from './BusinessSite.tsx'
@@ -64,7 +64,8 @@ if (signingMatch) {
   document.title = 'Wolin — Local Growth for Small Businesses'
 }
 
-createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root')!
+const app = (
   <StrictMode>
     {legacyAdminSigningLink || (retiredOfferPath && !adminHost) ? null : signingMatch ? (
       <SigningPage token={decodeURIComponent(signingMatch[1])} />
@@ -77,5 +78,11 @@ createRoot(document.getElementById('root')!).render(
     ) : (
       <BusinessSite page={offersPath ? 'offers' : 'home'} />
     )}
-  </StrictMode>,
+  </StrictMode>
 )
+
+if (!adminHost && root.dataset.prerendered === currentPath) {
+  hydrateRoot(root, app)
+} else {
+  createRoot(root).render(app)
+}

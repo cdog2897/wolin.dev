@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && npm run typecheck:api && vite build",
+    "build": "tsc -b && npm run typecheck:api && vite build && node scripts/prerender.mjs",
     "typecheck:api": "tsc -p tsconfig.api.json",
     "test": "tsc -p tsconfig.api.json --noEmit false --outDir node_modules/.tmp/api-tests --rootDir . && node --test tests/*.test.mjs",
     "lint": "eslint .",

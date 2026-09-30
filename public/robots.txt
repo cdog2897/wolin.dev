@@ -1,0 +1,19 @@
+# Public search discovery. Private URLs remain outside the sitemap.
+# Crawlers may fetch private pages to see noindex; server authentication protects data.
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# AI search is independent of permission to train generative models.
+User-agent: OAI-SearchBot
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /sign/
+Disallow: /sample
+
+User-agent: GPTBot
+Disallow: /
+
+Sitemap: https://wolin.dev/sitemap.xml

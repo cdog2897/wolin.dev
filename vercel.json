@@ -1,52 +1,84 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/offers",
-      "destination": "/index.html"
+      "src": "^/offers/index\\.html$",
+      "headers": {
+        "Location": "/offers"
+      },
+      "status": 308
     },
     {
-      "source": "/offers/",
-      "destination": "/index.html"
+      "src": "^/90-day-hands-free-local-sensation/?$",
+      "headers": {
+        "Location": "/offers"
+      },
+      "status": 308
     },
     {
-      "source": "/calebwolin",
-      "destination": "/index.html"
+      "src": "^/.*$",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.dev"
+        }
+      ],
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow"
+      },
+      "continue": true
     },
     {
-      "source": "/calebwolin/",
-      "destination": "/index.html"
+      "src": "^/(admin|admin-preview|sign|sample|api)(/.*)?$",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow"
+      },
+      "continue": true
     },
     {
-      "source": "/sample",
-      "destination": "/index.html"
+      "src": "^/(private-shell|app-shell)\\.html$",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow"
+      },
+      "continue": true
     },
     {
-      "source": "/sample/",
-      "destination": "/index.html"
+      "src": "^/robots\\.txt$",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.dev"
+        }
+      ],
+      "dest": "/admin-robots.txt"
     },
     {
-      "source": "/admin",
-      "destination": "/index.html"
+      "src": "^/(offers/?)?$",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.dev"
+        }
+      ],
+      "dest": "/private-shell.html"
     },
     {
-      "source": "/admin/",
-      "destination": "/index.html"
+      "src": "^/offers/?$",
+      "dest": "/offers/index.html"
     },
     {
-      "source": "/sign/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/90-day-hands-free-local-sensation",
-      "destination": "/offers",
-      "permanent": true
+      "src": "^/calebwolin/?$",
+      "dest": "/app-shell.html"
     },
     {
-      "source": "/90-day-hands-free-local-sensation/",
-      "destination": "/offers",
-      "permanent": true
+      "src": "^/(admin|sample)/?$",
+      "dest": "/private-shell.html"
+    },
+    {
+      "src": "^/sign/(.*)$",
+      "dest": "/private-shell.html"
+    },
+    {
+      "handle": "filesystem"
     }
   ]
 }
