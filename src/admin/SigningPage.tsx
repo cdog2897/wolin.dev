@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { demoMode, signingApi } from './api'
 import type { SigningDocument } from './types'
+import ReservationNotice from './ReservationNotice'
 import './admin.css'
+
+function reservationCheckoutLabel(reservation?: SigningDocument['reservation']) {
+  if (!reservation) return 'Continue to secure payment'
+  return reservation.state.startsWith('deposit') ? 'Pay $300 reservation deposit' : 'Pay $3,199 program balance'
+}
 
 function CheckIcon({ size = 18 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 4 4L19 6" /></svg>
@@ -71,6 +77,15 @@ export default function SigningPage({ token }: { token: string }) {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [redirectingToPayment, setRedirectingToPayment] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+
+  async function refreshPayment() {
+    setRefreshing(true)
+    setSubmitError('')
+    try { setDocument((await signingApi.document(token)).document) }
+    catch { setSubmitError('Could not refresh payment status. Please try again.') }
+    finally { setRefreshing(false) }
+  }
 
   useEffect(() => {
     signingApi.document(token).then((result) => {
@@ -115,7 +130,7 @@ export default function SigningPage({ token }: { token: string }) {
 
   return <div className="ws-shell">
     <header className="ws-header"><div className="ws-brand"><span>W</span><strong>wolin</strong><em>sign</em></div><div className="ws-secure"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Secure document</div></header>
-    {completed && <div className="ws-complete-banner"><span><CheckIcon size={21} /></span><div><strong>Your signature is complete.</strong><p>{redirectingToPayment ? 'Opening secure payment…' : document.paymentUrl ? 'If payment is still due, continue to secure checkout.' : `A confirmation will be emailed to ${document.recipientEmail}.`}</p></div>{document.paymentUrl ? <a href={document.paymentUrl}>Continue to payment</a> : <a href={pdfUrl} onClick={(event) => { if (demoMode) event.preventDefault() }}>Download signed PDF</a>}</div>}
+    {completed && <div className="ws-complete-banner"><span><CheckIcon size={21} /></span><div><strong>Your signature is complete.</strong><p>{redirectingToPayment ? 'Opening secure payment…' : document.reservation ? 'Your reservation and payment details appear below.' : document.paymentUrl ? 'If payment is still due, continue to secure checkout.' : `A confirmation will be emailed to ${document.recipientEmail}.`}</p></div>{document.paymentUrl ? <a href={document.paymentUrl}>{reservationCheckoutLabel(document.reservation)}</a> : <a href={pdfUrl} onClick={(event) => { if (demoMode) event.preventDefault() }}>Download signed PDF</a>}</div>}
     {unavailable && <div className="ws-unavailable"><strong>This document is {document.status}.</strong><span>It can no longer be signed. Contact the sender if you need a new link.</span></div>}
     <main className="ws-main">
       <article className="ws-document">
@@ -125,8 +140,9 @@ export default function SigningPage({ token }: { token: string }) {
       </article>
       <aside className="ws-sign-panel">
         <div className="ws-sign-sticky">
-          <span className="ws-step">{completed ? 'Completed document' : 'Your signature'}</span>
-          {completed ? <div className="ws-signed-summary"><span className="ws-big-check"><CheckIcon size={28} /></span><h2>Signed by {document.signatureName}</h2><p>{document.signedAt ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'short' }).format(new Date(document.signedAt)) : ''}</p><div className={document.signatureType === 'typed' ? 'ws-typed-signature' : 'ws-drawn-saved'}>{document.signatureType === 'drawn' && document.signatureData ? <img src={document.signatureData} alt={`Signature of ${document.signatureName}`} /> : document.signatureName}</div>{document.paymentUrl && <a className="ws-payment-link" href={document.paymentUrl}>Continue to secure payment <span>↗</span></a>}{document.billingPortalUrl && <a className="ws-payment-link" href={document.billingPortalUrl}>Manage billing and invoices <span>↗</span></a>}<a className="ws-download" href={pdfUrl} onClick={(event) => { if (demoMode) event.preventDefault() }}>Download signed PDF <span>↓</span></a></div> : unavailable ? <div className="ws-closed-summary"><h2>Signature unavailable</h2><p>This link is no longer active.</p></div> : <>
+          {document.reservation && !unavailable && <ReservationNotice reservation={document.reservation} onRefresh={() => void refreshPayment()} refreshing={refreshing} completed={completed} />}
+          {completed && submitError && <p className="ws-error" role="alert">{submitError}</p>}<span className="ws-step">{completed ? 'Completed document' : 'Your signature'}</span>
+          {completed ? <div className="ws-signed-summary"><span className="ws-big-check"><CheckIcon size={28} /></span><h2>Signed by {document.signatureName}</h2><p>{document.signedAt ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeStyle: 'short' }).format(new Date(document.signedAt)) : ''}</p><div className={document.signatureType === 'typed' ? 'ws-typed-signature' : 'ws-drawn-saved'}>{document.signatureType === 'drawn' && document.signatureData ? <img src={document.signatureData} alt={`Signature of ${document.signatureName}`} /> : document.signatureName}</div>{document.paymentUrl && <a className="ws-payment-link" href={document.paymentUrl}>{reservationCheckoutLabel(document.reservation)} <span>↗</span></a>}{document.billingPortalUrl && <a className="ws-payment-link" href={document.billingPortalUrl}>Manage billing and invoices <span>↗</span></a>}<a className="ws-download" href={pdfUrl} onClick={(event) => { if (demoMode) event.preventDefault() }}>Download signed PDF <span>↓</span></a></div> : unavailable ? <div className="ws-closed-summary"><h2>Signature unavailable</h2><p>This link is no longer active.</p></div> : <>
             <h2>Review and sign</h2><p className="ws-sign-intro">Please confirm your identity and apply your electronic signature.</p>
             <label className="ws-label">Full legal name<input value={signerName} onChange={(event) => setSignerName(event.target.value)} autoComplete="name" /></label>
             <div className="ws-signature-tabs"><button className={signatureType === 'typed' ? 'active' : ''} onClick={() => setSignatureType('typed')}>Type</button><button className={signatureType === 'drawn' ? 'active' : ''} onClick={() => setSignatureType('drawn')}>Draw</button></div>

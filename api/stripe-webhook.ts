@@ -3,6 +3,7 @@ import { assertDb, db } from './_lib/db.js'
 import { matchesPaymentReference, paymentOffers } from './_lib/payment-links.js'
 import { customerForFirstPayment, ensureInvoiceSchedule, INSTALLMENT_COUNT, INSTALLMENT_TEMPLATE_ID, paidLaterInvoices, scheduleForSubscription, scheduleMatchesEnvelope } from './_lib/stripe-installments.js'
 import { isMonthlySocialTemplate, recordSocialSubscription } from './_lib/stripe-social.js'
+import { recordReservationPayment } from './_lib/reservations.js'
 
 type CheckoutSession = {
   object?: string
@@ -189,6 +190,7 @@ export default {
     try {
       const event = JSON.parse(body.toString('utf8')) as StripeEvent
       await recordCheckout(event)
+      await recordReservationPayment(event)
       await recordInstallmentInvoice(event)
       await recordSocialSubscription(event)
       return Response.json({ received: true })

@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
 import { adminApi, demoMode } from './api'
 import type { AuditEvent, Envelope, EnvelopeStatus, Stats, Template } from './types'
+import { businessDate, RESERVATION_TEMPLATE_ID, type ReservationSummary } from '../../shared/reservation'
 import './admin.css'
 
-type View = 'overview' | 'documents' | 'templates' | 'settings'
+type View = 'overview' | 'documents' | 'reservations' | 'templates' | 'settings'
+
+const reservationLabels: Record<ReservationSummary['state'], string> = {
+  deposit_due: 'Deposit due', deposit_processing: 'Deposit processing', deposit_failed: 'Deposit failed',
+  reserved: 'Reserved', balance_due: 'Balance due', balance_processing: 'Balance processing',
+  balance_failed: 'Balance failed', paid: 'Paid in full', review_required: 'Refund · review needed',
+}
 
 const icons: Record<string, ReactNode> = {
   grid: <><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></>,
@@ -45,6 +52,7 @@ function formatDate(value: string | null | undefined, includeTime = false) {
 
 function paymentLabel(envelope: Envelope) {
   if (!envelope.payment_required || envelope.status !== 'signed') return '—'
+  if (envelope.reservation) return reservationLabels[envelope.reservation.state]
   if (envelope.stripe_subscription_status) {
     if (envelope.stripe_subscription_status === 'canceled') return 'Canceled'
     if (envelope.payment_status === 'failed') return 'Payment failed'
@@ -67,6 +75,21 @@ function PaymentPill({ envelope }: { envelope: Envelope }) {
 }
 
 function PaymentSummary({ envelope, onRefresh, refreshing }: { envelope: Envelope; onRefresh: () => void; refreshing: boolean }) {
+  if (envelope.reservation) return <section className="wa-payment-card">
+    <div className="wa-section-title"><h3>90-day reservation</h3><PaymentPill envelope={envelope} /></div>
+    <button className="wa-payment-refresh" onClick={onRefresh} disabled={refreshing}><Icon name="refresh" size={14} />{refreshing ? 'Refreshing…' : 'Refresh status'}</button>
+    <dl><div><dt>Planned start</dt><dd>{envelope.reservation.startDateLabel}</dd></div><div><dt>Calendar</dt><dd>America/Denver</dd></div>
+      <div><dt>Deposit</dt><dd>$300 · {envelope.reservation_deposit_status ?? 'unpaid'}</dd></div>
+      <div><dt>Program balance</dt><dd>$3,199 · {envelope.payment_status ?? 'unpaid'}</dd></div>
+      <div><dt>Full price before tax</dt><dd>$3,499</dd></div>
+      {envelope.reservation_deposit_paid_at && <div><dt>Deposit confirmed</dt><dd>{formatDate(envelope.reservation_deposit_paid_at, true)}</dd></div>}
+      {envelope.reservation_deposit_intent_id && <div><dt>Deposit in Stripe</dt><dd><a href={`https://dashboard.stripe.com/payments/${encodeURIComponent(envelope.reservation_deposit_intent_id)}`} target="_blank" rel="noreferrer">View payment ↗</a></dd></div>}
+      {envelope.stripe_payment_intent_id && <div><dt>Balance in Stripe</dt><dd><a href={`https://dashboard.stripe.com/payments/${encodeURIComponent(envelope.stripe_payment_intent_id)}`} target="_blank" rel="noreferrer">View payment ↗</a></dd></div>}
+    </dl>
+    <p>The non-refundable deposit is credited once to this reservation. The client returns to their original secure signing link on the planned date to pay the balance. No automatic charge.</p>
+    {envelope.reservation.state === 'review_required' && <p>A payment was refunded. Resolve the reservation with the client before beginning service.</p>}
+    {envelope.reservation_payment_url && <button className="wa-secondary" onClick={() => void navigator.clipboard.writeText(envelope.reservation_payment_url!)}>Copy {envelope.reservation.state.startsWith('deposit') ? 'deposit' : 'balance'} payment link</button>}
+  </section>
   if (!envelope.payment_required || envelope.status !== 'signed') return null
   const installments = envelope.payment_installments_expected ?? 1
   const amount = envelope.payment_amount_total != null && envelope.payment_currency
@@ -156,13 +179,15 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
   </main>
 }
 
-type SendForm = { templateId: string; recipientName: string; recipientEmail: string; businessName: string; message: string; expiresDays: number }
+type SendForm = { templateId: string; recipientName: string; recipientEmail: string; businessName: string; message: string; expiresDays: number; startDate: string }
 
 function SendModal({ templates, initialTemplateId, onClose, onSent }: { templates: Template[]; initialTemplateId?: string; onClose: () => void; onSent: () => void }) {
-  const [form, setForm] = useState<SendForm>({ templateId: initialTemplateId || templates[0]?.id || '', recipientName: '', recipientEmail: '', businessName: '', message: '', expiresDays: 14 })
+  const [form, setForm] = useState<SendForm>({ templateId: initialTemplateId || templates[0]?.id || '', recipientName: '', recipientEmail: '', businessName: '', message: '', expiresDays: 14, startDate: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const selected = templates.find((template) => template.id === form.templateId)
+  const tomorrow = new Date(`${businessDate()}T12:00:00Z`)
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
 
   async function submit(event: FormEvent) {
     event.preventDefault()
@@ -185,6 +210,7 @@ function SendModal({ templates, initialTemplateId, onClose, onSent }: { template
       <form onSubmit={submit}>
         <div className="wa-form-section"><span className="wa-form-step">01</span><div className="wa-form-fields"><h3>Choose a template</h3><label>Agreement<select value={form.templateId} onChange={(event) => setForm({ ...form, templateId: event.target.value })}>{templates.map((template) => <option key={template.id} value={template.id}>{template.name}</option>)}</select></label>{selected && <div className="wa-template-chip"><span>{selected.package_name.slice(0, 1)}</span><div><strong>{selected.package_name}</strong><small>{selected.price}</small></div><Icon name="check" /></div>}</div></div>
         <div className="wa-form-section"><span className="wa-form-step">02</span><div className="wa-form-fields"><h3>Recipient details</h3><div className="wa-field-row"><label>Full name<input required value={form.recipientName} onChange={(event) => setForm({ ...form, recipientName: event.target.value })} placeholder="Maya Chen" /></label><label>Email address<input required type="email" value={form.recipientEmail} onChange={(event) => setForm({ ...form, recipientEmail: event.target.value })} placeholder="maya@company.com" /></label></div><label>Business name<input required value={form.businessName} onChange={(event) => setForm({ ...form, businessName: event.target.value })} placeholder="Juniper Coffee Company" /></label></div></div>
+        {form.templateId === RESERVATION_TEMPLATE_ID && <div className="wa-form-section"><span className="wa-form-step"><Icon name="clock" /></span><div className="wa-form-fields"><h3>Reserve a future start</h3><label>Planned program start date<input type="date" required min={tomorrow.toISOString().slice(0, 10)} value={form.startDate} onChange={event => setForm({ ...form, startDate: event.target.value })} /></label><p className="wa-reservation-note">$300 non-refundable deposit now, credited toward the $3,499 program. The $3,199 balance becomes available on this date (America/Denver). The date is saved in the agreement and cannot be edited after sending.</p></div></div>}
         <div className="wa-form-section"><span className="wa-form-step">03</span><div className="wa-form-fields"><h3>Email note</h3><label>Personal message <span>Optional</span><textarea value={form.message} onChange={(event) => setForm({ ...form, message: event.target.value })} placeholder="Hi Maya, here’s the agreement we discussed. Let me know if you have any questions." rows={3} /></label><label>Link expires<select value={form.expiresDays} onChange={(event) => setForm({ ...form, expiresDays: Number(event.target.value) })}><option value={7}>In 7 days</option><option value={14}>In 14 days</option><option value={30}>In 30 days</option><option value={60}>In 60 days</option></select></label></div></div>
         {error && <p className="wa-form-error wa-modal-error">{error}</p>}
         <footer><button type="button" className="wa-secondary" onClick={onClose}>Cancel</button><button className="wa-primary" disabled={loading || !form.templateId}>{loading ? 'Sending…' : 'Send agreement'}<Icon name="send" /></button></footer>
@@ -203,7 +229,7 @@ function TemplateModal({ template, onClose, onSaved }: { template?: Template; on
     setError('')
     try { await adminApi.saveTemplate(form); onSaved() } catch (caught) { setError(caught instanceof Error ? caught.message : 'Unable to save this template.') } finally { setLoading(false) }
   }
-  return <div className="wa-modal-layer" role="dialog" aria-modal="true" aria-label="Edit template"><button className="wa-modal-backdrop" onClick={onClose} aria-label="Close" /><section className="wa-modal wa-template-modal"><header><div><span className="wa-kicker">Document template</span><h2>{template ? 'Edit template' : 'Create template'}</h2></div><button className="wa-icon-button" onClick={onClose} aria-label="Close"><Icon name="close" /></button></header><form onSubmit={submit}><div className="wa-template-form-grid"><div className="wa-template-meta"><label>Template name<input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></label><div className="wa-field-row"><label>Offer<input required value={form.packageName} onChange={(event) => setForm({ ...form, packageName: event.target.value })} /></label><label>Price and schedule<input required value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} placeholder="Enter agreed price" /></label></div><label>Email subject<input required value={form.subject} onChange={(event) => setForm({ ...form, subject: event.target.value })} /></label><div className="wa-variable-note"><strong>Available variables</strong><span>{'{{client_name}} · {{client_email}} · {{business_name}} · {{package_name}} · {{price}} · {{date}}'}</span></div></div><label className="wa-template-body">Agreement body<textarea required value={form.body} onChange={(event) => setForm({ ...form, body: event.target.value })} /></label></div>{error && <p className="wa-form-error wa-modal-error">{error}</p>}<footer><button type="button" className="wa-secondary" onClick={onClose}>Cancel</button><button className="wa-primary" disabled={loading}>{loading ? 'Saving…' : 'Save template'}<Icon name="check" /></button></footer></form></section></div>
+  return <div className="wa-modal-layer" role="dialog" aria-modal="true" aria-label="Edit template"><button className="wa-modal-backdrop" onClick={onClose} aria-label="Close" /><section className="wa-modal wa-template-modal"><header><div><span className="wa-kicker">Document template</span><h2>{template ? 'Edit template' : 'Create template'}</h2></div><button className="wa-icon-button" onClick={onClose} aria-label="Close"><Icon name="close" /></button></header><form onSubmit={submit}><div className="wa-template-form-grid"><div className="wa-template-meta"><label>Template name<input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></label><div className="wa-field-row"><label>Offer<input required value={form.packageName} onChange={(event) => setForm({ ...form, packageName: event.target.value })} /></label><label>Price and schedule<input required value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} placeholder="Enter agreed price" /></label></div><label>Email subject<input required value={form.subject} onChange={(event) => setForm({ ...form, subject: event.target.value })} /></label><div className="wa-variable-note"><strong>Available variables</strong><span>{'{{client_name}} · {{client_email}} · {{business_name}} · {{package_name}} · {{price}} · {{date}} · {{start_date}}'}</span></div></div><label className="wa-template-body">Agreement body<textarea required value={form.body} onChange={(event) => setForm({ ...form, body: event.target.value })} /></label></div>{error && <p className="wa-form-error wa-modal-error">{error}</p>}<footer><button type="button" className="wa-secondary" onClick={onClose}>Cancel</button><button className="wa-primary" disabled={loading}>{loading ? 'Saving…' : 'Save template'}<Icon name="check" /></button></footer></form></section></div>
 }
 
 function DetailPanel({ id, onClose, onChanged, notify }: { id: string; onClose: () => void; onChanged: () => void; notify: (message: string) => void }) {
@@ -233,7 +259,7 @@ function DetailPanel({ id, onClose, onChanged, notify }: { id: string; onClose: 
 }
 
 function DocumentsTable({ envelopes, onOpen, compact = false }: { envelopes: Envelope[]; onOpen: (id: string) => void; compact?: boolean }) {
-  return <div className="wa-table-wrap"><table className="wa-table"><thead><tr><th>Recipient</th><th>Agreement</th><th>Status</th><th>Payment</th><th>{compact ? 'Updated' : 'Sent'}</th><th aria-label="Actions" /></tr></thead><tbody>{envelopes.map((envelope) => <tr key={envelope.id} onClick={() => onOpen(envelope.id)}><td><div className="wa-person"><span className="wa-avatar">{initials(envelope.recipient_name)}</span><div><strong>{envelope.business_name}</strong><small>{envelope.recipient_name} · {envelope.recipient_email}</small></div></div></td><td><strong>{envelope.document_title.replace(' Monthly Services Agreement', '')}</strong><small>{envelope.document_title}</small></td><td><StatusPill status={envelope.status} /></td><td><PaymentPill envelope={envelope} /></td><td><span className="wa-date">{formatDate(envelope.signed_at || envelope.viewed_at || envelope.sent_at || envelope.created_at)}</span></td><td><button className="wa-icon-button" onClick={(event) => { event.stopPropagation(); onOpen(envelope.id) }} aria-label={`Open ${envelope.business_name}`}><Icon name="arrow" /></button></td></tr>)}</tbody></table>{!envelopes.length && <div className="wa-empty"><span><Icon name="document" size={26} /></span><h3>No documents here</h3><p>Send an agreement or adjust the current filter.</p></div>}</div>
+  return <div className="wa-table-wrap"><table className="wa-table"><thead><tr><th>Recipient</th><th>Agreement</th><th>Status</th><th>Payment</th><th>{compact ? 'Updated' : 'Sent'}</th><th aria-label="Actions" /></tr></thead><tbody>{envelopes.map((envelope) => <tr key={envelope.id} onClick={() => onOpen(envelope.id)}><td><div className="wa-person"><span className="wa-avatar">{initials(envelope.recipient_name)}</span><div><strong>{envelope.business_name}</strong><small>{envelope.recipient_name} · {envelope.recipient_email}</small></div></div></td><td><strong>{envelope.document_title.replace(' Monthly Services Agreement', '')}</strong><small>{envelope.reservation ? `Planned start: ${envelope.reservation.startDateLabel}` : envelope.document_title}</small></td><td><StatusPill status={envelope.status} /></td><td><PaymentPill envelope={envelope} /></td><td><span className="wa-date">{formatDate(envelope.signed_at || envelope.viewed_at || envelope.sent_at || envelope.created_at)}</span></td><td><button className="wa-icon-button" onClick={(event) => { event.stopPropagation(); onOpen(envelope.id) }} aria-label={`Open ${envelope.business_name}`}><Icon name="arrow" /></button></td></tr>)}</tbody></table>{!envelopes.length && <div className="wa-empty"><span><Icon name="document" size={26} /></span><h3>No documents here</h3><p>Send an agreement or adjust the current filter.</p></div>}</div>
 }
 
 export default function AdminPortal() {
@@ -242,6 +268,7 @@ export default function AdminPortal() {
   const [view, setView] = useState<View>('overview')
   const [templates, setTemplates] = useState<Template[]>([])
   const [envelopes, setEnvelopes] = useState<Envelope[]>([])
+  const [reservations, setReservations] = useState<Envelope[]>([])
   const [stats, setStats] = useState<Stats>({ total: 0, sent: 0, viewed: 0, signed: 0, draft: 0 })
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -255,9 +282,10 @@ export default function AdminPortal() {
   async function load() {
     setLoading(true)
     try {
-      const [templateData, envelopeData] = await Promise.all([adminApi.templates(), adminApi.envelopes()])
+      const [templateData, envelopeData, reservationData] = await Promise.all([adminApi.templates(), adminApi.envelopes(), adminApi.envelopes(true)])
       setTemplates(templateData.templates)
       setEnvelopes(envelopeData.envelopes)
+      setReservations(reservationData.envelopes)
       setStats(envelopeData.stats)
     } finally { setLoading(false) }
   }
@@ -284,9 +312,9 @@ export default function AdminPortal() {
   if (auth === 'loading') return <div className="wa-app-loader"><span className="wa-brand-mark">W</span><i /></div>
   if (auth === 'out') return <LoginScreen onAuthenticated={() => setAuth('in')} />
 
-  const title: Record<View, string> = { overview: 'Good morning, Caleb.', documents: 'Documents', templates: 'Templates', settings: 'Settings' }
-  const subtitle: Record<View, string> = { overview: 'Here’s what’s happening with your agreements.', documents: 'Track every agreement from draft to signature.', templates: 'Reusable agreements for your current offers.', settings: 'Security and workspace preferences.' }
-  const quickSendTemplates = ['local-virality-90-day', 'social-momentum-monthly', 'social-growth-monthly', 'social-presence-monthly', 'standalone-website', 'website-care-monthly']
+  const title: Record<View, string> = { overview: 'Good morning, Caleb.', documents: 'Documents', reservations: 'Reservations', templates: 'Templates', settings: 'Settings' }
+  const subtitle: Record<View, string> = { overview: 'Here’s what’s happening with your agreements.', documents: 'Track every agreement from draft to signature.', reservations: 'Future 90-day starts, deposits, and program balances.', templates: 'Reusable agreements for your current offers.', settings: 'Security and workspace preferences.' }
+  const quickSendTemplates = ['local-virality-90-day', RESERVATION_TEMPLATE_ID, 'social-momentum-monthly', 'social-growth-monthly', 'social-presence-monthly', 'standalone-website', 'website-care-monthly']
     .map((id) => templates.find((template) => template.id === id))
     .filter((template): template is Template => Boolean(template))
 
@@ -299,7 +327,7 @@ export default function AdminPortal() {
     <aside className={`wa-sidebar ${mobileNav ? 'open' : ''}`}>
       <div className="wa-brand"><span className="wa-brand-mark">W</span><div><strong>wolin</strong><small>admin</small></div></div>
       <nav>{([
-        ['overview', 'grid', 'Overview'], ['documents', 'document', 'Documents'], ['templates', 'template', 'Templates'], ['settings', 'settings', 'Settings'],
+        ['overview', 'grid', 'Overview'], ['documents', 'document', 'Documents'], ['reservations', 'clock', 'Reservations'], ['templates', 'template', 'Templates'], ['settings', 'settings', 'Settings'],
       ] as [View, keyof typeof icons, string][]).map(([id, icon, label]) => <button key={id} className={view === id ? 'active' : ''} onClick={() => { setView(id); setMobileNav(false) }}><Icon name={icon} />{label}{id === 'documents' && stats.sent + stats.viewed > 0 && <em>{stats.sent + stats.viewed}</em>}</button>)}</nav>
       <div className="wa-sidebar-foot"><div className="wa-owner"><span className="wa-avatar">CW</span><div><strong>Caleb Wolin</strong><small>{email}</small></div></div><button className="wa-icon-button" onClick={logout} aria-label="Sign out"><Icon name="logout" /></button></div>
     </aside>
@@ -313,6 +341,7 @@ export default function AdminPortal() {
           <div className="wa-overview-bottom"><section className="wa-content-card wa-quick"><header><div><h2>Quick send</h2><p>Start from an offer template</p></div></header><div>{quickSendTemplates.map((template, index) => <button key={template.id} onClick={() => setSendTemplateId(template.id)}><span className={`wa-package-icon tone-${index}`}>{template.package_name.slice(0, 1)}</span><div><strong>{template.package_name}</strong><small>{template.price}</small></div><Icon name="arrow" /></button>)}</div></section><section className="wa-content-card wa-security"><span className="wa-stat-icon green"><Icon name="shield" /></span><h2>Every action, accounted for.</h2><p>Document snapshots, electronic consent, timestamps, IP metadata, and SHA-256 audit hashes are recorded with each signature.</p><div><span><Icon name="check" size={14} />Tamper-evident</span><span><Icon name="check" size={14} />PDF certificate</span></div></section></div>
         </div>}
         {view === 'documents' && <div className="wa-page"><section className="wa-content-card wa-documents-card"><div className="wa-toolbar"><div className="wa-search"><Icon name="search" /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search clients or documents" /></div><div className="wa-filters">{(['all', 'sent', 'viewed', 'signed', 'draft'] as const).map((status) => <button key={status} className={statusFilter === status ? 'active' : ''} onClick={() => setStatusFilter(status)}>{status === 'all' ? 'All' : statusLabel[status]}</button>)}</div></div><DocumentsTable envelopes={filtered} onOpen={setDetailId} /></section></div>}
+        {view === 'reservations' && <div className="wa-page"><section className="wa-content-card"><header><div><h2>Reserved 90-day programs</h2><p>Start dates use America/Denver. Open a reservation for both payment records.</p></div><button className="wa-secondary" onClick={() => setSendTemplateId(RESERVATION_TEMPLATE_ID)}><Icon name="plus" />New reservation</button><button className="wa-icon-button" onClick={() => void load()} aria-label="Refresh reservations"><Icon name="refresh" /></button></header><DocumentsTable envelopes={[...reservations].sort((a, b) => (a.reservation_start_date ?? '').localeCompare(b.reservation_start_date ?? ''))} onOpen={setDetailId} /></section></div>}
         {view === 'templates' && <div className="wa-page"><div className="wa-template-page-head"><div><h2>Offer agreements</h2><p>Edit the contract language once, then reuse it for every client.</p></div><button className="wa-secondary" onClick={() => setTemplateEditing('new')}><Icon name="plus" />New template</button></div><div className="wa-template-grid">{templates.map((template, index) => <article key={template.id}><div className="wa-template-cover"><span className={`wa-package-icon tone-${index % 3}`}>{template.package_name.slice(0, 1)}</span><small>WOLIN · SERVICE AGREEMENT</small><b>{template.package_name}</b><em>{template.price}</em><i>Electronic signature ready</i></div><div className="wa-template-info"><div><h3>{template.name}</h3><p>Updated {formatDate(template.updated_at || template.created_at || new Date().toISOString())}</p></div><button className="wa-icon-button" onClick={() => setTemplateEditing(template)} aria-label={`Edit ${template.name}`}><Icon name="more" /></button></div><button className="wa-secondary wa-full" onClick={() => setTemplateEditing(template)}>Edit template</button></article>)}</div></div>}
         {view === 'settings' && <div className="wa-page wa-settings-page"><section className="wa-content-card"><header><div><h2>Workspace owner</h2><p>The only account authorized to open this portal.</p></div><span className="wa-verified"><Icon name="shield" size={15} />Verified</span></header><div className="wa-settings-row"><span className="wa-avatar large">CW</span><div><strong>Caleb Wolin</strong><small>{email}</small></div></div></section><section className="wa-content-card"><header><div><h2>Security</h2><p>Passwordless access and document safeguards.</p></div></header><div className="wa-settings-list"><div><span className="wa-stat-icon olive"><Icon name="send" /></span><div><strong>Email sign-in links</strong><small>Links expire after 15 minutes; sessions expire after 7 days.</small></div><em>On</em></div><div><span className="wa-stat-icon green"><Icon name="shield" /></span><div><strong>Secure sessions</strong><small>HTTP-only, secure, same-site cookies protect admin access.</small></div><em>On</em></div><div><span className="wa-stat-icon gold"><Icon name="document" /></span><div><strong>Immutable snapshots</strong><small>Sent agreement text is never changed when a template is edited.</small></div><em>On</em></div></div></section><section className="wa-content-card wa-env-note"><h2>Sending identity</h2><p>Agreement emails are delivered through Resend using the verified <strong>wolin.dev</strong> domain. Replies go directly to your regular inbox.</p></section></div>}
       </>}

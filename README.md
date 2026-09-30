@@ -73,3 +73,13 @@ export default defineConfig([
 ])
 
 ```
+
+## Private 90-day reservations
+
+In Wolin Admin, open **Reservations → New reservation**, select the future planned start date, and send the reservation agreement. The signed document records the date and full program terms. The client signs and pays a **$300 non-refundable deposit**, then returns to that same secure agreement link on the planned date to pay the **$3,199 balance**, with the deposit credit already included. The program total remains **$3,499 before applicable tax**.
+
+The date gate uses **America/Denver**. Signing-link expiry applies before signature; the completed agreement remains available for the later payment. Deposit and balance are tracked separately, and the program is paid in full only after both succeed. This creates no subscription or automatic charge, and does not send an automatic start-date reminder. Service starts after payment, account access, and onboarding are complete. Sent agreement dates are immutable; schedule changes require written agreement with the client.
+
+Stripe configuration lives in `api/_lib/reservations.ts`: two separate live one-time products and Payment Links, with stage-specific signed references for reconciliation. Share the client's link from the signed agreement or Admin payment panel; generic Stripe catalog links do not identify the reservation. The webhook validates the agreement, stage, amount, currency, deposit, and date before recording a balance payment. Refunded payments require review and cannot grant a deposit credit. The template is `local-virality-reservation`. Database changes are in migration `20260930020037_add_social_reservations.sql`; signing data remains accessible only through server-side credentials.
+
+Run `npm test`, `npm run lint`, and `npm run build` before deployment. Tests simulate deposit and balance confirmation, Denver date boundaries, signing, admin creation, failures, forged references, duplicate events, and refunds without charging a card or sending a real email. The reservation is intentionally absent from the public offers catalog.

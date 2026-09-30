@@ -498,3 +498,13 @@
   .ws-main { display: block; margin: 0; }
   .ws-document { padding: .45in; box-shadow: none; }
 }
+
+.wa-reservation-note { margin: 0; color: #64706a; font-size: 13px; line-height: 1.65; }
+.ws-reservation-notice { padding: 20px; margin-bottom: 24px; border: 1px solid #cbd9cf; border-radius: 12px; background: #edf3ed; text-align: left; }
+.ws-reservation-notice > span, .ws-reservation-notice > strong, .ws-reservation-notice > small { display: block; }
+.ws-reservation-notice > span { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #51685d; }
+.ws-reservation-notice > strong { margin: 7px 0; font-size: 19px; }
+.ws-reservation-notice > small { font-size: 11px; color: #64706a; }
+.ws-reservation-notice > p { font-size: 13px; line-height: 1.6; }
+.ws-reservation-notice > p.ws-reservation-fine { font-size: 11px; color: #64706a; }
+.ws-reservation-notice > button { border: 1px solid #b7c9bc; border-radius: 7px; padding: 8px 12px; background: #fff; color: #214e45; font: inherit; font-size: 12px; cursor: pointer; }

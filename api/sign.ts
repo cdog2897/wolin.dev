@@ -6,6 +6,8 @@ import { paymentUrlForEnvelope } from './_lib/payment-links.js'
 import { INSTALLMENT_TEMPLATE_ID } from './_lib/stripe-installments.js'
 import { isMonthlySocialTemplate } from './_lib/stripe-social.js'
 import { customerBillingUrl } from '../shared/customer-billing.js'
+import { reservationSummary, RESERVATION_TEMPLATE_ID } from '../shared/reservation.js'
+import { reservationPaymentUrl } from './_lib/reservations.js'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com'
 const EMAIL_FROM = process.env.SIGNING_FROM_EMAIL || 'Wolin <reports@wolin.dev>'
@@ -94,9 +96,10 @@ async function getDocument(request: ApiRequest, response: ApiResponse, token: st
       signatureType: envelope.signature_type,
       signatureData: envelope.status === 'signed' ? envelope.signature_data : null,
       consentText: CONSENT_TEXT,
-      paymentRequired: paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) !== null,
+      reservation: reservationSummary(envelope),
+      paymentRequired: envelope.template_id === RESERVATION_TEMPLATE_ID || paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) !== null,
       billingPortalUrl: isMonthlySocialTemplate(envelope.template_id) && envelope.stripe_subscription_id ? customerBillingUrl : null,
-      paymentUrl: envelope.status === 'signed' && envelope.payment_status !== 'paid' && !(isMonthlySocialTemplate(envelope.template_id) && envelope.stripe_subscription_id) && !(envelope.template_id === INSTALLMENT_TEMPLATE_ID && Number(envelope.installments_paid) > 0)
+      paymentUrl: envelope.template_id === RESERVATION_TEMPLATE_ID ? reservationPaymentUrl(envelope) : envelope.status === 'signed' && envelope.payment_status !== 'paid' && !(isMonthlySocialTemplate(envelope.template_id) && envelope.stripe_subscription_id) && !(envelope.template_id === INSTALLMENT_TEMPLATE_ID && Number(envelope.installments_paid) > 0)
         ? paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) : null,
     },
   })
@@ -151,13 +154,16 @@ async function signDocument(request: ApiRequest, response: ApiResponse, token: s
   const safeSigner = escapeHtml(signerName)
   const safeBusiness = escapeHtml(String(envelope.business_name))
   const safeTitle = escapeHtml(String(envelope.document_title))
+  const reservation = reservationSummary(envelope)
+  const secureLink = `https://wolin.dev/sign/${encodeURIComponent(token)}`
+  const reservationNote = reservation ? `Planned start: ${reservation.startDateLabel} (America/Denver). Pay your $300 non-refundable deposit to confirm the reservation. Return to the same secure link on the planned date to pay the remaining $3,199. No automatic charge. Secure link: ${secureLink}` : ''
   const emailTask = (async () => {
     try {
       await sendEmail({
         to: [String(envelope.recipient_email)],
         subject: `Completed: ${String(envelope.document_title)}`,
-        text: `Your signature is complete.\n\nDocument: ${String(envelope.document_title)}\nSigner: ${signerName}\nBusiness: ${String(envelope.business_name)}\n\nReturn to your secure signing link to download a copy.`,
-        html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Your signature is complete.</h1><p style="line-height:1.6;margin:0 0 16px"><strong>${safeTitle}</strong> was signed by ${safeSigner} for ${safeBusiness}.</p><p style="line-height:1.6;margin:0">Return to your secure signing link at any time to download the completed document.</p>`),
+        text: `Your signature is complete.\n\nDocument: ${String(envelope.document_title)}\nSigner: ${signerName}\nBusiness: ${String(envelope.business_name)}\n\nReturn to your secure signing link to download a copy.\n\n${reservationNote}`,
+        html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Your signature is complete.</h1><p style="line-height:1.6;margin:0 0 16px"><strong>${safeTitle}</strong> was signed by ${safeSigner} for ${safeBusiness}.</p><p style="line-height:1.6;margin:0">Return to your secure signing link at any time to download the completed document.</p>${reservation ? `<p style="line-height:1.6">${escapeHtml(reservationNote)}</p><a href="${secureLink}">Open your reservation</a>` : ''}`),
       })
       await sendEmail({
         to: [ADMIN_EMAIL],
@@ -176,7 +182,7 @@ async function signDocument(request: ApiRequest, response: ApiResponse, token: s
   } catch {
     await emailTask
   }
-  return response.status(200).json({ ok: true, signedAt: signedRows[0].signed_at, paymentUrl: paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) })
+  return response.status(200).json({ ok: true, signedAt: signedRows[0].signed_at, paymentUrl: envelope.template_id === RESERVATION_TEMPLATE_ID ? reservationPaymentUrl({ ...envelope, status: 'signed' }) : paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) })
 }
 
 export default async function handler(request: ApiRequest, response: ApiResponse) {

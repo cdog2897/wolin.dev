@@ -1,3 +1,5 @@
+import type { ReservationSummary } from '../../shared/reservation'
+
 export type Template = {
   id: string
   name: string
@@ -32,6 +34,13 @@ export type Envelope = {
   installments_paid?: number
   stripe_subscription_schedule_id?: string | null
   payment_status?: PaymentStatus
+  reservation?: ReservationSummary | null
+  reservation_start_date?: string | null
+  reservation_deposit_status?: PaymentStatus
+  reservation_deposit_paid_at?: string | null
+  reservation_deposit_amount_total?: number | null
+  reservation_deposit_intent_id?: string | null
+  reservation_payment_url?: string | null
   paid_at?: string | null
   payment_amount_total?: number | null
   payment_currency?: string | null
@@ -95,4 +104,5 @@ export type SigningDocument = {
   paymentRequired: boolean
   paymentUrl: string | null
   billingPortalUrl?: string | null
+  reservation?: ReservationSummary | null
 }

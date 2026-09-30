@@ -61,17 +61,20 @@ export const paymentOffers: Record<string, PaymentOffer> = {
   },
 }
 
-function referenceSignature(envelopeId: string, tokenHash: string) {
-  return createHmac('sha256', tokenHash).update(`wolin-stripe-payment:v1:${envelopeId}`).digest('base64url')
+export type ReservationPaymentStage = 'deposit' | 'balance'
+
+function referenceSignature(envelopeId: string, tokenHash: string, stage?: ReservationPaymentStage) {
+  const message = stage ? `wolin-stripe-reservation:v1:${stage}:${envelopeId}` : `wolin-stripe-payment:v1:${envelopeId}`
+  return createHmac('sha256', tokenHash).update(message).digest('base64url')
 }
 
-export function paymentReferenceForEnvelope(envelopeId: unknown, tokenHash: unknown) {
+export function paymentReferenceForEnvelope(envelopeId: unknown, tokenHash: unknown, stage?: ReservationPaymentStage) {
   if (typeof envelopeId !== 'string' || !/^[0-9a-f-]{36}$/i.test(envelopeId) || typeof tokenHash !== 'string' || !/^[0-9a-f]{64}$/i.test(tokenHash)) return null
-  return `${envelopeId}_${referenceSignature(envelopeId, tokenHash)}`
+  return `${envelopeId}_${referenceSignature(envelopeId, tokenHash, stage)}`
 }
 
-export function matchesPaymentReference(reference: unknown, envelopeId: string, tokenHash: string) {
-  const expected = paymentReferenceForEnvelope(envelopeId, tokenHash)
+export function matchesPaymentReference(reference: unknown, envelopeId: string, tokenHash: string, stage?: ReservationPaymentStage) {
+  const expected = paymentReferenceForEnvelope(envelopeId, tokenHash, stage)
   if (!expected || typeof reference !== 'string') return false
   const actualBytes = Buffer.from(reference)
   const expectedBytes = Buffer.from(expected)

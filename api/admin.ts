@@ -4,6 +4,9 @@ import { addAuditEvent, assertDb, db, ensureSchema, sha256 } from './_lib/db.js'
 import { bodyObject, header, isSameOrigin, methodNotAllowed, noStore, queryValue, requestIp, text, type ApiRequest, type ApiResponse } from './_lib/http.js'
 import { createSignedPdf } from './_lib/pdf.js'
 import { paymentOffers } from './_lib/payment-links.js'
+import { reservationPaymentUrl } from './_lib/reservations.js'
+import { businessDate, formatStartDate, reservationSummary, RESERVATION_TEMPLATE_ID, validStartDate } from '../shared/reservation.js'
+import { reservationTemplate } from './_lib/reservation-template.js'
 
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com').toLowerCase()
 const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || 'https://admin.wolin.dev'
@@ -42,14 +45,15 @@ async function sendSigningEmail(envelope: Record<string, unknown>, signingToken:
   const name = String(envelope.recipient_name)
   const title = String(envelope.document_title)
   const message = String(envelope.email_message || '')
+  const reservationNote = validStartDate(envelope.reservation_start_date) ? `Planned start: ${formatStartDate(envelope.reservation_start_date)} (America/Denver). Pay the $300 non-refundable deposit after signing. Return to this same link on the planned date to pay the $3,199 balance, including your $300 deposit credit. No automatic charge.` : ''
   const safeName = escapeHtml(name)
   const safeTitle = escapeHtml(title)
   const safeMessage = escapeHtml(message).replaceAll('\n', '<br>')
   await sendEmail({
     to: [String(envelope.recipient_email)],
     subject: String(envelope.email_subject),
-    text: [`Hi ${name},`, '', message || `Caleb Wolin sent you “${title}” to review and sign.`, '', `Review and sign: ${link}`, '', 'This secure link is intended only for you.'].join('\n'),
-    html: emailFrame(`<p style="margin:0 0 10px;color:#68736f">Hi ${safeName},</p><h1 style="font-size:26px;line-height:1.2;margin:0 0 16px">A document is ready for your signature.</h1><p style="line-height:1.6;margin:0 0 22px">${safeMessage || `Caleb Wolin sent you <strong>${safeTitle}</strong> to review and sign.`}</p><a href="${link}" style="display:inline-block;background:#214e45;color:#fff;text-decoration:none;padding:13px 20px;border-radius:9px;font-weight:700">Review &amp; sign</a><p style="font-size:12px;color:#7b8581;margin:24px 0 0">This secure link is intended only for ${safeName} and expires on ${new Date(String(envelope.expires_at)).toLocaleDateString('en-US', { dateStyle: 'long' })}.</p>`),
+    text: [`Hi ${name},`, '', message || `Caleb Wolin sent you “${title}” to review and sign.`, '', reservationNote, '', `Review and sign: ${link}`, '', 'This secure link is intended only for you.'].join('\n'),
+    html: emailFrame(`<p style="margin:0 0 10px;color:#68736f">Hi ${safeName},</p><h1 style="font-size:26px;line-height:1.2;margin:0 0 16px">A document is ready for your signature.</h1><p style="line-height:1.6;margin:0 0 22px">${safeMessage || `Caleb Wolin sent you <strong>${safeTitle}</strong> to review and sign.`}</p>${reservationNote ? `<p style="line-height:1.6">${escapeHtml(reservationNote)}</p>` : ''}<a href="${link}" style="display:inline-block;background:#214e45;color:#fff;text-decoration:none;padding:13px 20px;border-radius:9px;font-weight:700">Review &amp; sign</a><p style="font-size:12px;color:#7b8581;margin:24px 0 0">This secure link is intended only for ${safeName} and expires on ${new Date(String(envelope.expires_at)).toLocaleDateString('en-US', { dateStyle: 'long' })}.</p>`),
   })
 }
 
@@ -105,6 +109,9 @@ async function templates(request: ApiRequest, response: ApiResponse) {
   if (!name || !packageName || !price || !subject || templateBody.length < 100) {
     return response.status(400).json({ error: 'Complete every template field.' })
   }
+  if (id === RESERVATION_TEMPLATE_ID && (!templateBody.includes('{{start_date}}') || price !== reservationTemplate.price)) {
+    return response.status(400).json({ error: 'Keep the reservation start-date variable and fixed $300 deposit / $3,199 balance price.' })
+  }
   const { data, error } = await supabase.from('signing_templates').upsert({
     id,
     name,
@@ -136,11 +143,14 @@ async function envelopes(request: ApiRequest, response: ApiResponse) {
       .order('id')
     assertDb(auditError, 'Unable to load the audit trail')
     const paymentOffer = paymentOffers[String(envelope.template_id)]
-    return response.status(200).json({ envelope: { ...envelope, payment_required: Boolean(paymentOffer), payment_due_amount: paymentOffer?.total ?? paymentOffer?.subtotal ?? null, payment_installments_expected: paymentOffer?.installments ?? 1 }, audit: audit ?? [] })
+    const reservation = reservationSummary(envelope)
+    return response.status(200).json({ envelope: { ...envelope, reservation, reservation_payment_url: reservationPaymentUrl(envelope), payment_required: Boolean(paymentOffer || reservation), payment_due_amount: reservation?.totalAmount ?? paymentOffer?.total ?? paymentOffer?.subtotal ?? null, payment_installments_expected: paymentOffer?.installments ?? 1 }, audit: audit ?? [] })
   }
-  const { data, error } = await supabase
+  let list = supabase
     .from('signing_envelopes')
-    .select('id, template_id, recipient_name, recipient_email, business_name, document_title, status, expires_at, created_at, sent_at, viewed_at, signed_at, voided_at, payment_status, paid_at, installments_paid, stripe_subscription_id, stripe_subscription_status, subscription_cancel_at_period_end')
+    .select('id, template_id, recipient_name, recipient_email, business_name, document_title, status, expires_at, created_at, sent_at, viewed_at, signed_at, voided_at, payment_status, paid_at, installments_paid, stripe_subscription_id, stripe_subscription_status, subscription_cancel_at_period_end, reservation_start_date, reservation_deposit_status')
+  if (queryValue(request, 'kind') === 'reservations') list = list.eq('template_id', RESERVATION_TEMPLATE_ID)
+  const { data, error } = await list
     .order('created_at', { ascending: false })
     .limit(250)
   assertDb(error, 'Unable to load documents')
@@ -152,7 +162,7 @@ async function envelopes(request: ApiRequest, response: ApiResponse) {
     signed: rows.filter((item) => item.status === 'signed').length,
     draft: rows.filter((item) => item.status === 'draft').length,
   }
-  return response.status(200).json({ envelopes: rows.map((item) => ({ ...item, payment_required: Boolean(paymentOffers[String(item.template_id)]), payment_due_amount: paymentOffers[String(item.template_id)]?.total ?? paymentOffers[String(item.template_id)]?.subtotal ?? null, payment_installments_expected: paymentOffers[String(item.template_id)]?.installments ?? 1 })), stats })
+  return response.status(200).json({ envelopes: rows.map((item) => ({ ...item, reservation: reservationSummary(item), payment_required: Boolean(paymentOffers[String(item.template_id)] || item.template_id === RESERVATION_TEMPLATE_ID), payment_due_amount: reservationSummary(item)?.totalAmount ?? paymentOffers[String(item.template_id)]?.total ?? paymentOffers[String(item.template_id)]?.subtotal ?? null, payment_installments_expected: paymentOffers[String(item.template_id)]?.installments ?? 1 })), stats })
 }
 
 async function sendEnvelope(request: ApiRequest, response: ApiResponse) {
@@ -171,9 +181,14 @@ async function sendEnvelope(request: ApiRequest, response: ApiResponse) {
   if (!templateId || !recipientName || !validEmail(recipientEmail) || !businessName) {
     return response.status(400).json({ error: 'Enter a valid recipient, email, business, and template.' })
   }
+  const startDate = templateId === RESERVATION_TEMPLATE_ID ? body.startDate : null
+  if (templateId === RESERVATION_TEMPLATE_ID && (!validStartDate(startDate) || startDate <= businessDate())) {
+    return response.status(400).json({ error: 'Choose a valid future program start date (America/Denver).' })
+  }
   const { data: template, error: templateError } = await supabase.from('signing_templates').select('*').eq('id', templateId).eq('active', true).maybeSingle()
   assertDb(templateError, 'Unable to load the template')
   if (!template) return response.status(404).json({ error: 'Template not found.' })
+  if (startDate && !String(template.body).includes('{{start_date}}')) return response.status(400).json({ error: 'The reservation template must include {{start_date}}.' })
 
   const envelopeId = randomUUID()
   const signingToken = randomBytes(32).toString('base64url')
@@ -182,7 +197,8 @@ async function sendEnvelope(request: ApiRequest, response: ApiResponse) {
     client_email: recipientEmail,
     business_name: businessName,
     package_name: String(template.package_name),
-    price: String(template.price),
+    price: startDate ? reservationTemplate.price : String(template.price),
+    start_date: validStartDate(startDate) ? formatStartDate(startDate) : '',
     date: new Date().toLocaleDateString('en-US', { dateStyle: 'long' }),
   }
   const documentBody = renderTemplate(String(template.body), values)
@@ -204,9 +220,10 @@ async function sendEnvelope(request: ApiRequest, response: ApiResponse) {
     token_hash: sha256(signingToken),
     status: 'draft',
     expires_at: expiresAt,
+    reservation_start_date: startDate,
   })
   assertDb(insertError, 'Unable to create the document')
-  await addAuditEvent(envelopeId, 'document_created', { templateId, documentHash }, requestIp(request), header(request, 'user-agent'))
+  await addAuditEvent(envelopeId, 'document_created', { templateId, documentHash, ...(startDate ? { startDate } : {}) }, requestIp(request), header(request, 'user-agent'))
   const envelope = {
     id: envelopeId,
     recipient_name: recipientName,
@@ -215,6 +232,7 @@ async function sendEnvelope(request: ApiRequest, response: ApiResponse) {
     email_subject: emailSubject,
     email_message: emailMessage,
     document_title: documentTitle,
+    reservation_start_date: startDate,
     expires_at: expiresAt,
   }
   try {

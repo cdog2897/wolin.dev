@@ -1,4 +1,5 @@
 import { socialTemplates } from './social-templates.js'
+import { reservationTemplate } from './reservation-template.js'
 
 export type DefaultTemplate = {
   id: string
@@ -149,6 +150,7 @@ Date prepared: {{date}}`
 
 export const defaultTemplates: DefaultTemplate[] = [
   ...socialTemplates,
+  reservationTemplate,
   {
     id: 'local-sensation-90-day',
     name: '90-day Hands-Free Local Sensation Agreement',
