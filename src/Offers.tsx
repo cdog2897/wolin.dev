@@ -1,3 +1,4 @@
+import { ArrowIcon } from './DecorativeIcon'
 import { useState } from 'react'
 import './Offers.css'
 import { monthlySocialPlans, socialLaunchPrice } from './offer-options'
@@ -54,7 +55,7 @@ function OfferCard({ id, title, subtitle, price, originalPrice, period, descript
     <ul className="offers-features">{features.map(feature => typeof feature === 'string' ? <li key={feature}>{feature}</li> : <li key={feature.text}>{feature.content}</li>)}</ul>
     {children}
     {note && <p className="offers-note">{note}</p>}
-    <a className="offers-action" href="#contact" onClick={() => onChoose(id)}>{action}<span aria-hidden="true">↗</span></a>
+    <a className="offers-action" href="#contact" onClick={() => onChoose(id)}>{action}<ArrowIcon /></a>
   </article>
 }
 
@@ -99,14 +100,14 @@ export default function Offers({ onChoose }: OffersProps) {
         'Unlimited minor edits while care is active',
         'Minor edits completed within 48 hours of a complete request',
       ]} note="$99/month after 30 free days, starting at checkout even if launch is later. First draft targeted within 10 business days after complete materials. New pages, redesigns, features, ecommerce, and original photography are quoted separately.">
-        <div className="offers-website-preview" aria-hidden="true"><div><i /><i /><i /><span>yourbusiness.com</span></div><p>A place to<br /><em>call yours.</em></p><span>Make a great first impression. ↗</span></div>
+        <div className="offers-website-preview" aria-hidden="true"><div><i /><i /><i /><span>yourbusiness.com</span></div><p>A place to<br /><em>call yours.</em></p><span>Make a great first impression. <ArrowIcon /></span></div>
       </OfferCard>
     </section>
 
     <section className="offers-other" aria-labelledby="other-services-title">
       <div><h2 id="other-services-title">Something else in mind?</h2><p>Other services, tailored to your business. Tell us what you need and we’ll put together a custom quote.</p></div>
       <p className="offers-other-list">Videography · Video editing · Photography · DMs + community management · Google Business Profile optimization + management · Apple Maps · Listing cleanup · Review strategy + responses · Online presence audits · SEO plans + website SEO · Technical SEO · Ongoing local SEO · Service + location content · Conversion improvements · AI visibility + monitoring · Analytics + lead tracking · Social lead pipelines · Monthly visibility reporting</p>
-      <a href="#contact" className="offers-custom-link" onClick={() => onChoose('custom')}>Request a custom quote <span aria-hidden="true">↗</span></a>
+      <a href="#contact" className="offers-custom-link" onClick={() => onChoose('custom')}>Request a custom quote <ArrowIcon /></a>
     </section>
     <p className="offers-tax-note">All prices are in USD. Applicable tax is additional. Scope and production schedules are confirmed before work begins.</p>
     <p className="offers-tax-note">Already a customer? <a href={customerBillingUrl}>Manage billing, invoices, and cancellations</a>.</p>

@@ -1,3 +1,4 @@
+import { ArrowIcon } from './DecorativeIcon'
 import './SampleAudit.css'
 
 type Finding = {
@@ -162,13 +163,13 @@ function SampleAudit() {
         <header className="onepage-header">
           <a href="/" className="onepage-wordmark" aria-label="Wolin home">wolin.dev</a>
           <div className="onepage-report-meta"><span>{report.date}</span><strong>{report.label}</strong></div>
-          <button type="button" onClick={() => window.print()}>Print / save PDF ↗</button>
+          <button type="button" onClick={() => window.print()}>Print / save PDF <ArrowIcon /></button>
         </header>
 
         <section className="onepage-overview" aria-labelledby="report-title">
           <div className="onepage-business">
             <h1 id="report-title">{report.business}</h1>
-            <a href={report.websiteUrl} target="_blank" rel="noreferrer">{report.website} ↗</a>
+            <a href={report.websiteUrl} target="_blank" rel="noreferrer">{report.website} <ArrowIcon /></a>
           </div>
           <div className="onepage-score">
             <ScoreRing score={report.overallScore} />

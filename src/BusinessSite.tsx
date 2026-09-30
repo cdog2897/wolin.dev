@@ -1,3 +1,4 @@
+import DecorativeIcon, { ArrowIcon as Arrow } from './DecorativeIcon'
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import './BusinessSite.css'
 import Offers from './Offers'
@@ -14,7 +15,6 @@ const services: Service[] = [
   { id: 'ai', number: '04', label: 'Be ready for what is next', title: 'AI visibility', description: 'Keep your business information clear, current, and easy for AI search tools to discover and cite.' },
 ]
 
-function Arrow() { return <span aria-hidden="true">↗</span> }
 
 function ViralWord() {
   const particles = useRef<HTMLSpanElement>(null)
@@ -88,9 +88,9 @@ function ViralWord() {
 
 function Visual({ kind }: { kind: Service['id'] }) {
   if (kind === 'social') return <div className="business-visual visual-social" aria-label="Examples of social media content"><figure><img src="/social/feed.svg" alt="Local business social post with likes and comments" /><figcaption>Make them stop scrolling.</figcaption></figure><figure><img src="/social/community.svg" alt="Social campaign with hearts and customer comments" /><figcaption>Give them a reason to care.</figcaption></figure><figure><img src="/social/insights.svg" alt="Social media audience growth and engagement" /><figcaption>Stay on their mind.</figcaption></figure></div>
-  if (kind === 'websites') return <div className="business-visual visual-web" role="img" aria-label="Example of a responsive website and search result"><div className="visual-browser"><div className="visual-browser-top"><i /><i /><i /><span>yourbusiness.com</span></div><div className="visual-browser-body"><small>THE GOOD STUFF, CLOSE TO HOME</small><strong>Make a great<br />first impression.</strong><span>See what we do ↗</span></div></div><div className="visual-search-card"><span>SEARCH VISIBILITY</span><strong>Found when it matters.</strong><div><i /><i /><i /></div></div></div>
-  if (kind === 'google') return <div className="business-visual visual-google" role="img" aria-label="Example of a Google Business Profile search result"><div className="visual-google-search"><b>G</b><span>coffee near me</span><i>⌕</i></div><div className="visual-google-card"><div className="visual-google-photo" /><div className="visual-google-copy"><small>BUSINESS PROFILE</small><strong>Willow &amp; Pine Coffee</strong><span>4.9 <b>★★★★★</b> · Coffee shop</span><p>Open now · Closes 6 PM</p><div><span>↗ Website</span><span>⌁ Directions</span><span>☎ Call</span></div></div></div></div>
-  return <div className="business-visual visual-ai" role="img" aria-label="Illustration of a business being cited in AI search"><div className="visual-ai-prompt">✳ &nbsp; Where should I go for a local coffee shop?</div><div className="visual-ai-answer"><span>✦ AI SEARCH</span><p>Willow &amp; Pine Coffee is a neighborhood favorite, known for its welcoming atmosphere and fresh coffee.</p><div><i /> willowandpine.com <Arrow /></div></div><div className="visual-ai-star">✳</div></div>
+  if (kind === 'websites') return <div className="business-visual visual-web" role="img" aria-label="Example of a responsive website and search result"><div className="visual-browser"><div className="visual-browser-top"><i /><i /><i /><span>yourbusiness.com</span></div><div className="visual-browser-body"><small>THE GOOD STUFF, CLOSE TO HOME</small><strong>Make a great<br />first impression.</strong><span>See what we do <Arrow /></span></div></div><div className="visual-search-card"><span>SEARCH VISIBILITY</span><strong>Found when it matters.</strong><div><i /><i /><i /></div></div></div>
+  if (kind === 'google') return <div className="business-visual visual-google" role="img" aria-label="Example of a Google Business Profile search result"><div className="visual-google-search"><b>G</b><span>coffee near me</span><i><DecorativeIcon name="search" /></i></div><div className="visual-google-card"><div className="visual-google-photo" /><div className="visual-google-copy"><small>BUSINESS PROFILE</small><strong>Willow &amp; Pine Coffee</strong><span>4.9 <b>★★★★★</b> · Coffee shop</span><p>Open now · Closes 6 PM</p><div><span><DecorativeIcon name="arrow" /> Website</span><span><DecorativeIcon name="directions" /> Directions</span><span><DecorativeIcon name="phone" /> Call</span></div></div></div></div>
+  return <div className="business-visual visual-ai" role="img" aria-label="Illustration of a business being cited in AI search"><div className="visual-ai-prompt"><DecorativeIcon name="asterisk" /> &nbsp; Where should I go for a local coffee shop?</div><div className="visual-ai-answer"><span><DecorativeIcon name="sparkle" /> AI SEARCH</span><p>Willow &amp; Pine Coffee is a neighborhood favorite, known for its welcoming atmosphere and fresh coffee.</p><div><i /> willowandpine.com <Arrow /></div></div><div className="visual-ai-star" aria-hidden="true"><DecorativeIcon name="asterisk" /></div></div>
 }
 
 function Header({ page }: { page: Page }) {

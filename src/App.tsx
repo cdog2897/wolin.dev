@@ -1,3 +1,4 @@
+import { ArrowIcon } from './DecorativeIcon'
 import { useRef, useState, type KeyboardEvent, type TouchEvent } from 'react'
 import './App.css'
 
@@ -8,9 +9,6 @@ const shalomUrl =
 const bibleStoriesUrl =
   'https://apps.apple.com/us/app/christian-bible-stories/id6748326460'
 
-function ArrowIcon() {
-  return <span aria-hidden="true">↗</span>
-}
 
 function ClientSightPreview() {
   const residents = [
