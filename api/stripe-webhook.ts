@@ -59,11 +59,11 @@ async function recordCheckout(event: StripeEvent) {
     .eq('id', envelopeId).maybeSingle()
   assertDb(readError, 'Unable to match the Stripe payment')
   if (!envelope || envelope.status !== 'signed' || !matchesPaymentReference(reference, envelope.id, envelope.token_hash)) return
+  if (['local-virality-reservation', 'local-virality-90-day-reserved', 'local-virality-90-day'].includes(envelope.template_id)) return
 
   const offer = paymentOffers[String(envelope.template_id)]
   if (!offer || stripeId(session.payment_link) !== offer.linkId || session.currency?.toLowerCase() !== 'usd' || session.amount_subtotal !== offer.subtotal) return
   if (isMonthlySocialTemplate(envelope.template_id) && (session.mode !== 'subscription' || !stripeId(session.subscription))) return
-  if (envelope.template_id === 'local-virality-90-day' && (session.mode !== 'payment' || stripeId(session.subscription))) return
   if (envelope.stripe_subscription_id && envelope.stripe_subscription_id !== stripeId(session.subscription)) return
 
   const eventCreated = Number(event.created) || 0

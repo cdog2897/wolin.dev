@@ -36,6 +36,8 @@ export type Envelope = {
   payment_status?: PaymentStatus
   reservation?: ReservationSummary | null
   reservation_start_date?: string | null
+  reservation_deposit_envelope_id?: string | null
+  reservation_program?: { id: string; document_title: string; status: EnvelopeStatus; payment_status: PaymentStatus } | null
   reservation_deposit_status?: PaymentStatus
   reservation_deposit_paid_at?: string | null
   reservation_deposit_amount_total?: number | null

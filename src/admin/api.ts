@@ -77,7 +77,7 @@ export const adminApi = {
     return request<{ template: Template }>('/api/admin?action=templates', { method: 'POST', body: JSON.stringify(template) })
   },
   async envelopes(reservationsOnly = false) {
-    if (demoMode) return { envelopes: demoEnvelopes.filter(item => !reservationsOnly || item.template_id === 'local-virality-reservation'), stats: demoStats() }
+    if (demoMode) return { envelopes: demoEnvelopes.filter(item => !reservationsOnly || ['local-virality-reservation', 'local-virality-90-day-reserved'].includes(item.template_id)), stats: demoStats() }
     return request<{ envelopes: Envelope[]; stats: Stats }>(`/api/admin?action=envelopes${reservationsOnly ? '&kind=reservations' : ''}`)
   },
   async envelope(id: string) {
@@ -96,7 +96,7 @@ export const adminApi = {
     }
     return request<{ envelope: Envelope; audit: AuditEvent[] }>(`/api/admin?action=envelopes&id=${encodeURIComponent(id)}`)
   },
-  async send(payload: { templateId: string; recipientName: string; recipientEmail: string; businessName: string; message: string; expiresDays: number; startDate?: string }) {
+  async send(payload: { templateId: string; recipientName: string; recipientEmail: string; businessName: string; message: string; expiresDays: number; startDate?: string; depositEnvelopeId?: string }) {
     if (demoMode) {
       const template = demoTemplates.find((item) => item.id === payload.templateId)!
       const envelope: Envelope = { id: crypto.randomUUID(), template_id: template.id, recipient_name: payload.recipientName, recipient_email: payload.recipientEmail, business_name: payload.businessName, document_title: template.name, status: 'sent', expires_at: new Date(Date.now() + payload.expiresDays * 86_400_000).toISOString(), created_at: new Date().toISOString(), sent_at: new Date().toISOString(), viewed_at: null, signed_at: null, voided_at: null }

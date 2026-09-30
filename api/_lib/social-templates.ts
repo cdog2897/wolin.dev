@@ -53,9 +53,11 @@ ${signature}` : `90-DAY HANDS-FREE LOCAL VIRALITY AGREEMENT
 
 ${introduction}
 
-1. PROGRAM, TERM, AND ONE-TIME FEE
+1. PROGRAM, START DATE, AND ONE-TIME FEE
 
-Client engages Provider for {{package_name}}. The fee is {{price}}, charged once at Stripe checkout after signing and due before work begins. The current sale fee is ${fee}; the advertised regular price is $7,000. This Agreement authorizes one payment and does not start a subscription or automatically renew. The 90-day service period begins once Provider has the signed Agreement, payment, account access, and completed onboarding. Provider will confirm the start date with Client.
+Planned program start date: {{start_date}} (America/Denver).
+
+Client engages Provider for {{package_name}}. The fee is {{price}}, charged once at Stripe checkout after signing and due before work begins. Checkout becomes available on the planned program start date. The advertised regular price is $7,000. This Agreement authorizes one payment and does not start a subscription or automatically renew. The 90-day service period begins on the planned date once Provider has the signed Agreement, payment, account access, and completed onboarding. If those requirements are incomplete, work will not begin, and the parties will confirm the actual service start date in writing. The 90-day view guarantee runs from that actual service start date. Any date change must be agreed in writing; the signed document is not edited.
 
 2. INCLUDED SERVICES
 

@@ -4,9 +4,9 @@ import { addAuditEvent, assertDb, db, ensureSchema, sha256 } from './_lib/db.js'
 import { bodyObject, header, isSameOrigin, methodNotAllowed, noStore, queryValue, requestIp, text, type ApiRequest, type ApiResponse } from './_lib/http.js'
 import { createSignedPdf } from './_lib/pdf.js'
 import { paymentOffers } from './_lib/payment-links.js'
-import { reservationPaymentUrl } from './_lib/reservations.js'
-import { businessDate, formatStartDate, reservationSummary, RESERVATION_TEMPLATE_ID, validStartDate } from '../shared/reservation.js'
-import { reservationTemplate } from './_lib/reservation-template.js'
+import { eligibleDeposit, reservationPaymentUrl } from './_lib/reservations.js'
+import { businessDate, formatStartDate, reservationSummary, RESERVATION_TEMPLATE_ID, RESERVED_PROGRAM_TEMPLATE_ID, START_DATE_TEMPLATE_IDS, validStartDate } from '../shared/reservation.js'
+import { defaultTemplates } from './_lib/default-templates.js'
 
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com').toLowerCase()
 const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || 'https://admin.wolin.dev'
@@ -45,7 +45,7 @@ async function sendSigningEmail(envelope: Record<string, unknown>, signingToken:
   const name = String(envelope.recipient_name)
   const title = String(envelope.document_title)
   const message = String(envelope.email_message || '')
-  const reservationNote = validStartDate(envelope.reservation_start_date) ? `Planned start: ${formatStartDate(envelope.reservation_start_date)} (America/Denver). Pay the $300 non-refundable deposit after signing. Return to this same link on the planned date to pay the $3,199 balance, including your $300 deposit credit. No automatic charge.` : ''
+  const reservationNote = validStartDate(envelope.reservation_start_date) ? `Planned start: ${formatStartDate(envelope.reservation_start_date)} (America/Denver). ${envelope.template_id === RESERVATION_TEMPLATE_ID ? 'Pay the $300 non-refundable deposit after signing. Caleb will send a separate $3,199 program agreement and payment link.' : 'Sign this program agreement separately. Its one-time checkout opens on the planned start date.'} No automatic charge.` : ''
   const safeName = escapeHtml(name)
   const safeTitle = escapeHtml(title)
   const safeMessage = escapeHtml(message).replaceAll('\n', '<br>')
@@ -109,8 +109,9 @@ async function templates(request: ApiRequest, response: ApiResponse) {
   if (!name || !packageName || !price || !subject || templateBody.length < 100) {
     return response.status(400).json({ error: 'Complete every template field.' })
   }
-  if (id === RESERVATION_TEMPLATE_ID && (!templateBody.includes('{{start_date}}') || price !== reservationTemplate.price)) {
-    return response.status(400).json({ error: 'Keep the reservation start-date variable and fixed $300 deposit / $3,199 balance price.' })
+  const canonical = defaultTemplates.find(item => item.id === id)
+  if (START_DATE_TEMPLATE_IDS.includes(id) && canonical && (templateBody !== canonical.body || price !== canonical.price || name !== canonical.name || packageName !== canonical.packageName)) {
+    return response.status(400).json({ error: 'These offer templates use fixed prices, titles, and shared program terms. Set the client start date when sending.' })
   }
   const { data, error } = await supabase.from('signing_templates').upsert({
     id,
@@ -144,12 +145,14 @@ async function envelopes(request: ApiRequest, response: ApiResponse) {
     assertDb(auditError, 'Unable to load the audit trail')
     const paymentOffer = paymentOffers[String(envelope.template_id)]
     const reservation = reservationSummary(envelope)
-    return response.status(200).json({ envelope: { ...envelope, reservation, reservation_payment_url: reservationPaymentUrl(envelope), payment_required: Boolean(paymentOffer || reservation), payment_due_amount: reservation?.totalAmount ?? paymentOffer?.total ?? paymentOffer?.subtotal ?? null, payment_installments_expected: paymentOffer?.installments ?? 1 }, audit: audit ?? [] })
+    const { data: programs, error: programError } = await supabase.from('signing_envelopes').select('id, document_title, status, payment_status').eq('reservation_deposit_envelope_id', id).neq('status', 'voided')
+    assertDb(programError, 'Unable to load the separate program agreement')
+    return response.status(200).json({ envelope: { ...envelope, reservation, reservation_program: programs?.[0] ?? null, reservation_payment_url: await reservationPaymentUrl(envelope), payment_required: Boolean(paymentOffer || reservation), payment_due_amount: reservation?.totalAmount ?? paymentOffer?.total ?? paymentOffer?.subtotal ?? null, payment_installments_expected: paymentOffer?.installments ?? 1 }, audit: audit ?? [] })
   }
   let list = supabase
     .from('signing_envelopes')
-    .select('id, template_id, recipient_name, recipient_email, business_name, document_title, status, expires_at, created_at, sent_at, viewed_at, signed_at, voided_at, payment_status, paid_at, installments_paid, stripe_subscription_id, stripe_subscription_status, subscription_cancel_at_period_end, reservation_start_date, reservation_deposit_status')
-  if (queryValue(request, 'kind') === 'reservations') list = list.eq('template_id', RESERVATION_TEMPLATE_ID)
+    .select('id, template_id, recipient_name, recipient_email, business_name, document_title, status, expires_at, created_at, sent_at, viewed_at, signed_at, voided_at, payment_status, paid_at, installments_paid, stripe_subscription_id, stripe_subscription_status, subscription_cancel_at_period_end, reservation_start_date, reservation_deposit_status, reservation_deposit_envelope_id')
+  if (queryValue(request, 'kind') === 'reservations') list = list.in('template_id', [RESERVATION_TEMPLATE_ID, RESERVED_PROGRAM_TEMPLATE_ID])
   const { data, error } = await list
     .order('created_at', { ascending: false })
     .limit(250)
@@ -181,14 +184,23 @@ async function sendEnvelope(request: ApiRequest, response: ApiResponse) {
   if (!templateId || !recipientName || !validEmail(recipientEmail) || !businessName) {
     return response.status(400).json({ error: 'Enter a valid recipient, email, business, and template.' })
   }
-  const startDate = templateId === RESERVATION_TEMPLATE_ID ? body.startDate : null
-  if (templateId === RESERVATION_TEMPLATE_ID && (!validStartDate(startDate) || startDate <= businessDate())) {
-    return response.status(400).json({ error: 'Choose a valid future program start date (America/Denver).' })
+  const dated = START_DATE_TEMPLATE_IDS.includes(templateId)
+  const startDate = dated ? body.startDate : null
+  if (dated && (!validStartDate(startDate) || (templateId === RESERVATION_TEMPLATE_ID ? startDate <= businessDate() : templateId !== RESERVED_PROGRAM_TEMPLATE_ID && startDate < businessDate()))) {
+    return response.status(400).json({ error: 'Choose a valid program start date (America/Denver). Deposits require a future date; program agreements may start today.' })
+  }
+  const depositId = templateId === RESERVED_PROGRAM_TEMPLATE_ID ? text(body.depositEnvelopeId, 100) : null
+  if (templateId === RESERVED_PROGRAM_TEMPLATE_ID) {
+    const deposit = await eligibleDeposit({ reservation_deposit_envelope_id: depositId, recipient_email: recipientEmail, business_name: businessName, reservation_start_date: startDate })
+    if (!deposit) return response.status(400).json({ error: 'Select this client’s signed, paid $300 deposit and use its planned start date.' })
+    const { data: existing, error } = await supabase.from('signing_envelopes').select('id').eq('reservation_deposit_envelope_id', depositId).neq('status', 'voided')
+    assertDb(error, 'Unable to check whether the deposit credit has been used')
+    if (existing?.length) return response.status(409).json({ error: 'This deposit already has a program agreement. Open or resend that document, or void it before creating a replacement.' })
   }
   const { data: template, error: templateError } = await supabase.from('signing_templates').select('*').eq('id', templateId).eq('active', true).maybeSingle()
   assertDb(templateError, 'Unable to load the template')
   if (!template) return response.status(404).json({ error: 'Template not found.' })
-  if (startDate && !String(template.body).includes('{{start_date}}')) return response.status(400).json({ error: 'The reservation template must include {{start_date}}.' })
+  const canonical = dated ? defaultTemplates.find(item => item.id === templateId) : null
 
   const envelopeId = randomUUID()
   const signingToken = randomBytes(32).toString('base64url')
@@ -196,13 +208,13 @@ async function sendEnvelope(request: ApiRequest, response: ApiResponse) {
     client_name: recipientName,
     client_email: recipientEmail,
     business_name: businessName,
-    package_name: String(template.package_name),
-    price: startDate ? reservationTemplate.price : String(template.price),
+    package_name: canonical?.packageName ?? String(template.package_name),
+    price: canonical?.price ?? String(template.price),
     start_date: validStartDate(startDate) ? formatStartDate(startDate) : '',
     date: new Date().toLocaleDateString('en-US', { dateStyle: 'long' }),
   }
-  const documentBody = renderTemplate(String(template.body), values)
-  const documentTitle = String(template.name)
+  const documentBody = renderTemplate(canonical?.body ?? String(template.body), values)
+  const documentTitle = canonical?.name ?? String(template.name)
   const documentHash = sha256(`${documentTitle}\n${documentBody}`)
   const expiresAt = new Date(Date.now() + expiresDays * 86_400_000).toISOString()
   const emailSubject = String(template.subject)
@@ -221,11 +233,15 @@ async function sendEnvelope(request: ApiRequest, response: ApiResponse) {
     status: 'draft',
     expires_at: expiresAt,
     reservation_start_date: startDate,
+    reservation_deposit_envelope_id: depositId,
+    reservation_deposit_status: depositId ? 'paid' : 'unpaid',
   })
+  if (insertError?.code === '23505') return response.status(409).json({ error: 'This deposit already has a program agreement.' })
   assertDb(insertError, 'Unable to create the document')
-  await addAuditEvent(envelopeId, 'document_created', { templateId, documentHash, ...(startDate ? { startDate } : {}) }, requestIp(request), header(request, 'user-agent'))
+  await addAuditEvent(envelopeId, 'document_created', { templateId, documentHash, ...(startDate ? { startDate } : {}), ...(depositId ? { depositEnvelopeId: depositId } : {}) }, requestIp(request), header(request, 'user-agent'))
   const envelope = {
     id: envelopeId,
+    template_id: templateId,
     recipient_name: recipientName,
     recipient_email: recipientEmail,
     business_name: businessName,

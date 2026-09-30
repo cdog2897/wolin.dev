@@ -31,6 +31,8 @@ const socialPaymentLinks: Record<string, Omit<PaymentOffer, 'subtotal'>> = {
 }
 
 export const paymentOffers: Record<string, PaymentOffer> = {
+  'local-virality-reservation': { url: 'https://buy.stripe.com/dRmbJ0bh21Hb7ff1Dk0ZW0a', linkId: 'plink_1ULCauAUfC4vfcETDoWq3RPd', subtotal: 30_000, cadence: 'one_time' },
+  'local-virality-90-day-reserved': { url: 'https://buy.stripe.com/28E5kCcl62LfgPPdm20ZW0b', linkId: 'plink_1ULCgyAUfC4vfcETxxkdMiTz', subtotal: 319_900, cadence: 'one_time' },
   ...Object.fromEntries(socialOffers.map(offer => [offer.templateId, { ...socialPaymentLinks[offer.templateId], subtotal: offer.amount, cadence: offer.cadence }])),
   'local-sensation-90-day': {
     url: 'https://buy.stripe.com/dRm3cucl60D7fLLa9Q0ZW01',

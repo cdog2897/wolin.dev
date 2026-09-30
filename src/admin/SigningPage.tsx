@@ -6,7 +6,7 @@ import './admin.css'
 
 function reservationCheckoutLabel(reservation?: SigningDocument['reservation']) {
   if (!reservation) return 'Continue to secure payment'
-  return reservation.state.startsWith('deposit') ? 'Pay $300 reservation deposit' : 'Pay $3,199 program balance'
+  return reservation.kind === 'deposit' ? 'Pay $300 reservation deposit' : `Pay ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(reservation.totalAmount / 100)} program fee`
 }
 
 function CheckIcon({ size = 18 }: { size?: number }) {

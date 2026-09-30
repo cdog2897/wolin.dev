@@ -1,4 +1,8 @@
 export const RESERVATION_TEMPLATE_ID = 'local-virality-reservation'
+export const RESERVED_PROGRAM_TEMPLATE_ID = 'local-virality-90-day-reserved'
+export const FULL_PROGRAM_TEMPLATE_ID = 'local-virality-90-day'
+export const START_DATE_TEMPLATE_IDS = [RESERVATION_TEMPLATE_ID, RESERVED_PROGRAM_TEMPLATE_ID, FULL_PROGRAM_TEMPLATE_ID]
+export function isProgramTemplate(id: unknown) { return id === RESERVED_PROGRAM_TEMPLATE_ID || id === FULL_PROGRAM_TEMPLATE_ID }
 export const RESERVATION_DEPOSIT = 30_000
 export const RESERVATION_TOTAL = 349_900
 export const RESERVATION_BALANCE = RESERVATION_TOTAL - RESERVATION_DEPOSIT
@@ -20,6 +24,7 @@ export function formatStartDate(value: string) {
 }
 
 export type ReservationSummary = {
+  kind: 'deposit' | 'program'
   startDate: string
   startDateLabel: string
   state: 'deposit_due' | 'deposit_processing' | 'deposit_failed' | 'reserved' | 'balance_due' | 'balance_processing' | 'balance_failed' | 'paid' | 'review_required'
@@ -29,13 +34,15 @@ export type ReservationSummary = {
 }
 
 export function reservationSummary(envelope: Record<string, unknown>, now = new Date()): ReservationSummary | null {
-  if (envelope.template_id !== RESERVATION_TEMPLATE_ID || !validStartDate(envelope.reservation_start_date)) return null
+  if (!START_DATE_TEMPLATE_IDS.includes(String(envelope.template_id)) || !validStartDate(envelope.reservation_start_date)) return null
+  const isDeposit = envelope.template_id === RESERVATION_TEMPLATE_ID
   const deposit = envelope.reservation_deposit_status
   const state: ReservationSummary['state'] = deposit === 'refunded' || envelope.payment_status === 'refunded' ? 'review_required'
-    : deposit !== 'paid' ? deposit === 'processing' ? 'deposit_processing' : deposit === 'failed' ? 'deposit_failed' : 'deposit_due'
+    : isDeposit ? envelope.payment_status === 'paid' ? 'reserved' : envelope.payment_status === 'processing' ? 'deposit_processing' : envelope.payment_status === 'failed' ? 'deposit_failed' : 'deposit_due'
     : envelope.payment_status === 'paid' ? 'paid'
     : envelope.payment_status === 'processing' ? 'balance_processing'
     : businessDate(now) < envelope.reservation_start_date ? 'reserved'
     : envelope.payment_status === 'failed' ? 'balance_failed' : 'balance_due'
-  return { startDate: envelope.reservation_start_date, startDateLabel: formatStartDate(envelope.reservation_start_date), state, depositAmount: RESERVATION_DEPOSIT, balanceAmount: RESERVATION_BALANCE, totalAmount: RESERVATION_TOTAL }
+  const amount = envelope.template_id === FULL_PROGRAM_TEMPLATE_ID ? RESERVATION_TOTAL : RESERVATION_BALANCE
+  return { kind: isDeposit ? 'deposit' : 'program', startDate: envelope.reservation_start_date, startDateLabel: formatStartDate(envelope.reservation_start_date), state, depositAmount: RESERVATION_DEPOSIT, balanceAmount: amount, totalAmount: isDeposit ? RESERVATION_DEPOSIT : amount }
 }

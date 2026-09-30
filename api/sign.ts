@@ -6,7 +6,7 @@ import { paymentUrlForEnvelope } from './_lib/payment-links.js'
 import { INSTALLMENT_TEMPLATE_ID } from './_lib/stripe-installments.js'
 import { isMonthlySocialTemplate } from './_lib/stripe-social.js'
 import { customerBillingUrl } from '../shared/customer-billing.js'
-import { reservationSummary, RESERVATION_TEMPLATE_ID } from '../shared/reservation.js'
+import { reservationSummary, RESERVATION_TEMPLATE_ID, START_DATE_TEMPLATE_IDS } from '../shared/reservation.js'
 import { reservationPaymentUrl } from './_lib/reservations.js'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com'
@@ -99,7 +99,7 @@ async function getDocument(request: ApiRequest, response: ApiResponse, token: st
       reservation: reservationSummary(envelope),
       paymentRequired: envelope.template_id === RESERVATION_TEMPLATE_ID || paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) !== null,
       billingPortalUrl: isMonthlySocialTemplate(envelope.template_id) && envelope.stripe_subscription_id ? customerBillingUrl : null,
-      paymentUrl: envelope.template_id === RESERVATION_TEMPLATE_ID ? reservationPaymentUrl(envelope) : envelope.status === 'signed' && envelope.payment_status !== 'paid' && !(isMonthlySocialTemplate(envelope.template_id) && envelope.stripe_subscription_id) && !(envelope.template_id === INSTALLMENT_TEMPLATE_ID && Number(envelope.installments_paid) > 0)
+      paymentUrl: START_DATE_TEMPLATE_IDS.includes(envelope.template_id) ? await reservationPaymentUrl(envelope) : envelope.status === 'signed' && envelope.payment_status !== 'paid' && !(isMonthlySocialTemplate(envelope.template_id) && envelope.stripe_subscription_id) && !(envelope.template_id === INSTALLMENT_TEMPLATE_ID && Number(envelope.installments_paid) > 0)
         ? paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) : null,
     },
   })
@@ -156,7 +156,7 @@ async function signDocument(request: ApiRequest, response: ApiResponse, token: s
   const safeTitle = escapeHtml(String(envelope.document_title))
   const reservation = reservationSummary(envelope)
   const secureLink = `https://wolin.dev/sign/${encodeURIComponent(token)}`
-  const reservationNote = reservation ? `Planned start: ${reservation.startDateLabel} (America/Denver). Pay your $300 non-refundable deposit to confirm the reservation. Return to the same secure link on the planned date to pay the remaining $3,199. No automatic charge. Secure link: ${secureLink}` : ''
+  const reservationNote = reservation ? `Planned start: ${reservation.startDateLabel} (America/Denver). ${reservation.kind === 'deposit' ? 'Pay your $300 non-refundable deposit to confirm the reservation. Caleb will send a separate $3,199 program agreement and Stripe payment link.' : 'This program agreement has its own one-time checkout, available on the planned start date.'} No automatic charge. Secure link: ${secureLink}` : ''
   const emailTask = (async () => {
     try {
       await sendEmail({
@@ -182,7 +182,7 @@ async function signDocument(request: ApiRequest, response: ApiResponse, token: s
   } catch {
     await emailTask
   }
-  return response.status(200).json({ ok: true, signedAt: signedRows[0].signed_at, paymentUrl: envelope.template_id === RESERVATION_TEMPLATE_ID ? reservationPaymentUrl({ ...envelope, status: 'signed' }) : paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) })
+  return response.status(200).json({ ok: true, signedAt: signedRows[0].signed_at, paymentUrl: START_DATE_TEMPLATE_IDS.includes(envelope.template_id) ? await reservationPaymentUrl({ ...envelope, status: 'signed' }) : paymentUrlForEnvelope(envelope.template_id, envelope.id, envelope.token_hash) })
 }
 
 export default async function handler(request: ApiRequest, response: ApiResponse) {

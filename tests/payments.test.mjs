@@ -6,6 +6,7 @@ import signHandler from '../node_modules/.tmp/api-tests/api/sign.js'
 import { paymentOffers, paymentReferenceForEnvelope, matchesPaymentReference } from '../node_modules/.tmp/api-tests/api/_lib/payment-links.js'
 import { socialTemplates } from '../node_modules/.tmp/api-tests/api/_lib/social-templates.js'
 import { socialOffers } from '../node_modules/.tmp/api-tests/shared/social-offers.js'
+import { businessDate } from '../node_modules/.tmp/api-tests/shared/reservation.js'
 
 const envelopeId = '11111111-1111-4111-8111-111111111111'
 const signingToken = 'integration-test-token'
@@ -26,6 +27,7 @@ function envelope(templateId = 'social-momentum-monthly', additions = {}) {
     document_title: 'Test agreement', document_body: 'Test body', document_hash: tokenHash,
     expires_at: new Date(Date.now() + 86_400_000).toISOString(),
     payment_status: 'unpaid', stripe_last_event_created: 0, invoice_last_event_created: 0,
+    reservation_start_date: templateId === 'local-virality-90-day' ? businessDate() : null,
     subscription_last_event_created: 0, installments_paid: 0, ...additions,
   }
 }
@@ -52,6 +54,7 @@ before(() => {
     assert.equal(url.hostname, 'wolin-test.invalid', 'Tests must never call a live service')
     const method = init.method ?? 'GET'
     if (url.pathname.endsWith('/signing_templates')) return Response.json(method === 'GET' ? [{ id: 'seeded' }] : [])
+    if (url.pathname.endsWith('/signing_reservation_refunds')) return Response.json([])
     assert.ok(url.pathname.endsWith('/signing_envelopes'))
     const matched = rows.filter(row => matches(row, url))
     if (method === 'PATCH') {
@@ -78,7 +81,7 @@ function checkout(templateId, changes = {}) {
     object: 'checkout.session', id: 'cs_live_test', client_reference_id: paymentReferenceForEnvelope(envelopeId, tokenHash),
     payment_link: offer.linkId, currency: 'usd', amount_subtotal: offer.subtotal, amount_total: offer.subtotal,
     payment_status: 'paid', mode: offer.cadence === 'monthly' ? 'subscription' : 'payment',
-    customer: customerId, subscription: offer.cadence === 'monthly' ? subscriptionId : null, ...changes,
+    customer: customerId, payment_intent: 'pi_checkout_test', subscription: offer.cadence === 'monthly' ? subscriptionId : null, ...changes,
   }
 }
 async function deliver(type, object, additions = {}, validSignature = true) {
