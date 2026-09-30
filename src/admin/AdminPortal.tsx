@@ -158,7 +158,7 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
 
   return <main className="wa-login">
     <section className="wa-login-card">
-      <a className="wa-login-brand" href="https://wolin.dev"><span>W</span><strong>wolin</strong><em>admin</em></a>
+      <a className="wa-login-brand" href="https://wolin.dev"><span>W</span><strong>Wolin Studio</strong><em>ADMIN</em></a>
       {sent ? <div className="wa-login-sent">
         <span className="wa-success-mark"><Icon name="check" size={24} /></span>
         <h1>Check your inbox</h1>
@@ -326,7 +326,7 @@ export default function AdminPortal() {
 
   return <div className="wa-shell">
     <aside className={`wa-sidebar ${mobileNav ? 'open' : ''}`}>
-      <div className="wa-brand"><span className="wa-brand-mark">W</span><div><strong>wolin</strong><small>admin</small></div></div>
+      <div className="wa-brand"><span className="wa-brand-mark">W</span><div><strong>Wolin Studio</strong><small>ADMIN</small></div></div>
       <nav>{([
         ['overview', 'grid', 'Overview'], ['documents', 'document', 'Documents'], ['reservations', 'clock', 'Reservations'], ['templates', 'template', 'Templates'], ['settings', 'settings', 'Settings'],
       ] as [View, keyof typeof icons, string][]).map(([id, icon, label]) => <button key={id} className={view === id ? 'active' : ''} onClick={() => { setView(id); setMobileNav(false) }}><Icon name={icon} />{label}{id === 'documents' && stats.sent + stats.viewed > 0 && <em>{stats.sent + stats.viewed}</em>}</button>)}</nav>
