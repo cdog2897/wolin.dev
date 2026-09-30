@@ -8,6 +8,7 @@ type OffersProps = { onChoose: (offer: string) => void }
 type CardProps = OffersProps & {
   id: string
   title: React.ReactNode
+  badge?: string
   subtitle?: string
   price: string
   originalPrice?: string
@@ -48,9 +49,9 @@ function BonusInfo({ bonus }: { bonus: typeof socialBonuses[number] }) {
   </span>
 }
 
-function OfferCard({ id, title, subtitle, price, originalPrice, period, description, features, note, className = '', action = 'Let’s get started', onChoose, children }: CardProps) {
+function OfferCard({ id, title, badge, subtitle, price, originalPrice, period, description, features, note, className = '', action = 'Let’s get started', onChoose, children }: CardProps) {
   return <article className={`offers-card ${className}`} id={id} aria-labelledby={`${id}-title`}>
-    <div className="offers-card-heading"><h2 id={`${id}-title`}>{title}</h2>{subtitle && <p className="offers-subtitle">{subtitle}</p>}<p>{description}</p></div>
+    <div className="offers-card-heading">{badge && <span className="offers-sale-badge">{badge}</span>}<h2 id={`${id}-title`}>{title}</h2>{subtitle && <p className="offers-subtitle">{subtitle}</p>}<p>{description}</p></div>
     <div className="offers-price">{originalPrice && <span className="offers-original-price"><span className="offers-sr-only">Regular price: </span><del>{originalPrice}</del></span>}<strong>{originalPrice && <span className="offers-sr-only">Sale price: </span>}{price}</strong>{period && <span>{period}</span>}</div>
     <ul className="offers-features">{features.map(feature => typeof feature === 'string' ? <li key={feature}>{feature}</li> : <li key={feature.text}>{feature.content}</li>)}</ul>
     {children}
@@ -66,7 +67,7 @@ export default function Offers({ onChoose }: OffersProps) {
     </section>
 
     <section className="offers-group offers-social" aria-label="Social media offers">
-      <OfferCard id="social-90" title={<>90-Day <em>Hands-Free</em> Local Virality</>} price={socialLaunchPrice} originalPrice="$7,000" period="one time" description="We plan it, shoot it, create it, and post it. Your social media, completely handled." onChoose={onChoose} className="offers-social-launch" features={[
+      <OfferCard id="social-90" badge="End of Summer Sale" title={<>90-Day <em>Hands-Free</em> Local Virality</>} price={socialLaunchPrice} originalPrice="$7,000" period="one time" description="We plan it, shoot it, create it, and post it. Your social media, completely handled." onChoose={onChoose} className="offers-social-launch" features={[
         { text: '60 posts per month across platforms', content: <><strong>60 posts per month</strong> across platforms</> },
         '20 Instagram · 20 Facebook · 20 TikTok',
         ...socialFeatures,

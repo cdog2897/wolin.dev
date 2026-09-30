@@ -143,3 +143,12 @@
 .business-footer-form{scroll-margin-top:24px}
 
 @media(min-width:761px) and (max-width:960px){.business-site-home .business-home-hero-inner{min-height:0;padding:85px 0 60px}}
+
+.business-sale-banner{background:var(--acid);color:var(--ink)}
+.business-sale-banner>a{display:flex;align-items:center;justify-content:center;gap:28px;min-height:44px;padding:10px 18px;font-size:12px;line-height:1.5}
+.business-sale-copy{display:flex;align-items:center;gap:16px}
+.business-sale-copy strong{font-weight:600}
+.business-sale-action{display:inline-flex;align-items:center;gap:8px;flex:none;text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.business-sale-banner>a:hover .business-sale-action{text-decoration-thickness:2px}
+.business-sale-banner>a:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
+@media(max-width:700px){.business-sale-banner>a{justify-content:space-between;gap:16px;font-size:11px}.business-sale-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.business-sale-copy strong{font-size:12px}}
