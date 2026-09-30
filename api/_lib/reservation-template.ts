@@ -9,7 +9,7 @@ export const reservationTemplate: DefaultTemplate = {
   id: RESERVATION_TEMPLATE_ID,
   name: '90-Day Local Virality Reservation Agreement',
   packageName: '90-Day Local Virality Reservation',
-  price: '$300 non-refundable deposit; $3,199 balance, plus applicable tax',
+  price: '$300 non-refundable; $3,199 balance, plus tax',
   subject: 'Your Wolin 90-day reservation agreement is ready to sign',
   body: `90-DAY HANDS-FREE LOCAL VIRALITY RESERVATION AGREEMENT
 

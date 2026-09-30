@@ -50,7 +50,13 @@ before(() => {
       emails.push(JSON.parse(init.body)); return Response.json({ id: 'mock-email' })
     }
     assert.equal(url.hostname, 'reservations-test.invalid', 'Never call a live service')
-    if (url.pathname.endsWith('/signing_templates')) return Response.json(method === 'GET' ? [{ ...reservationTemplate, package_name: reservationTemplate.packageName }] : [])
+    if (url.pathname.endsWith('/signing_templates')) {
+      if (method === 'POST') {
+        const body = JSON.parse(init.body); const templates = Array.isArray(body) ? body : [body]
+        for (const template of templates) assert.ok(template.price.length >= 1 && template.price.length <= 50, 'Template price must satisfy the deployed database constraint')
+      }
+      return Response.json(method === 'GET' ? [{ ...reservationTemplate, package_name: reservationTemplate.packageName }] : [])
+    }
     if (url.pathname.endsWith('/signing_audit_events')) {
       if (method === 'POST') { const event = JSON.parse(init.body); audit.push(event); if (event.event_type === 'completion_emails_sent') completionResolve?.() }
       return Response.json([])
