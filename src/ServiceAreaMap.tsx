@@ -55,6 +55,5 @@ export default function ServiceAreaMap() {
         <path d="M41 598v15m-7-8h14M582 563v15m-7-8h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </g>
     </svg>
-    <figcaption>Three cities. The same creative care.</figcaption>
   </figure>
 }
