@@ -1,5 +1,6 @@
 import { ArrowIcon } from './DecorativeIcon'
 import type { ServicePage } from './public-pages'
+import ServiceAreas from './ServiceAreas'
 import './ServicePages.css'
 
 const content = {
@@ -53,25 +54,10 @@ const content = {
     offerLink: '/offers#website',
     offerLabel: 'See website scope and pricing',
   },
-  'service-areas': {
-    eyebrow: 'Based in Laramie. Working with you.',
-    title: 'Laramie, Cheyenne & Fort Collins.',
-    intro: 'Wolin Studio provides social media management and web design from a Laramie base. For businesses in Cheyenne and Fort Collins, we travel to the customer for agreed on-site work and handle planning, editing, and website feedback remotely.',
-    sections: [
-      { title: 'Laramie: the home base', text: 'If your business is in Laramie, start by sharing your location, services, and what you want customers to do online. For content production, we can discuss capturing your team, workspace, products, or services where you actually work. Meetings and shoots are arranged in advance.' },
-      { title: 'Cheyenne: plan the visit around the work', text: 'Wolin Studio serves Cheyenne by travelling from Laramie to customers, rather than operating a Cheyenne office. Tell us where filming would take place, when the people or products involved are available, and whether access or customer permission needs to be arranged. We confirm the visit and production scope together.' },
-      { title: 'Fort Collins: on-site content, remote follow-through', text: 'Fort Collins businesses can arrange customer-site production with Wolin Studio. There is no Fort Collins office. Share the proposed location and the material you want to capture so travel and shoot timing can be discussed before booking. Editing, publishing preparation, and website reviews can continue remotely after the visit.' },
-      { title: 'Match the working arrangement to the service', text: 'Social content may need a visit to capture your business in action. A website project can usually move forward with your supplied copy, photos, and remote feedback. Additional photography, extra pages, and other custom work are scoped separately. Include your location in the initial inquiry so we can confirm logistics and any travel-related scope or costs before you commit.' },
-    ],
-    asideTitle: 'Before we arrange a visit',
-    checklist: ['Share the customer-site location and suitable dates.', 'Explain what needs to be photographed or filmed and who can approve it.', 'Confirm the agreed scope, access, and schedule before setting aside production time.'],
-    closing: 'Outside these areas? Send your location and project details so we can discuss whether remote work or a separately scoped visit is a fit. Availability and working arrangements are confirmed individually.',
-    offerLink: '/offers',
-    offerLabel: 'Explore packages and custom work',
-  },
 }
 
 export default function ServicePages({ page }: { page: ServicePage }) {
+  if (page === 'service-areas') return <ServiceAreas />
   const details = content[page]
   return <article className="service-page">
     <header className="service-page-intro">
@@ -89,7 +75,7 @@ export default function ServicePages({ page }: { page: ServicePage }) {
     <section className="service-page-next" aria-label="Working together"><p>{details.closing}</p><nav aria-label="Explore our services">
       {page !== 'social-media-management' && <a href="/social-media-management">Social media management <ArrowIcon /></a>}
       {page !== 'web-design' && <a href="/web-design">Web design <ArrowIcon /></a>}
-      {page !== 'service-areas' && <a href="/service-areas">Where and how we work <ArrowIcon /></a>}
+      <a href="/service-areas">Where and how we work <ArrowIcon /></a>
       <a href="#contact">Contact Wolin Studio <ArrowIcon /></a>
     </nav></section>
   </article>

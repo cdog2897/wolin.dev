@@ -27,7 +27,7 @@ export const publicPages = {
   '/service-areas': {
     page: 'service-areas',
     title: 'Laramie, Cheyenne & Fort Collins | Wolin Studio',
-    description: 'Wolin Studio is based in Laramie and travels to customers in Cheyenne and Fort Collins. Learn how on-site content production and remote website work fit together.',
+    description: 'Social media management and custom web design for businesses in Laramie, Cheyenne, and Fort Collins. Explore Wolin Studio’s service areas and creative services.',
   },
 } as const
 
@@ -48,7 +48,9 @@ export function structuredData(path: PublicPath) {
     '@id': 'https://wolin.dev/#organization',
     name: 'Wolin Studio',
     url: 'https://wolin.dev/',
-    description: 'Laramie-based studio providing social media management and web design, with travel to customers in Cheyenne and Fort Collins.',
+    description: path === '/service-areas'
+      ? 'Studio providing social media management and custom web design for businesses in Laramie, Cheyenne, and Fort Collins.'
+      : 'Laramie-based studio providing social media management and web design, with travel to customers in Cheyenne and Fort Collins.',
     areaServed,
   }
   const services = [
