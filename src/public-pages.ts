@@ -1,4 +1,9 @@
 export const publicPages = {
+  '/marketing': {
+    page: 'marketing',
+    title: 'Small Business Marketing in Laramie | Wolin Studio',
+    description: 'Explore small-business marketing with Wolin Studio: social content, websites, and custom-quoted SEO. Based in Laramie, serving Cheyenne and Fort Collins.',
+  },
   '/': {
     page: 'home',
     title: 'Wolin Studio | Social Media & Web Design in Laramie',
@@ -47,6 +52,7 @@ export function structuredData(path: PublicPath) {
     areaServed,
   }
   const services = [
+    { path: '/marketing', name: 'Small business marketing', description: 'Social content production and publishing, website design, and separately quoted SEO, Google Business Profile, video, and photography services for small businesses.' },
     { path: '/social-media-management', name: 'Social media management', description: 'Content strategy, photo and video production, editing, captions, scheduling, and publishing for Instagram, Facebook, and TikTok.' },
     { path: '/web-design', name: 'Web design', description: 'Custom mobile-friendly websites with contact options, basic search titles and descriptions, and ongoing website care. Additional pages and SEO work are custom quoted.' },
   ].filter(service => path === '/' || path === '/offers' || path === '/service-areas' || path === service.path)

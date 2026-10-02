@@ -1,7 +1,7 @@
 {
   "routes": [
     {
-      "src": "^/(offers|social-media-management|web-design|service-areas)/index\\.html$",
+      "src": "^/(offers|social-media-management|web-design|service-areas|marketing)/index\\.html$",
       "headers": {
         "Location": "/$1"
       },
@@ -52,7 +52,7 @@
       "dest": "/admin-robots.txt"
     },
     {
-      "src": "^/((offers|social-media-management|web-design|service-areas)(/index\\.html|/)?)?$",
+      "src": "^/((offers|social-media-management|web-design|service-areas|marketing)(/index\\.html|/)?)?$",
       "has": [
         {
           "type": "host",
@@ -62,7 +62,7 @@
       "dest": "/private-shell.html"
     },
     {
-      "src": "^/(offers|social-media-management|web-design|service-areas)/?$",
+      "src": "^/(offers|social-media-management|web-design|service-areas|marketing)/?$",
       "dest": "/$1/index.html"
     },
     {

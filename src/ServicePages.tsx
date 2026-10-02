@@ -3,6 +3,24 @@ import type { ServicePage } from './public-pages'
 import './ServicePages.css'
 
 const content = {
+  marketing: {
+    eyebrow: 'Practical work for your next step',
+    title: 'Small-business marketing in Laramie.',
+    intro: 'Wolin Studio helps small businesses explain what they do through social content, websites, and separately scoped local search work. Based in Laramie, we also serve Cheyenne and Fort Collins, travelling to customers for agreed on-site production. Start with the part of your marketing that needs attention, then choose work that fits your business.',
+    sections: [
+      { title: 'Start with the customer’s question', text: 'Before choosing a package, consider what someone needs to know before contacting you. Can they see what you offer, understand who it is for, and find a clear next step? If those answers are missing, more content alone may not solve the problem. Bring your current website and social links, the services you want to explain, and the questions you hear most often. That gives us a practical starting point for discussing scope.' },
+      { title: 'Show your work through social content', text: 'If people need to see your products, process, or team to understand your business, social content can help explain them. The social packages cover planning, scripting, a professional photo/video shoot, editing, captions, hashtags, scheduling, and posting across Instagram, Facebook, and TikTok. Monthly analytics reports are included. Choose a 90-day program or a monthly plan using the current offers page; the package determines the publishing volume and production schedule. DMs and community management require a separate scope and quote.' },
+      { title: 'Give interested visitors a useful website', text: 'If a visitor finds you through a post or recommendation, your website should make it easy to understand your services and contact you. Custom Website + Care starts with one mobile-friendly page, your business details, a contact form, existing booking links, and basic search titles and descriptions. You supply copy and photos for light polishing. Additional pages, features, ecommerce, and redesigns are quoted separately. Compare the full scope and checkout-based care billing terms on the offers page before choosing the package.' },
+      { title: 'Scope local search work around real gaps', text: 'If your business information is incomplete or inconsistent, or your website does not clearly describe your services, ask about a custom quote for SEO or Google Business Profile work. Available services include profile optimization and management, listing cleanup, website and technical SEO, and service or location content. These are separately scoped services, not automatic inclusions in a social or website package. Share the profiles and pages you already have so we can discuss which work is relevant before setting a scope.' },
+      { title: 'Need a specific video or photo project?', text: 'You may need footage for a service demonstration, an edited video from material you already have, or photos for your website rather than an ongoing social plan. Videography, video editing, photography, and additional shoots are available by custom quote. Tell us how the material will be used, what already exists, the location, and the deadline. Deliverables and production arrangements are agreed before work begins.' },
+      { title: 'Choose a focused first project', text: 'You do not need to start with every service. A business with useful photos but an unclear website may begin with web design. A business with a clear website but little material showing its work may focus on social production. If the immediate issue is inaccurate business information, a profile or listing project may be more relevant. Discuss your priorities, available materials, and budget so the proposed work has a clear purpose and defined boundaries.' },
+    ],
+    asideTitle: 'Bring these to the conversation',
+    checklist: ['Your website, social account links, and business profile if you have one.', 'The service or product you want people to understand, and the action you want them to take.', 'Your location, timing, available photos or footage, and a budget range for the work.'],
+    closing: 'Marketing support is coordinated from Laramie, with travel to customers in Cheyenne and Fort Collins for agreed on-site work. Planning, editing, and website feedback can happen remotely. We do not operate separate offices in Cheyenne or Fort Collins. Share your location and project needs so logistics and scope can be confirmed before you commit.',
+    offerLink: '/offers',
+    offerLabel: 'Compare packages and custom services',
+  },
   'social-media-management': {
     eyebrow: 'Content with a purpose',
     title: 'Social media management in Laramie.',

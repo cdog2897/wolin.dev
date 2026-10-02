@@ -3,13 +3,14 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 
 const routes = JSON.parse(await readFile('vercel.json', 'utf8')).routes
-const paths = ['/', '/offers', '/social-media-management', '/web-design', '/service-areas']
+const paths = ['/', '/offers', '/social-media-management', '/web-design', '/service-areas', '/marketing']
 const titles = [
   'Wolin Studio | Social Media &amp; Web Design in Laramie',
   'Social Media &amp; Website Packages | Wolin Studio',
   'Social Media Management in Laramie | Wolin Studio',
   'Web Design in Laramie | Wolin Studio',
   'Laramie, Cheyenne &amp; Fort Collins | Wolin Studio',
+  'Small Business Marketing in Laramie | Wolin Studio',
 ]
 const sitemap = await readFile('dist/sitemap.xml', 'utf8')
 const descriptions = new Set()
@@ -75,4 +76,4 @@ assert.equal(route('/calebwolin').dest, '/app-shell.html')
 assert.equal(route('/90-day-hands-free-local-sensation').headers.Location, '/offers')
 assert.equal(route('/not-a-real-route').dest, undefined)
 assert.equal(routes.at(-1).handle, 'filesystem')
-console.log('SEO checks passed: 5 prerendered pages, unique metadata, schemas, sitemap, internal links, private shells, ordered routes, redirects, and no wildcard fallback.')
+console.log('SEO checks passed: 6 prerendered pages, unique metadata, schemas, sitemap, internal links, private shells, ordered routes, redirects, and no wildcard fallback.')
