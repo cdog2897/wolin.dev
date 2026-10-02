@@ -1,9 +1,9 @@
 {
   "routes": [
     {
-      "src": "^/offers/index\\.html$",
+      "src": "^/(offers|social-media-management|web-design|service-areas)/index\\.html$",
       "headers": {
-        "Location": "/offers"
+        "Location": "/$1"
       },
       "status": 308
     },
@@ -52,7 +52,7 @@
       "dest": "/admin-robots.txt"
     },
     {
-      "src": "^/(offers/?)?$",
+      "src": "^/((offers|social-media-management|web-design|service-areas)(/index\\.html|/)?)?$",
       "has": [
         {
           "type": "host",
@@ -62,8 +62,8 @@
       "dest": "/private-shell.html"
     },
     {
-      "src": "^/offers/?$",
-      "dest": "/offers/index.html"
+      "src": "^/(offers|social-media-management|web-design|service-areas)/?$",
+      "dest": "/$1/index.html"
     },
     {
       "src": "^/calebwolin/?$",

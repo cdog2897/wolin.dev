@@ -20,26 +20,25 @@ try {
     publicDir: false,
     build: { ssr: 'src/prerender.tsx', outDir: serverBuild, emptyOutDir: true },
   })
-  const { renderPage } = await import(pathToFileURL(resolve(serverBuild, 'prerender.js')).href)
+  const { renderPage, publicPages, structuredData } = await import(pathToFileURL(resolve(serverBuild, 'prerender.js')).href)
 
-  for (const path of ['/', '/offers']) {
+  const escapeHtml = value => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+  for (const [path, metadata] of Object.entries(publicPages)) {
+    const title = escapeHtml(metadata.title)
+    const description = escapeHtml(metadata.description)
     let html = template
-    if (path === '/offers') {
-      const title = 'Offers — Wolin'
-      const description = 'Explore Wolin’s 90-day social media program, monthly social media plans, custom websites, and services by custom quote for local businesses.'
-      html = html
-        .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
-        .replace(/(<meta\s+name="description"\s+content=")[^"]*("\s*\/>)/, `$1${description}$2`)
-        .replace(/(<meta property="og:title" content=")[^"]*/, `$1${title}`)
-        .replace(/(<meta\s+property="og:description"\s+content=")[^"]*/, `$1${description}`)
-        .replace(/(<meta name="twitter:title" content=")[^"]*/, `$1${title}`)
-        .replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*/, `$1${description}`)
-        .replace(/(<meta property="og:url" content=")[^"]*/, `$1${origin}${path}`)
-    }
+      .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)
+      .replace(/(<meta\s+name="description"\s+content=")[^"]*/, `$1${description}`)
+      .replace(/(<meta property="og:title" content=")[^"]*/, `$1${title}`)
+      .replace(/(<meta\s+property="og:description"\s+content=")[^"]*/, `$1${description}`)
+      .replace(/(<meta name="twitter:title" content=")[^"]*/, `$1${title}`)
+      .replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*/, `$1${description}`)
+      .replace(/(<meta property="og:url" content=")[^"]*/, `$1${origin}${path}`)
+      .replace('</head>', `  <script type="application/ld+json">${JSON.stringify(structuredData(path)).replaceAll('<', '\\u003c')}</script>\n  </head>`)
     html = html
       .replace('</head>', `  <link rel="canonical" href="${origin}${path}" />\n  </head>`)
       .replace('<div id="root"></div>', `<div id="root" data-prerendered="${path}">${renderPage(path)}</div>`)
-    const output = path === '/' ? resolve(dist, 'index.html') : resolve(dist, 'offers/index.html')
+    const output = path === '/' ? resolve(dist, 'index.html') : resolve(dist, `${path.slice(1)}/index.html`)
     await mkdir(resolve(output, '..'), { recursive: true })
     await writeFile(output, html)
   }

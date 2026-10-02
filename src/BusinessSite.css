@@ -152,3 +152,6 @@
 .business-sale-banner>a:hover .business-sale-action{text-decoration-thickness:2px}
 .business-sale-banner>a:focus-visible{outline:2px solid var(--ink);outline-offset:-4px}
 @media(max-width:700px){.business-sale-banner>a{justify-content:space-between;gap:16px;font-size:11px}.business-sale-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.business-sale-copy strong{font-size:12px}}
+
+.business-footer-services{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 24px}.business-footer-services a:hover{color:var(--orange)}.business-footer-services a:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
+@media(max-width:700px){.business-footer-bottom{flex-wrap:wrap;gap:22px}.business-footer-services{order:3;flex-basis:100%;justify-content:flex-start}}

@@ -3,6 +3,7 @@ import { createRoot, hydrateRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import BusinessSite from './BusinessSite.tsx'
+import { isPublicPath, publicPages } from './public-pages'
 import SampleAudit from './SampleAudit.tsx'
 import AdminPortal from './admin/AdminPortal.tsx'
 import SigningPage from './admin/SigningPage.tsx'
@@ -15,7 +16,7 @@ const legacyAdminSigningLink = adminHost && signingMatch
 const portfolioPath = currentPath === '/calebwolin'
 const sampleAuditPath = currentPath === '/sample'
 const retiredOfferPath = currentPath === '/90-day-hands-free-local-sensation'
-const offersPath = currentPath === '/offers'
+const publicPage = isPublicPath(currentPath) ? publicPages[currentPath] : undefined
 
 if (legacyAdminSigningLink) {
   window.location.replace(`https://wolin.dev${window.location.pathname}${window.location.search}${window.location.hash}`)
@@ -51,17 +52,14 @@ if (signingMatch) {
     'content',
     'See how Wolin evaluates Google Business Profile, website, local search, conversion, and AI visibility for a small business.',
   )
-} else if (offersPath) {
-  document.title = 'Offers — Wolin'
-  const description = 'Explore Wolin’s 90-day social media program, monthly social media plans, custom websites, and services by custom quote for local businesses.'
-  document.querySelector('meta[name="description"]')?.setAttribute('content', description)
-  document.querySelector('meta[property="og:title"]')?.setAttribute('content', document.title)
-  document.querySelector('meta[property="og:description"]')?.setAttribute('content', description)
-  document.querySelector('meta[property="og:url"]')?.setAttribute('content', 'https://wolin.dev/offers')
-  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', document.title)
-  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', description)
-} else {
-  document.title = 'Wolin — Local Growth for Small Businesses'
+} else if (publicPage) {
+  document.title = publicPage.title
+  document.querySelector('meta[name="description"]')?.setAttribute('content', publicPage.description)
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', publicPage.title)
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', publicPage.description)
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://wolin.dev${currentPath}`)
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', publicPage.title)
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', publicPage.description)
 }
 
 const root = document.getElementById('root')!
@@ -76,7 +74,7 @@ const app = (
     ) : sampleAuditPath ? (
       <SampleAudit />
     ) : (
-      <BusinessSite page={offersPath ? 'offers' : 'home'} />
+      <BusinessSite page={publicPage?.page ?? 'home'} />
     )}
   </StrictMode>
 )

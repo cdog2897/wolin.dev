@@ -2,11 +2,14 @@ import { StrictMode } from 'react'
 import { renderToString } from 'react-dom/server'
 import BusinessSite from './BusinessSite'
 
-// Only the existing public business pages are rendered into static HTML.
-export function renderPage(path: '/' | '/offers') {
+import { publicPages, type PublicPath } from './public-pages'
+export { publicPages, structuredData } from './public-pages'
+
+// Only the public business pages are rendered into static HTML.
+export function renderPage(path: PublicPath) {
   return renderToString(
     <StrictMode>
-      <BusinessSite page={path === '/offers' ? 'offers' : 'home'} />
+      <BusinessSite page={publicPages[path].page} />
     </StrictMode>,
   )
 }
