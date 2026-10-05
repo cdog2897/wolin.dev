@@ -15,6 +15,7 @@ const signingMatch = currentPath.match(/^\/sign\/([^/]+)$/)
 const legacyAdminSigningLink = adminHost && signingMatch
 const portfolioPath = currentPath === '/calebwolin'
 const sampleAuditPath = currentPath === '/sample'
+const undercoverDemoPath = currentPath === '/sample/UndercoverBedandSpas' || currentPath.startsWith('/sample/UndercoverBedandSpas/')
 const retiredOfferPath = currentPath === '/90-day-hands-free-local-sensation'
 const publicPage = isPublicPath(currentPath) ? publicPages[currentPath] : undefined
 
@@ -46,6 +47,9 @@ if (signingMatch) {
     'content',
     'Selected apps, web platforms, and creative tools designed and built by Caleb Wolin.',
   )
+} else if (undercoverDemoPath) {
+  document.title = 'Undercover Bed & Spas — Design Demo'
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#1c3932')
 } else if (sampleAuditPath) {
   document.title = 'Sample Visibility Audit — Wolin'
   document.querySelector('meta[name="description"]')?.setAttribute(
@@ -79,7 +83,12 @@ const app = (
   </StrictMode>
 )
 
-if (!adminHost && root.dataset.prerendered === currentPath) {
+if (!adminHost && !adminPreviewPath && undercoverDemoPath) {
+  // Prerendered demo content remains visible until its separate code is ready.
+  void import('./undercover/UndercoverDemo.tsx').then(({ default: UndercoverDemo }) => {
+    createRoot(root).render(<StrictMode><UndercoverDemo initialPath={currentPath} /></StrictMode>)
+  })
+} else if (!adminHost && root.dataset.prerendered === currentPath) {
   hydrateRoot(root, app)
 } else {
   createRoot(root).render(app)
