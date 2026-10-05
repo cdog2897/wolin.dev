@@ -12,7 +12,7 @@ function House() {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m3 11 9-8 9 8M6 9v12h12V9M10 21v-6h4v6" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></svg>
 }
 function Mark() {
-  return <span className="ub-mark"><span>undercover</span><small>BED & SPAS <i><Sun /></i> LARAMIE, WY</small></span>
+  return <span className="ub-mark"><span className="ub-mark-window"><img src="/undercover-demo/undercover-logo-concept.png" width="2169" height="725" alt="undercover" decoding="async" /></span></span>
 }
 function Photo({ name, alt, className = '', eager = false }: { name: keyof typeof imagery; alt: string; className?: string; eager?: boolean }) {
   return <img className={className} src={imagery[name]} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
