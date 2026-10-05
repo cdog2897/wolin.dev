@@ -12,6 +12,7 @@ Disallow: /api/
 Disallow: /admin
 Disallow: /sign/
 Disallow: /sample
+Allow: /sample/UndercoverBedandSpas
 
 User-agent: GPTBot
 Disallow: /

@@ -78,6 +78,36 @@
       "dest": "/private-shell.html"
     },
     {
+      "src": "^/sample/UndercoverBedandSpas(/.*)?$",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.dev"
+        }
+      ],
+      "dest": "/private-shell.html"
+    },
+    {
+      "src": "^/sample/UndercoverBedandSpas((?:/(?:spas|saunas|mattresses|services|about|visit|contact|brochure|guides|warranties|not-found|collections/(?:highlife|limelight|hot-spot|cold-plunge|refurbished|spa-accessories|tylo|leisurecraft|tempur-pedic|stearns-foster|sealy|bases-pillows)))?)/index\\.html$",
+      "headers": {
+        "Location": "/sample/UndercoverBedandSpas$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/sample/UndercoverBedandSpas/?$",
+      "dest": "/sample/UndercoverBedandSpas/index.html"
+    },
+    {
+      "src": "^/sample/UndercoverBedandSpas/(spas|saunas|mattresses|services|about|visit|contact|brochure|guides|warranties|not-found|collections/(?:highlife|limelight|hot-spot|cold-plunge|refurbished|spa-accessories|tylo|leisurecraft|tempur-pedic|stearns-foster|sealy|bases-pillows))/?$",
+      "dest": "/sample/UndercoverBedandSpas/$1/index.html"
+    },
+    {
+      "src": "^/sample/UndercoverBedandSpas/.*$",
+      "dest": "/sample/UndercoverBedandSpas/not-found/index.html",
+      "status": 404
+    },
+    {
       "handle": "filesystem"
     }
   ]
