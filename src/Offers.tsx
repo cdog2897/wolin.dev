@@ -56,6 +56,7 @@ function OfferCard({ id, title, badge, subtitle, price, originalPrice, period, d
     <ul className="offers-features">{features.map(feature => typeof feature === 'string' ? <li key={feature}>{feature}</li> : <li key={feature.text}>{feature.content}</li>)}</ul>
     {children}
     {note && <p className="offers-note">{note}</p>}
+    {id === 'website' && <p className="offers-service-context">See <a href="/web-design">how website planning and design work</a> before you send an inquiry.</p>}
     <a className="offers-action" href="#contact" onClick={() => onChoose(id)}>{action}<ArrowIcon /></a>
   </article>
 }

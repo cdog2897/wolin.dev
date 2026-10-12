@@ -19,6 +19,9 @@
 .offers-features li{padding-left:3px;font-size:12px;line-height:1.5}
 .offers-features li::marker{color:var(--ink)}
 .offers-note{margin:0 0 24px;font-size:10px;line-height:1.7;color:var(--muted)}
+.offers-service-context{grid-column:1/-1;margin:0 0 24px;font-size:12px;line-height:1.7;color:var(--muted)}
+.offers-service-context a{text-decoration:underline;text-underline-offset:3px}
+.offers-service-context a:focus-visible{outline:3px solid var(--orange);outline-offset:4px}
 .offers-action{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:auto;padding:15px 18px;border-radius:9px;background:var(--ink);color:var(--paper);font-size:12px;font-weight:500;transition:background .2s,color .2s}
 .offers-action:hover{background:var(--orange);color:var(--ink)}
 .offers-action:focus-visible,.offers-custom-link:focus-visible{outline:3px solid var(--orange);outline-offset:4px}
