@@ -61,7 +61,7 @@ if (signingMatch) {
   document.querySelector('meta[name="description"]')?.setAttribute('content', publicPage.description)
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', publicPage.title)
   document.querySelector('meta[property="og:description"]')?.setAttribute('content', publicPage.description)
-  document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://wolin.dev${currentPath}`)
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://wolin.studio${currentPath}`)
   document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', publicPage.title)
   document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', publicPage.description)
 }

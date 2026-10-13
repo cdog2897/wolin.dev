@@ -45,9 +45,9 @@ const areaServed = ['Laramie, Wyoming', 'Cheyenne, Wyoming', 'Fort Collins, Colo
 export function structuredData(path: PublicPath) {
   const organization = {
     '@type': 'Organization',
-    '@id': 'https://wolin.dev/#organization',
+    '@id': 'https://wolin.studio/#organization',
     name: 'Wolin Studio',
-    url: 'https://wolin.dev/',
+    url: 'https://wolin.studio/',
     description: path === '/service-areas'
       ? 'Studio providing social media management and custom web design for businesses in Laramie, Cheyenne, and Fort Collins.'
       : 'Laramie-based studio providing social media management and web design, with travel to customers in Cheyenne and Fort Collins.',
@@ -60,11 +60,11 @@ export function structuredData(path: PublicPath) {
   ].filter(service => path === '/' || path === '/offers' || path === '/service-areas' || path === service.path)
     .map(service => ({
       '@type': 'Service',
-      '@id': `https://wolin.dev${service.path}#service`,
+      '@id': `https://wolin.studio${service.path}#service`,
       name: service.name,
       serviceType: service.name,
       description: service.description,
-      url: `https://wolin.dev${service.path}`,
+      url: `https://wolin.studio${service.path}`,
       provider: { '@id': organization['@id'] },
       areaServed,
     }))

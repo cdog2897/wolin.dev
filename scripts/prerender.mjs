@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { build } from 'vite'
 
-const origin = 'https://wolin.dev'
+const origin = 'https://wolin.studio'
 const dist = resolve('dist')
 const serverBuild = resolve('node_modules/.tmp/prerender')
 const template = await readFile(resolve(dist, 'index.html'), 'utf8')

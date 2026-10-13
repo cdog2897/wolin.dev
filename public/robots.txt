@@ -17,4 +17,4 @@ Allow: /sample/UndercoverBedandSpas
 User-agent: GPTBot
 Disallow: /
 
-Sitemap: https://wolin.dev/sitemap.xml
+Sitemap: https://wolin.studio/sitemap.xml

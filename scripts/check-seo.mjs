@@ -13,22 +13,26 @@ const titles = [
   'Small Business Marketing in Laramie | Wolin Studio',
 ]
 const sitemap = await readFile('dist/sitemap.xml', 'utf8')
+assert.ok((await readFile('dist/robots.txt', 'utf8')).includes('Sitemap: https://wolin.studio/sitemap.xml'))
 const descriptions = new Set()
 for (const [index, path] of paths.entries()) {
   const html = await readFile(`dist${path === '/' ? '' : path}/index.html`, 'utf8')
   assert.ok(html.includes(`<title>${titles[index]}</title>`), `${path}: title`)
   assert.equal((html.match(/rel="canonical"/g) || []).length, 1)
-  assert.ok(html.includes(`rel="canonical" href="https://wolin.dev${path}"`))
+  assert.ok(html.includes(`rel="canonical" href="https://wolin.studio${path}"`))
   assert.ok(html.includes(`data-prerendered="${path}"`))
   assert.equal((html.match(/<h1[ >]/g) || []).length, 1)
   assert.ok(!html.includes('noindex'))
-  assert.ok(sitemap.includes(`<loc>https://wolin.dev${path}</loc>`))
+  assert.ok(sitemap.includes(`<loc>https://wolin.studio${path}</loc>`))
   const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/)[1]
   assert.ok(!descriptions.has(description))
   descriptions.add(description)
   const schema = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1])
   assert.equal(schema['@context'], 'https://schema.org')
   assert.equal(schema['@graph'][0]['@type'], 'Organization')
+  assert.equal(schema['@graph'][0]['@id'], 'https://wolin.studio/#organization')
+  for (const entity of schema['@graph']) assert.ok(entity.url.startsWith('https://wolin.studio/'))
+  assert.ok(html.includes(`property="og:url" content="https://wolin.studio${path}"`))
   assert.ok(schema['@graph'].some(entity => entity['@type'] === 'Service'))
   assert.ok(!JSON.stringify(schema).match(/address|rating|review|price|guarantee/i))
   for (const entity of schema['@graph']) assert.equal(entity.areaServed.length, 3)
@@ -45,7 +49,7 @@ assert.ok(!portfolioShell.includes('noindex'))
 assert.ok(portfolioShell.includes('<div id="root"></div>'))
 
 // Evaluate the ordered route declarations, including host conditions and redirects.
-function route(path, host = 'wolin.dev') {
+function route(path, host = 'wolin.studio') {
   const headers = {}
   for (const entry of routes) {
     if (!entry.src || (entry.has && !entry.has.every(rule => rule.type === 'host' && rule.value === host))) continue

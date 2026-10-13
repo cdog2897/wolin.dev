@@ -158,7 +158,7 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
 
   return <main className="wa-login">
     <section className="wa-login-card">
-      <a className="wa-login-brand" href="https://wolin.dev"><span>W</span><strong>Wolin Studio</strong><em>ADMIN</em></a>
+      <a className="wa-login-brand" href="https://wolin.studio"><span>W</span><strong>Wolin Studio</strong><em>ADMIN</em></a>
       {sent ? <div className="wa-login-sent">
         <span className="wa-success-mark"><Icon name="check" size={24} /></span>
         <h1>Check your inbox</h1>
