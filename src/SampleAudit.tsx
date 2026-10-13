@@ -161,7 +161,7 @@ function SampleAudit() {
 
       <main className="onepage-report" id="analysis">
         <header className="onepage-header">
-          <a href="/" className="onepage-wordmark" aria-label="Wolin home">wolin.dev</a>
+          <a href="/" className="onepage-wordmark" aria-label="Wolin home">wolin.studio</a>
           <div className="onepage-report-meta"><span>{report.date}</span><strong>{report.label}</strong></div>
           <button type="button" onClick={() => window.print()}>Print / save PDF <ArrowIcon /></button>
         </header>
@@ -196,7 +196,7 @@ function SampleAudit() {
 
         <footer className="onepage-footer">
           <p><strong>Scope:</strong> Public-source snapshot. Scores reflect observed evidence available on the audit date; owner-only analytics and profile controls require access.</p>
-          <div><span>Prepared by Wolin</span><a href="mailto:caleb.wolin@gmail.com">caleb.wolin@gmail.com</a><a href="tel:+12088108089">(208) 810-8089</a></div>
+          <div><span>Prepared by Wolin</span><a href="mailto:caleb@wolin.studio">caleb@wolin.studio</a><a href="tel:+12088108089">(208) 810-8089</a></div>
         </footer>
       </main>
     </div>
