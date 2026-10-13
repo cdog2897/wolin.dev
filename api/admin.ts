@@ -36,7 +36,7 @@ async function sendEmail(payload: { to: string[]; subject: string; html: string;
   if (!result.ok) throw new Error(`Resend rejected the email (${result.status}): ${await result.text()}`)
 }
 
-function emailFrame(content: string, host: 'wolin.dev' | 'admin.wolin.dev' = 'wolin.dev') {
+function emailFrame(content: string, host: 'wolin.dev' | 'admin.wolin.studio' = 'wolin.dev') {
   return `<div style="background:#f2f5f3;padding:36px 18px;font-family:Arial,sans-serif;color:#17211f"><div style="max-width:600px;margin:auto;background:#fff;border:1px solid #dfe5e1;border-radius:16px;overflow:hidden"><div style="padding:24px 30px;border-bottom:1px solid #edf0ee;color:#214e45;font-weight:800;letter-spacing:.16em">WOLIN</div><div style="padding:34px 30px">${content}</div><div style="padding:18px 30px;background:#f7f9f8;color:#68736f;font-size:12px">Securely delivered by Wolin Sign · ${host}</div></div></div>`
 }
 
@@ -68,7 +68,7 @@ async function requestLogin(request: ApiRequest, response: ApiResponse) {
       to: [email],
       subject: 'Your Wolin Admin sign-in link',
       text: `Sign in to Wolin Admin: ${link}\n\nThis link expires in 15 minutes.`,
-      html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Sign in to Wolin Admin</h1><p style="line-height:1.6;margin:0 0 22px">Use this private link to open your admin portal. It expires in 15 minutes.</p><a href="${link}" style="display:inline-block;background:#214e45;color:#fff;text-decoration:none;padding:13px 20px;border-radius:9px;font-weight:700">Sign in securely</a>`, 'admin.wolin.dev'),
+      html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Sign in to Wolin Admin</h1><p style="line-height:1.6;margin:0 0 22px">Use this private link to open your admin portal. It expires in 15 minutes.</p><a href="${link}" style="display:inline-block;background:#214e45;color:#fff;text-decoration:none;padding:13px 20px;border-radius:9px;font-weight:700">Sign in securely</a>`, 'admin.wolin.studio'),
     })
   }
   return response.status(200).json({ ok: true })
