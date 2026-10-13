@@ -64,18 +64,20 @@ function route(path, host = 'wolin.studio') {
 for (const path of paths.slice(1)) {
   for (const variant of [path, `${path}/`]) {
     assert.equal(route(variant).dest, `${path}/index.html`)
-    assert.equal(route(variant, 'admin.wolin.dev').dest, '/private-shell.html')
-    assert.equal(route(variant, 'admin.wolin.dev').headers['X-Robots-Tag'], 'noindex, nofollow')
+    assert.equal(route(variant, 'admin.wolin.studio').dest, '/private-shell.html')
+    assert.equal(route(variant, 'admin.wolin.studio').headers['X-Robots-Tag'], 'noindex, nofollow')
   }
   assert.equal(route(`${path}/index.html`).status, 308)
   assert.equal(route(`${path}/index.html`).headers.Location, path)
 }
-for (const path of ['/admin', '/admin/', '/sample', '/sign/example-token', '/sign/nested/token']) {
+for (const path of ['/sample', '/sign/example-token', '/sign/nested/token']) {
   assert.equal(route(path).dest, '/private-shell.html')
   assert.equal(route(path).headers['X-Robots-Tag'], 'noindex, nofollow')
 }
-assert.equal(route('/', 'admin.wolin.dev').dest, '/private-shell.html')
-assert.equal(route('/robots.txt', 'admin.wolin.dev').dest, '/admin-robots.txt')
+assert.equal(route('/', 'admin.wolin.studio').dest, '/private-shell.html')
+assert.equal(route('/robots.txt', 'admin.wolin.studio').dest, '/admin-robots.txt')
+assert.equal(route('/admin').headers.Location, 'https://admin.wolin.studio/')
+assert.equal(route('/admin/').headers.Location, 'https://admin.wolin.studio/')
 assert.equal(route('/calebwolin').dest, '/app-shell.html')
 assert.equal(route('/90-day-hands-free-local-sensation').headers.Location, '/offers')
 assert.equal(route('/not-a-real-route').dest, undefined)

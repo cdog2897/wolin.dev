@@ -9,7 +9,7 @@ import AdminPortal from './admin/AdminPortal.tsx'
 import SigningPage from './admin/SigningPage.tsx'
 
 const currentPath = window.location.pathname.replace(/\/+$/, '') || '/'
-const adminHost = window.location.hostname === 'admin.wolin.dev'
+const adminHost = ['admin.wolin.studio', 'admin.wolin.dev'].includes(window.location.hostname)
 const adminPreviewPath = currentPath === '/admin' || currentPath === '/admin-preview'
 const signingMatch = currentPath.match(/^\/sign\/([^/]+)$/)
 const legacyAdminSigningLink = adminHost && signingMatch
@@ -20,7 +20,7 @@ const retiredOfferPath = currentPath === '/90-day-hands-free-local-sensation'
 const publicPage = isPublicPath(currentPath) ? publicPages[currentPath] : undefined
 
 if (legacyAdminSigningLink) {
-  window.location.replace(`https://wolin.dev${window.location.pathname}${window.location.search}${window.location.hash}`)
+  window.location.replace(`https://wolin.studio${window.location.pathname}${window.location.search}${window.location.hash}`)
 }
 
 if (retiredOfferPath && !adminHost) {

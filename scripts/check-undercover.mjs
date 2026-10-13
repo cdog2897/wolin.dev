@@ -4,7 +4,7 @@ import { readFile, readdir } from 'node:fs/promises'
 
 const base = '/sample/UndercoverBedandSpas'
 const config = JSON.parse(await readFile('vercel.json', 'utf8'))
-function route(path, host = 'wolin.dev') {
+function route(path, host = 'wolin.studio') {
   const headers = {}
   for (const entry of config.routes) {
     if (!entry.src || (entry.has && !entry.has.every(rule => rule.type === 'host' && rule.value === host))) continue
@@ -45,7 +45,7 @@ for (const path of pages) {
     const resolved = route(variant)
     assert.equal(resolved.dest, `${path}/index.html`, `${variant}: direct reload`)
     assert.equal(resolved.headers['X-Robots-Tag'], 'noindex, nofollow')
-    assert.equal(route(variant, 'admin.wolin.dev').dest, '/private-shell.html', `${variant}: admin protection`)
+    assert.equal(route(variant, 'admin.wolin.studio').dest, '/private-shell.html', `${variant}: admin protection`)
   }
   assert.equal(route(`${path}/index.html`).headers.Location, path, `${path}: index alias`)
 }

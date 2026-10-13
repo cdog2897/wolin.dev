@@ -9,8 +9,8 @@ import { businessDate, formatStartDate, reservationSummary, RESERVATION_TEMPLATE
 import { defaultTemplates } from './_lib/default-templates.js'
 
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com').toLowerCase()
-const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || 'https://admin.wolin.dev'
-const PUBLIC_BASE_URL = 'https://wolin.dev'
+const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || 'https://admin.wolin.studio'
+const PUBLIC_BASE_URL = 'https://wolin.studio'
 const EMAIL_FROM = process.env.SIGNING_FROM_EMAIL || 'Wolin <reports@wolin.dev>'
 
 function validEmail(value: string) {
@@ -76,6 +76,16 @@ async function requestLogin(request: ApiRequest, response: ApiResponse) {
 
 function verifyLogin(request: ApiRequest, response: ApiResponse) {
   if (request.method !== 'GET') return methodNotAllowed(response, ['GET'])
+  // Verify on the canonical admin host before creating its host-only cookie.
+  // Old emailed links remain useful without sharing cookies across domains.
+  const host = (header(request, 'x-forwarded-host') || header(request, 'host')).split(',')[0]?.trim()
+  const canonicalHost = new URL(ADMIN_BASE_URL).host
+  const migrationHosts = ['admin.wolin.dev', 'wolin.dev', 'www.wolin.dev', 'wolin.studio', 'www.wolin.studio']
+  if (host && host !== canonicalHost && migrationHosts.includes(host)) {
+    response.statusCode = 307
+    response.setHeader('Location', `${ADMIN_BASE_URL}/api/admin?action=verify&token=${encodeURIComponent(queryValue(request, 'token'))}`)
+    return response.end()
+  }
   const token = verifySignedToken(queryValue(request, 'token'))
   if (!token || token.email.toLowerCase() !== ADMIN_EMAIL) {
     response.statusCode = 302

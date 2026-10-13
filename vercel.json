@@ -1,25 +1,24 @@
 {
   "routes": [
     {
-      "src": "^/(offers|social-media-management|web-design|service-areas|marketing)/index\\.html$",
+      "src": "^/.*$",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.dev"
+        }
+      ],
       "headers": {
-        "Location": "/$1"
+        "X-Robots-Tag": "noindex, nofollow"
       },
-      "status": 308
-    },
-    {
-      "src": "^/90-day-hands-free-local-sensation/?$",
-      "headers": {
-        "Location": "/offers"
-      },
-      "status": 308
+      "continue": true
     },
     {
       "src": "^/.*$",
       "has": [
         {
           "type": "host",
-          "value": "admin.wolin.dev"
+          "value": "admin.wolin.studio"
         }
       ],
       "headers": {
@@ -42,6 +41,657 @@
       "continue": true
     },
     {
+      "src": "^(/sign(?:/.*)?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/sign(?:/.*)?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/sign(?:/.*)?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/sign(?:/.*)?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/sign(?:/.*)?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(admin|admin-preview)/?$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://admin.wolin.studio/"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(admin|admin-preview)/?$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://admin.wolin.studio/"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(admin|admin-preview)/?$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://admin.wolin.studio/"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(admin|admin-preview)/?$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://admin.wolin.studio/"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(?!api(?:/|$)|assets(?:/|$)|private-shell\\.html$|app-shell\\.html$)(.*)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://admin.wolin.studio/$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(offers|social-media-management|web-design|service-areas|marketing)/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/90-day-hands-free-local-sensation/?$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/offers"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/sample/UndercoverBedandSpas((?:/(?:spas|saunas|mattresses|services|about|visit|contact|brochure|guides|warranties|not-found|collections/(?:highlife|limelight|hot-spot|cold-plunge|refurbished|spa-accessories|tylo|leisurecraft|tempur-pedic|stearns-foster|sealy|bases-pillows)))?)/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/sample/UndercoverBedandSpas$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:offers|social-media-management|web-design|service-areas|marketing)/?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:calebwolin|sample)/?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/sample/UndercoverBedandSpas(?:/.*)?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:robots\\.txt|sitemap\\.xml))$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(offers|social-media-management|web-design|service-areas|marketing)/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/90-day-hands-free-local-sensation/?$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/offers"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/sample/UndercoverBedandSpas((?:/(?:spas|saunas|mattresses|services|about|visit|contact|brochure|guides|warranties|not-found|collections/(?:highlife|limelight|hot-spot|cold-plunge|refurbished|spa-accessories|tylo|leisurecraft|tempur-pedic|stearns-foster|sealy|bases-pillows)))?)/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/sample/UndercoverBedandSpas$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:offers|social-media-management|web-design|service-areas|marketing)/?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:calebwolin|sample)/?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/sample/UndercoverBedandSpas(?:/.*)?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:robots\\.txt|sitemap\\.xml))$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.dev"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(offers|social-media-management|web-design|service-areas|marketing)/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/90-day-hands-free-local-sensation/?$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/offers"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/sample/UndercoverBedandSpas((?:/(?:spas|saunas|mattresses|services|about|visit|contact|brochure|guides|warranties|not-found|collections/(?:highlife|limelight|hot-spot|cold-plunge|refurbished|spa-accessories|tylo|leisurecraft|tempur-pedic|stearns-foster|sealy|bases-pillows)))?)/index\\.html$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio/sample/UndercoverBedandSpas$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:offers|social-media-management|web-design|service-areas|marketing)/?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:calebwolin|sample)/?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/sample/UndercoverBedandSpas(?:/.*)?)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/(?:robots\\.txt|sitemap\\.xml))$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^(/)$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.wolin.studio"
+        }
+      ],
+      "headers": {
+        "Location": "https://wolin.studio$1"
+      },
+      "status": 308
+    },
+    {
+      "src": "^/(offers|social-media-management|web-design|service-areas|marketing)/index\\.html$",
+      "headers": {
+        "Location": "/$1"
+      },
+      "status": 308,
+      "methods": [
+        "GET",
+        "HEAD"
+      ]
+    },
+    {
+      "src": "^/90-day-hands-free-local-sensation/?$",
+      "headers": {
+        "Location": "/offers"
+      },
+      "status": 308,
+      "methods": [
+        "GET",
+        "HEAD"
+      ]
+    },
+    {
       "src": "^/robots\\.txt$",
       "has": [
         {
@@ -52,11 +702,31 @@
       "dest": "/admin-robots.txt"
     },
     {
+      "src": "^/robots\\.txt$",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.studio"
+        }
+      ],
+      "dest": "/admin-robots.txt"
+    },
+    {
       "src": "^/((offers|social-media-management|web-design|service-areas|marketing)(/index\\.html|/)?)?$",
       "has": [
         {
           "type": "host",
           "value": "admin.wolin.dev"
+        }
+      ],
+      "dest": "/private-shell.html"
+    },
+    {
+      "src": "^/((offers|social-media-management|web-design|service-areas|marketing)(/index\\.html|/)?)?$",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.studio"
         }
       ],
       "dest": "/private-shell.html"
@@ -88,11 +758,25 @@
       "dest": "/private-shell.html"
     },
     {
+      "src": "^/sample/UndercoverBedandSpas(/.*)?$",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.wolin.studio"
+        }
+      ],
+      "dest": "/private-shell.html"
+    },
+    {
       "src": "^/sample/UndercoverBedandSpas((?:/(?:spas|saunas|mattresses|services|about|visit|contact|brochure|guides|warranties|not-found|collections/(?:highlife|limelight|hot-spot|cold-plunge|refurbished|spa-accessories|tylo|leisurecraft|tempur-pedic|stearns-foster|sealy|bases-pillows)))?)/index\\.html$",
       "headers": {
         "Location": "/sample/UndercoverBedandSpas$1"
       },
-      "status": 308
+      "status": 308,
+      "methods": [
+        "GET",
+        "HEAD"
+      ]
     },
     {
       "src": "^/sample/UndercoverBedandSpas/?$",

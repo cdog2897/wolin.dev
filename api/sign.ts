@@ -155,7 +155,7 @@ async function signDocument(request: ApiRequest, response: ApiResponse, token: s
   const safeBusiness = escapeHtml(String(envelope.business_name))
   const safeTitle = escapeHtml(String(envelope.document_title))
   const reservation = reservationSummary(envelope)
-  const secureLink = `https://wolin.dev/sign/${encodeURIComponent(token)}`
+  const secureLink = `https://wolin.studio/sign/${encodeURIComponent(token)}`
   const reservationNote = reservation ? `Planned start: ${reservation.startDateLabel} (America/Denver). ${reservation.kind === 'deposit' ? 'Pay your $300 non-refundable deposit to confirm the reservation. Caleb will send a separate $3,199 program agreement and Stripe payment link.' : 'This program agreement has its own one-time checkout, available on the planned start date.'} No automatic charge. Secure link: ${secureLink}` : ''
   const emailTask = (async () => {
     try {
