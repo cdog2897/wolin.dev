@@ -28,7 +28,7 @@ async function sendEmail(payload: { to: string[]; subject: string; html: string;
   if (!result.ok) throw new Error(`Resend rejected the email (${result.status}): ${await result.text()}`)
 }
 
-function emailFrame(content: string, host: 'wolin.dev' | 'admin.wolin.dev' = 'wolin.dev') {
+function emailFrame(content: string, host: 'wolin.studio' | 'admin.wolin.studio' = 'wolin.studio') {
   return `<div style="background:#f2f5f3;padding:36px 18px;font-family:Arial,sans-serif;color:#17211f"><div style="max-width:600px;margin:auto;background:#fff;border:1px solid #dfe5e1;border-radius:16px;overflow:hidden"><div style="padding:24px 30px;border-bottom:1px solid #edf0ee;color:#214e45;font-weight:800;letter-spacing:.16em">WOLIN</div><div style="padding:34px 30px">${content}</div><div style="padding:18px 30px;background:#f7f9f8;color:#68736f;font-size:12px">Securely completed with Wolin Sign · ${host}</div></div></div>`
 }
 
@@ -169,7 +169,7 @@ async function signDocument(request: ApiRequest, response: ApiResponse, token: s
         to: [ADMIN_EMAIL],
         subject: `Signed: ${String(envelope.document_title)} — ${String(envelope.business_name)}`,
         text: `${signerName} signed ${String(envelope.document_title)} for ${String(envelope.business_name)}. Open Wolin Admin to view the signed document and audit trail.`,
-        html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Document signed.</h1><p style="line-height:1.6;margin:0">${safeSigner} signed <strong>${safeTitle}</strong> for ${safeBusiness}. Open Wolin Admin to view the document and audit trail.</p>`, 'admin.wolin.dev'),
+        html: emailFrame(`<h1 style="font-size:26px;margin:0 0 12px">Document signed.</h1><p style="line-height:1.6;margin:0">${safeSigner} signed <strong>${safeTitle}</strong> for ${safeBusiness}. Open Wolin Admin to view the document and audit trail.</p>`, 'admin.wolin.studio'),
       })
       await addAuditEvent(String(envelope.id), 'completion_emails_sent', {}, ip, userAgent)
     } catch (error) {

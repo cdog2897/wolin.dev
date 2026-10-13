@@ -122,7 +122,7 @@ export default function SigningPage({ token }: { token: string }) {
   }
 
   if (loading) return <div className="ws-loader"><span>W</span><i /></div>
-  if (loadError || !document) return <main className="ws-state-page"><div className="ws-brand"><span>W</span><strong>wolin</strong></div><section><span className="ws-state-icon">!</span><h1>We can’t open this agreement.</h1><p>{loadError || 'The link may be invalid.'}</p><a href="mailto:caleb.wolin@gmail.com">Contact Caleb</a></section></main>
+  if (loadError || !document) return <main className="ws-state-page"><div className="ws-brand"><span>W</span><strong>wolin</strong></div><section><span className="ws-state-icon">!</span><h1>We can’t open this agreement.</h1><p>{loadError || 'The link may be invalid.'}</p><a href="mailto:caleb@wolin.studio">Contact Caleb</a></section></main>
 
   const unavailable = ['voided', 'expired'].includes(document.status)
   const completed = document.status === 'signed'
@@ -156,6 +156,6 @@ export default function SigningPage({ token }: { token: string }) {
         </div>
       </aside>
     </main>
-    <footer className="ws-site-footer"><span>Wolin Sign</span><p>Electronic signature service for Wolin client agreements.</p><a href="mailto:caleb.wolin@gmail.com">Need help?</a></footer>
+    <footer className="ws-site-footer"><span>Wolin Sign</span><p>Electronic signature service for Wolin client agreements.</p><a href="mailto:caleb@wolin.studio">Need help?</a></footer>
   </div>
 }

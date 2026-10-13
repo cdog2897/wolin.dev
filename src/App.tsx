@@ -642,7 +642,7 @@ function App() {
           </span>
           <h2>Let’s <em>connect.</em></h2>
           <div className="footer-contact" aria-label="Contact Caleb Wolin">
-            <a href="mailto:caleb.wolin@gmail.com">caleb.wolin@gmail.com</a>
+            <a href="mailto:caleb@wolin.studio">caleb@wolin.studio</a>
             <a href="tel:+12088108089">+1 (208) 810-8089</a>
           </div>
         </div>
