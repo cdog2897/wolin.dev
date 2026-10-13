@@ -38,6 +38,7 @@ test('admin migration verifies on the new host before setting its host-only cook
     assert.equal(old.statusCode, 307)
     assert.equal(old.headers.Location, `https://admin.wolin.studio/api/admin?action=verify&token=${encodeURIComponent(token)}`)
     assert.equal(old.headers['Set-Cookie'], undefined)
+    assert.equal(old.headers['Referrer-Policy'], 'no-referrer')
     assert.equal(old.headers['Cache-Control'], 'no-store, max-age=0')
   }
   const current = await call('admin.wolin.studio')
@@ -45,4 +46,10 @@ test('admin migration verifies on the new host before setting its host-only cook
   assert.equal(current.headers.Location, 'https://admin.wolin.studio/')
   assert.ok(current.headers['Set-Cookie'].includes('HttpOnly; Secure; SameSite=Lax'))
   assert.ok(!current.headers['Set-Cookie'].includes('Domain='))
+  assert.equal(current.headers['Referrer-Policy'], 'no-referrer')
+  const post = { headers: {}, statusCode: 0, setHeader(key, value) { this.headers[key] = value }, status(code) { this.statusCode = code; return this }, json() {}, end() {} }
+  await admin({ method: 'POST', headers: { host: 'admin.wolin.dev' }, query: { action: 'verify', token }, body: { redirect: 'https://unrelated.example' } }, post)
+  assert.equal(post.statusCode, 405)
+  assert.equal(post.headers.Location, undefined)
+  assert.equal(post.headers['Set-Cookie'], undefined)
 })

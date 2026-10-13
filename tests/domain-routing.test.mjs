@@ -46,9 +46,14 @@ test('private navigation moves, while old API POSTs remain local', () => {
     const result = resolveRoute(routes, `https://${host}${path}?source=old#view`)
     assert.equal(result.headers.Location, 'https://admin.wolin.studio/')
     assert.equal(result.headers['X-Robots-Tag'], 'noindex, nofollow')
+    assert.equal(result.headers['Cache-Control'], 'no-store, max-age=0')
+    assert.equal(result.headers['Referrer-Policy'], 'no-referrer')
   }
   for (const host of [...aliases, 'admin.wolin.dev', 'admin.wolin.studio']) {
-    assert.equal(resolveRoute(routes, `https://${host}/sign/test-token`).headers.Location, 'https://wolin.studio/sign/test-token')
+    const signing = resolveRoute(routes, `https://${host}/sign/test-token`)
+    assert.equal(signing.headers.Location, 'https://wolin.studio/sign/test-token')
+    assert.equal(signing.headers['Cache-Control'], 'no-store, max-age=0')
+    assert.equal(signing.headers['Referrer-Policy'], 'no-referrer')
     for (const path of ['/sign/test-token', '/api/sign', '/api/admin', '/api/stripe-webhook']) assert.equal(resolveRoute(routes, `https://${host}${path}`, 'POST').headers.Location, undefined)
   }
   for (const path of ['/', '/offers', '/robots.txt', '/unknown']) assert.equal(resolveRoute(routes, `https://admin.wolin.dev${path}`).headers.Location, `https://admin.wolin.studio${path}`)

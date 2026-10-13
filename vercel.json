@@ -53,7 +53,9 @@
         }
       ],
       "headers": {
-        "Location": "https://wolin.studio$1"
+        "Location": "https://wolin.studio$1",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -70,7 +72,9 @@
         }
       ],
       "headers": {
-        "Location": "https://wolin.studio$1"
+        "Location": "https://wolin.studio$1",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -87,7 +91,9 @@
         }
       ],
       "headers": {
-        "Location": "https://wolin.studio$1"
+        "Location": "https://wolin.studio$1",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -104,7 +110,9 @@
         }
       ],
       "headers": {
-        "Location": "https://wolin.studio$1"
+        "Location": "https://wolin.studio$1",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -121,7 +129,9 @@
         }
       ],
       "headers": {
-        "Location": "https://wolin.studio$1"
+        "Location": "https://wolin.studio$1",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -138,7 +148,9 @@
         }
       ],
       "headers": {
-        "Location": "https://admin.wolin.studio/"
+        "Location": "https://admin.wolin.studio/",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -155,7 +167,9 @@
         }
       ],
       "headers": {
-        "Location": "https://admin.wolin.studio/"
+        "Location": "https://admin.wolin.studio/",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -172,7 +186,9 @@
         }
       ],
       "headers": {
-        "Location": "https://admin.wolin.studio/"
+        "Location": "https://admin.wolin.studio/",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -189,7 +205,9 @@
         }
       ],
       "headers": {
-        "Location": "https://admin.wolin.studio/"
+        "Location": "https://admin.wolin.studio/",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },
@@ -206,7 +224,9 @@
         }
       ],
       "headers": {
-        "Location": "https://admin.wolin.studio/$1"
+        "Location": "https://admin.wolin.studio/$1",
+        "Cache-Control": "no-store, max-age=0",
+        "Referrer-Policy": "no-referrer"
       },
       "status": 308
     },

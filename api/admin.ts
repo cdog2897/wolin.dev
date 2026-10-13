@@ -75,6 +75,7 @@ async function requestLogin(request: ApiRequest, response: ApiResponse) {
 }
 
 function verifyLogin(request: ApiRequest, response: ApiResponse) {
+  response.setHeader('Referrer-Policy', 'no-referrer')
   if (request.method !== 'GET') return methodNotAllowed(response, ['GET'])
   // Verify on the canonical admin host before creating its host-only cookie.
   // Old emailed links remain useful without sharing cookies across domains.
