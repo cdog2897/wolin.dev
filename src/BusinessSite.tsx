@@ -95,7 +95,7 @@ function Visual({ kind }: { kind: Service['id'] }) {
 }
 
 function Header({ page }: { page: Page }) {
-  return <header className="business-header"><a className="business-wordmark" href="/" aria-label="Wolin home">wolin<span>.</span>dev</a><nav className="business-nav" aria-label="Main navigation"><a href="/offers" aria-current={page === 'offers' ? 'page' : undefined}>Offers</a></nav><a className="business-header-link" href="#contact">Contact Us <Arrow /></a></header>
+  return <header className="business-header"><a className="business-wordmark" href="/" aria-label="Wolin home">wolin<span>.</span>studio</a><nav className="business-nav" aria-label="Main navigation"><a href="/offers" aria-current={page === 'offers' ? 'page' : undefined}>Offers</a></nav><a className="business-header-link" href="#contact">Contact Us <Arrow /></a></header>
 }
 
 function SaleBanner() {

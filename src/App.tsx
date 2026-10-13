@@ -542,7 +542,7 @@ function App() {
 
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Caleb Wolin, home">
-          wolin.dev
+          wolin.studio
         </a>
         <a className="header-name" href="#contact" aria-label="Contact Caleb Wolin">
           Caleb Wolin
