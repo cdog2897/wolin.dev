@@ -36,7 +36,7 @@ async function sendEmail(payload: { to: string[]; subject: string; html: string;
   if (!result.ok) throw new Error(`Resend rejected the email (${result.status}): ${await result.text()}`)
 }
 
-function emailFrame(content: string, host: 'wolin.dev' | 'admin.wolin.studio' = 'wolin.dev') {
+function emailFrame(content: string, host: 'wolin.studio' | 'admin.wolin.studio' = 'wolin.studio') {
   return `<div style="background:#f2f5f3;padding:36px 18px;font-family:Arial,sans-serif;color:#17211f"><div style="max-width:600px;margin:auto;background:#fff;border:1px solid #dfe5e1;border-radius:16px;overflow:hidden"><div style="padding:24px 30px;border-bottom:1px solid #edf0ee;color:#214e45;font-weight:800;letter-spacing:.16em">WOLIN</div><div style="padding:34px 30px">${content}</div><div style="padding:18px 30px;background:#f7f9f8;color:#68736f;font-size:12px">Securely delivered by Wolin Sign · ${host}</div></div></div>`
 }
 
