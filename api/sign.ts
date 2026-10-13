@@ -10,7 +10,7 @@ import { reservationSummary, RESERVATION_TEMPLATE_ID, START_DATE_TEMPLATE_IDS } 
 import { reservationPaymentUrl } from './_lib/reservations.js'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com'
-const EMAIL_FROM = process.env.SIGNING_FROM_EMAIL || 'Wolin <reports@wolin.dev>'
+const EMAIL_FROM = process.env.SIGNING_FROM_EMAIL || 'Wolin <reports@wolin.studio>'
 const CONSENT_TEXT = 'I have reviewed this document, consent to use electronic records and signatures, and agree that my electronic signature is legally binding.'
 
 function escapeHtml(value: string) {
