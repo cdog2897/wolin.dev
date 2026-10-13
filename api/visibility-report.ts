@@ -133,7 +133,7 @@ export default async function handler(request: ApiRequest, response: ApiResponse
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Wolin Contact <reports@wolin.dev>',
+      from: 'Wolin Contact <reports@wolin.studio>',
       to: ['caleb@wolin.studio'],
       reply_to: email,
       subject: `${inquiryTitle} — ${name}`,

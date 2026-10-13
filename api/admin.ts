@@ -11,7 +11,7 @@ import { defaultTemplates } from './_lib/default-templates.js'
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'caleb.wolin@gmail.com').toLowerCase()
 const ADMIN_BASE_URL = process.env.ADMIN_BASE_URL || 'https://admin.wolin.studio'
 const PUBLIC_BASE_URL = 'https://wolin.studio'
-const EMAIL_FROM = process.env.SIGNING_FROM_EMAIL || 'Wolin <reports@wolin.dev>'
+const EMAIL_FROM = process.env.SIGNING_FROM_EMAIL || 'Wolin <reports@wolin.studio>'
 
 function validEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
