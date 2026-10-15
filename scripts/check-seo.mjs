@@ -1,5 +1,6 @@
 // Run after npm run build. These checks never contact a live API.
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 
 const routes = JSON.parse(await readFile('vercel.json', 'utf8')).routes
@@ -33,20 +34,34 @@ for (const [index, path] of paths.entries()) {
   assert.equal(schema['@graph'][0]['@id'], 'https://wolin.studio/#organization')
   for (const entity of schema['@graph']) assert.ok(entity.url.startsWith('https://wolin.studio/'))
   assert.ok(html.includes(`property="og:url" content="https://wolin.studio${path}"`))
+  assert.equal((html.match(/property="og:image"/g) || []).length, 1, `${path}: one Open Graph image`)
+  assert.equal((html.match(/name="twitter:image"/g) || []).length, 1, `${path}: one Twitter image`)
+  assert.ok(html.includes('property="og:image" content="https://wolin.studio/og.png"'), `${path}: absolute Open Graph image`)
+  assert.ok(html.includes('name="twitter:image" content="https://wolin.studio/og.png"'), `${path}: absolute Twitter image`)
   assert.ok(schema['@graph'].some(entity => entity['@type'] === 'Service'))
   assert.ok(!JSON.stringify(schema).match(/address|rating|review|price|guarantee/i))
   for (const entity of schema['@graph']) assert.equal(entity.areaServed.length, 3)
   for (const target of paths.slice(2)) assert.ok(html.includes(`href="${target}"`), `${path}: internal link ${target}`)
 }
 assert.equal((sitemap.match(/<loc>/g) || []).length, paths.length)
+function pngInfo(path) {
+  const png = readFileSync(path)
+  assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], `${path}: PNG signature`)
+  return { width: png.readUInt32BE(16), height: png.readUInt32BE(20), colorType: png[25] }
+}
+assert.deepEqual(pngInfo('dist/logo-full.png'), { width: 2600, height: 800, colorType: 6 }, 'current logo is high-resolution RGBA')
+assert.deepEqual(pngInfo('dist/logo-full-v2.png'), { width: 2600, height: 800, colorType: 6 }, 'stable signature logo is high-resolution RGBA')
+assert.deepEqual(pngInfo('dist/og.png'), { width: 1200, height: 630, colorType: 6 }, 'social preview has standard dimensions')
 const privateShell = await readFile('dist/private-shell.html', 'utf8')
 assert.ok(privateShell.includes('name="robots" content="noindex, nofollow"'))
 assert.ok(privateShell.includes('<div id="root"></div>'))
+assert.ok(!privateShell.includes('property="og:image"'))
 assert.ok(!privateShell.includes('application/ld+json'))
 assert.ok(!privateShell.includes('rel="canonical"'))
 const portfolioShell = await readFile('dist/app-shell.html', 'utf8')
 assert.ok(!portfolioShell.includes('noindex'))
 assert.ok(portfolioShell.includes('<div id="root"></div>'))
+assert.ok(!portfolioShell.includes('property="og:image"'))
 
 // Evaluate the ordered route declarations, including host conditions and redirects.
 function route(path, host = 'wolin.studio') {

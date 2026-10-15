@@ -34,6 +34,7 @@ try {
       .replace(/(<meta name="twitter:title" content=")[^"]*/, `$1${title}`)
       .replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*/, `$1${description}`)
       .replace(/(<meta property="og:url" content=")[^"]*/, `$1${origin}${path}`)
+      .replace('</head>', `  <meta property="og:image" content="${origin}/og.png" />\n  <meta name="twitter:image" content="${origin}/og.png" />\n  </head>`)
       .replace('</head>', `  <script type="application/ld+json">${JSON.stringify(structuredData(path)).replaceAll('<', '\\u003c')}</script>\n  </head>`)
     html = html
       .replace('</head>', `  <link rel="canonical" href="${origin}${path}" />\n  </head>`)

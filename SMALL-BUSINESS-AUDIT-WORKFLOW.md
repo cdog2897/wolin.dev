@@ -2,7 +2,7 @@
 
 Version: September 18, 2026
 
-This is the master workflow and criteria library for Wolin visibility audits. It reflects the offer on wolin.dev: Google Business Profile optimization, website and on-page SEO improvements, conversion and mobile improvements, citation cleanup, technical SEO, service/location/authority content, structured data, competitor tracking, AI visibility, social presence, and business photo/video.
+This is the master workflow and criteria library for Wolin visibility audits. It reflects the offer on wolin.studio: Google Business Profile optimization, website and on-page SEO improvements, conversion and mobile improvements, citation cleanup, technical SEO, service/location/authority content, structured data, competitor tracking, AI visibility, social presence, and business photo/video. The former wolin.dev domain remains an intentional legacy redirect and compatibility host for old links and integrations.
 
 The audit is designed to answer four questions:
 
