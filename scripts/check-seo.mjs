@@ -10,7 +10,7 @@ const titles = [
   'Social Media &amp; Website Packages | Wolin Studio',
   'Social Media Management in Laramie | Wolin Studio',
   'Web Design in Laramie | Wolin Studio',
-  'Laramie, Cheyenne &amp; Fort Collins | Wolin Studio',
+  'Web Design &amp; Social Media in Laramie, Cheyenne &amp; Fort Collins | Wolin Studio',
   'Small Business Marketing in Laramie | Wolin Studio',
 ]
 const sitemap = await readFile('dist/sitemap.xml', 'utf8')
@@ -19,6 +19,8 @@ const descriptions = new Set()
 for (const [index, path] of paths.entries()) {
   const html = await readFile(`dist${path === '/' ? '' : path}/index.html`, 'utf8')
   assert.ok(html.includes(`<title>${titles[index]}</title>`), `${path}: title`)
+  assert.ok(html.includes(`property="og:title" content="${titles[index]}"`), `${path}: Open Graph title`)
+  assert.ok(html.includes(`name="twitter:title" content="${titles[index]}"`), `${path}: Twitter title`)
   assert.equal((html.match(/rel="canonical"/g) || []).length, 1)
   assert.ok(html.includes(`rel="canonical" href="https://wolin.studio${path}"`))
   assert.ok(html.includes(`data-prerendered="${path}"`))
