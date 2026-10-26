@@ -26,7 +26,7 @@ export const publicPages = {
   },
   '/service-areas': {
     page: 'service-areas',
-    title: 'Laramie, Cheyenne & Fort Collins | Wolin Studio',
+    title: 'Web Design & Social Media in Laramie, Cheyenne & Fort Collins | Wolin Studio',
     description: 'Social media management and custom web design for businesses in Laramie, Cheyenne, and Fort Collins. Explore Wolin Studio’s service areas and creative services.',
   },
 } as const
